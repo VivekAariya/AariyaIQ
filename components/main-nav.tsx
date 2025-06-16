@@ -83,7 +83,7 @@ export function MainNav() {
           </nav>
         </div>
         <div className="hidden md:flex md:items-center md:gap-4">
-          <Link href="/login">
+          <Link href="/learner/login">
             <Button
               variant="outline"
               size="sm"
@@ -92,7 +92,7 @@ export function MainNav() {
               Learner Login
             </Button>
           </Link>
-          <Link href="/admin/login">
+          <Link href="/instructor/login">
             <Button
               size="sm"
               className="bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white backdrop-blur-md bg-opacity-80"
@@ -130,7 +130,7 @@ export function MainNav() {
               About
             </Link>
             <div className="flex flex-col gap-2 pt-2">
-              <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/learner/login" onClick={() => setIsMenuOpen(false)}>
                 <Button
                   variant="outline"
                   className="w-full border-gray-700 text-gray-200 hover:text-white hover:border-gray-500"
@@ -138,7 +138,7 @@ export function MainNav() {
                   Learner Login
                 </Button>
               </Link>
-              <Link href="/admin/login" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/instructor/login" onClick={() => setIsMenuOpen(false)}>
                 <Button className="w-full bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white bg-opacity-80 backdrop-blur-md">
                   Instructor Login
                 </Button>
