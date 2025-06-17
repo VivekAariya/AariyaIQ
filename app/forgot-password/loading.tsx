@@ -1,27 +1,43 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Footer } from "@/components/footer";
+import { MainNav } from "@/components/main-nav";
+import { QuantumBackground } from "@/components/quantum-background";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ForgotPasswordLoading() {
-  return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-purple-50/30 via-indigo-50/30 to-cyan-50/30 backdrop-blur-sm dark:from-purple-950/10 dark:via-indigo-950/10 dark:to-cyan-950/10">
-      <div className="h-16 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800"></div>
-      <main className="flex-1 flex items-center justify-center py-12">
-        <Card className="mx-auto max-w-md w-full border border-white/20 dark:border-white/10">
-          <CardHeader className="space-y-1">
-            <div className="h-8 w-48 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
-            <div className="h-4 w-64 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="h-4 w-20 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
-                <div className="h-10 w-full bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
-              </div>
-              <div className="h-10 w-full bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+    return (
+        <div className="min-h-screen bg-slate-900 relative overflow-hidden">
+            <QuantumBackground />
+
+            <div className="relative z-10 flex min-h-screen flex-col">
+                <MainNav />
+
+                <main className="flex-1 flex items-center justify-center py-12 px-4">
+                    <div className="w-full max-w-md">
+                        <div className="relative group">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500 rounded-2xl blur opacity-25 animate-pulse"></div>
+
+                            <Card className="relative bg-slate-800/90 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+                                <CardHeader className="space-y-4 text-center">
+                                    <Skeleton className="mx-auto w-16 h-16 rounded-full bg-slate-700" />
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-8 w-48 mx-auto bg-slate-700" />
+                                        <Skeleton className="h-4 w-64 mx-auto bg-slate-700" />
+                                    </div>
+                                </CardHeader>
+
+                                <CardContent className="space-y-6">
+                                    <Skeleton className="h-12 w-full bg-slate-700" />
+                                    <Skeleton className="h-12 w-full bg-slate-700" />
+                                    <Skeleton className="h-8 w-full bg-slate-700" />
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+                </main>
+
+                <Footer />
             </div>
-          </CardContent>
-        </Card>
-      </main>
-      <div className="h-16 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-200 dark:border-gray-800"></div>
-    </div>
-  )
+        </div>
+    );
 }

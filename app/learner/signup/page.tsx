@@ -1,6 +1,6 @@
 "use client";
 
-import { registerUser } from "@/app/actions/auth-actions";
+import { registerLearner } from "@/app/actions/auth-actions";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export default function SignupPage() {
 
     const handleSubmit = async (formData: FormData) => {
         startTransition(async () => {
-            const result = await registerUser(null, formData);
+            const result = await registerLearner(null, formData);
 
             if (!result?.success) {
                 toast({

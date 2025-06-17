@@ -66,7 +66,7 @@ export default function VerifyEmailPage() {
 
                     <div className="pt-2 space-y-4">
                         <Button asChild className="w-full h-12 text-base font-medium">
-                            <Link href="/login" className="flex items-center justify-center">
+                            <Link href="/learner/login" className="flex items-center justify-center">
                                 <ArrowLeft className="mr-2 h-5 w-5" /> Back to Login
                             </Link>
                         </Button>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ import { useState, useTransition } from "react";
 
 export default function LoginPage() {
     const router = useRouter();
+    const { toast } = useToast();
 
     const [isPending, startTransition] = useTransition();
     const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +23,7 @@ export default function LoginPage() {
     const handleSubmit = async (formData: FormData) => {
         startTransition(async () => {
             const result = await loginLearner(null, formData);
+            console.log("LoginPage - Login Result:", result);
 
             if (!result?.success) {
                 toast({
@@ -34,8 +36,6 @@ export default function LoginPage() {
                     title: "Login Successful",
                     description: "Welcome back to AariyaIQ!",
                 });
-
-                // Redirect to the dashboard or home page
                 router.replace("/learner/dashboard");
             }
         });
@@ -81,13 +81,6 @@ export default function LoginPage() {
                                         Forgot password?
                                     </Link>
                                 </div>
-                                {/* <Input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    required
-                                    className="bg-gray-800 border-gray-700 text-white h-11"
-                                /> */}
 
                                 <Input
                                     id="password"

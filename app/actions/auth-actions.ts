@@ -1,11 +1,9 @@
 "use server";
 
-import { sendPasswordResetEmail, sendEmail } from "@/lib/email-service";
 import { createServerClient } from "@/lib/supabase-server-client";
 import { supabaseServiceRoleClient } from "@/lib/supabaseClient";
-import { redirect } from "next/navigation";
 
-export async function registerUser(
+export async function registerLearner(
     prevState: any,
     formData: FormData
 ): Promise<{ success: boolean; message?: string; error?: string }> {
@@ -80,7 +78,7 @@ export async function registerUser(
                     last_name: last_name,
                     role: role,
                 },
-                emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+                emailRedirectTo: process.env.NEXT_PUBLIC_APP_URL,
             },
         });
 
@@ -129,7 +127,6 @@ export async function registerUser(
 export async function loginLearner(prevState: any, formData: FormData): Promise<{ error?: string; success: boolean }> {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const userType = formData.get("userType") as string;
 
     if (!email || !password) {
         return { error: "Email and password are required", success: false };
@@ -143,18 +140,15 @@ export async function loginLearner(prevState: any, formData: FormData): Promise<
     });
 
     if (error || !data.session) {
-        return { error: error?.message ?? "Invalid credentials", success: false };
+        console.error("Login error:", error);
+        return { success: false, error: error?.message ?? "Invalid credentials" };
     }
-
-    // Optionally: store session or user info in context/localStorage
 
     return { success: true };
 }
 
-export async function forgotPassword(prevState: any, formData: FormData) {
+export async function forgotPassword(email: string): Promise<{ message?: string; error?: string; success: boolean }> {
     try {
-        const email = formData.get("email") as string;
-
         if (!email) {
             return {
                 error: "Email is required",
@@ -162,14 +156,28 @@ export async function forgotPassword(prevState: any, formData: FormData) {
             };
         }
 
-        // Simulate sending reset email
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const supabase = createServerClient();
+        const url = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`;
+
+        // Use Supabase to send password reset email
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: url,
+        });
+
+        if (error) {
+            console.error("Supabase password reset error:", error);
+            return {
+                error: error?.message || "Failed to send reset email. Please check your email address.",
+                success: false,
+            };
+        }
 
         return {
-            message: "Password reset email sent successfully",
+            message: "Password reset email sent successfully. Please check your inbox.",
             success: true,
         };
     } catch (error) {
+        console.error("Password reset error:", error);
         return {
             error: "Failed to send reset email. Please try again.",
             success: false,
@@ -177,77 +185,31 @@ export async function forgotPassword(prevState: any, formData: FormData) {
     }
 }
 
-/**
- * Request a password reset
- * @param email User's email address
- */
-export async function requestPasswordReset(email: string) {
+export async function updatePassword(newPassword: string) {
     try {
-        // In a real application, you would check if the email exists in your database
-        // For this example, we'll assume the email exists
+        const supabase = createServerClient();
 
-        // Generate a secure token and expiry time
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes from now
+        const { error } = await supabase.auth.updateUser({
+            password: newPassword,
+        });
 
-        // Store the token in your database associated with this user
-        // This is a placeholder for your actual database operation
-        // await db.passwordResetTokens.create({ email, token, expiresAt })
-
-        // Create the reset link
-        const resetLink = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/reset-password?token=${token}`;
-
-        // Calculate expiry time in human-readable format
-        const expiryMinutes = 30; // Token expires in 30 minutes
-        const expiryText = `${expiryMinutes} minutes`;
-
-        // Send the password reset email
-        await sendPasswordResetEmail(email, email.split("@")[0], resetLink, expiryText);
+        if (error) {
+            console.error("Password update error:", error);
+            return {
+                success: false,
+                message: error.message || "Failed to update password. Please try again.",
+            };
+        }
 
         return {
             success: true,
-            message: "If your email is registered with us, you will receive a password reset link shortly.",
+            message: "Your password has been successfully updated.",
         };
     } catch (error) {
-        console.error("Error requesting password reset:", error);
+        console.error("Error updating password:", error);
         return {
             success: false,
-            message: "Failed to process your request. Please try again later.",
-        };
-    }
-}
-
-/**
- * Reset password with token
- * @param token Reset token
- * @param newPassword New password
- */
-export async function resetPassword(token: string, newPassword: string) {
-    try {
-        // In a real application, you would:
-        // 1. Verify the token exists and is not expired
-        // 2. Get the user associated with the token
-        // 3. Update the user's password
-        // 4. Delete the used token
-
-        // This is a placeholder for your actual implementation
-        // const tokenRecord = await db.passwordResetTokens.findUnique({ where: { token } })
-        // if (!tokenRecord || new Date() > tokenRecord.expiresAt) {
-        //   return { success: false, message: "Invalid or expired token." }
-        // }
-        // await db.user.update({ where: { email: tokenRecord.email }, data: { password: hashedPassword } })
-        // await db.passwordResetTokens.delete({ where: { token } })
-
-        // For this example, we'll simulate a successful password reset
-        return {
-            success: true,
-            message: "Your password has been successfully reset. You can now log in with your new password.",
-        };
-    } catch (error) {
-        console.error("Error resetting password:", error);
-        return {
-            success: false,
-            message: "Failed to reset your password. Please try again later.",
+            message: "Failed to update your password. Please try again later.",
         };
     }
 }

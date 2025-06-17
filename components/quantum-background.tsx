@@ -33,7 +33,7 @@ export function QuantumBackground() {
       canvas.style.width = `${window.innerWidth}px`
       canvas.style.height = `${window.innerHeight}px`
 
-      console.log(`Canvas resized to ${canvas.width}x${canvas.height} with DPR ${dpr}`)
+      // console.log(`Canvas resized to ${canvas.width}x${canvas.height} with DPR ${dpr}`)
     }
 
     resizeCanvas()
