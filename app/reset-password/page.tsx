@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
             });
 
             if (error) {
-                console.error("Password update error:", error);
+                logger.error("Password update error:", error);
                 return {
                     success: false,
                     message: error.message || "Failed to update password. Please try again.",
@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
                 message: "Your password has been successfully updated.",
             };
         } catch (error) {
-            console.error("Error updating password:", error);
+            logger.error("Error updating password:", error);
             return {
                 success: false,
                 message: "Failed to update your password. Please try again later.",
@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
         if (code) {
             supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
                 if (error) {
-                    console.error("Code exchange error:", error.message);
+                    logger.error("Code exchange error:", error.message);
                     setState({
                         success: false,
                         message: error?.message || "Invalid or expired reset code. Please request a new one.",

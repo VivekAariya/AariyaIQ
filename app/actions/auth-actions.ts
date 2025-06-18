@@ -1,7 +1,9 @@
 "use server";
 
-import { createServerClient } from "@/lib/supabase-server-client";
-import { supabaseServiceRoleClient } from "@/lib/supabaseClient";
+import { logger } from "@/utils/logger";
+import { createClient } from "@/utils/supabase/server";
+import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
+import { revalidatePath } from "next/cache";
 
 export async function registerLearner(
     prevState: any,
@@ -51,7 +53,7 @@ export async function registerLearner(
             .maybeSingle();
 
         if (userError) {
-            console.error("Error checking existing user:", userError);
+            logger.error("Error checking existing user:", userError);
             return {
                 error: "An error occurred while checking for existing users. Please try again.",
                 success: false,
@@ -59,14 +61,14 @@ export async function registerLearner(
         }
 
         if (existingUser) {
-            console.error("User already exists with email:", email);
+            logger.error("User already exists with email:", email);
             return {
                 error: "A user with this email already exists. Please use a different email.",
                 success: false,
             };
         }
 
-        const supabase = createServerClient();
+        const supabase = await createClient();
 
         // Use Supabase Auth to create user
         const { data, error } = await supabase.auth.signUp({
@@ -78,14 +80,14 @@ export async function registerLearner(
                     last_name: last_name,
                     role: role,
                 },
-                emailRedirectTo: process.env.NEXT_PUBLIC_APP_URL,
+                emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/learner/dashboard`,
             },
         });
 
-        console.log("Registration data:", data);
+        logger.log("Registration data:", data);
 
         if (error) {
-            console.error("Error during registration:", error);
+            logger.error("Error during registration:", error);
             return {
                 error: error.message,
                 success: false,
@@ -104,7 +106,7 @@ export async function registerLearner(
             });
 
             if (error) {
-                console.error("Error inserting user:", error);
+                logger.error("Error inserting user:", error);
                 return {
                     error: "An error occurred while creating the user. Please try again.",
                     success: false,
@@ -132,7 +134,7 @@ export async function loginLearner(prevState: any, formData: FormData): Promise<
         return { error: "Email and password are required", success: false };
     }
 
-    const supabase = createServerClient();
+    const supabase = await createClient();
 
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -140,7 +142,7 @@ export async function loginLearner(prevState: any, formData: FormData): Promise<
     });
 
     if (error || !data.session) {
-        console.error("Login error:", error);
+        logger.error("Login error:", error);
         return { success: false, error: error?.message ?? "Invalid credentials" };
     }
 
@@ -156,7 +158,7 @@ export async function forgotPassword(email: string): Promise<{ message?: string;
             };
         }
 
-        const supabase = createServerClient();
+        const supabase = await createClient();
         const url = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`;
 
         // Use Supabase to send password reset email
@@ -165,7 +167,7 @@ export async function forgotPassword(email: string): Promise<{ message?: string;
         });
 
         if (error) {
-            console.error("Supabase password reset error:", error);
+            logger.error("Supabase password reset error:", error);
             return {
                 error: error?.message || "Failed to send reset email. Please check your email address.",
                 success: false,
@@ -177,7 +179,7 @@ export async function forgotPassword(email: string): Promise<{ message?: string;
             success: true,
         };
     } catch (error) {
-        console.error("Password reset error:", error);
+        logger.error("Password reset error:", error);
         return {
             error: "Failed to send reset email. Please try again.",
             success: false,
@@ -187,14 +189,14 @@ export async function forgotPassword(email: string): Promise<{ message?: string;
 
 export async function updatePassword(newPassword: string) {
     try {
-        const supabase = createServerClient();
+        const supabase = await createClient();
 
         const { error } = await supabase.auth.updateUser({
             password: newPassword,
         });
 
         if (error) {
-            console.error("Password update error:", error);
+            logger.error("Password update error:", error);
             return {
                 success: false,
                 message: error.message || "Failed to update password. Please try again.",
@@ -206,7 +208,7 @@ export async function updatePassword(newPassword: string) {
             message: "Your password has been successfully updated.",
         };
     } catch (error) {
-        console.error("Error updating password:", error);
+        logger.error("Error updating password:", error);
         return {
             success: false,
             message: "Failed to update your password. Please try again later.",

@@ -40,7 +40,7 @@ export default function SuperAdminForgotPasswordPage() {
         })
       }
     } catch (error) {
-      console.error("Password reset request error:", error)
+      logger.error("Password reset request error:", error)
       toast({
         title: "System Error",
         description: "An unexpected error occurred. Please try again.",

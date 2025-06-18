@@ -39,7 +39,7 @@ export default function DetailedEmailTestPage() {
       const data = await response.json()
       setServiceStatus(data)
     } catch (error) {
-      console.error("Service status check failed:", error)
+      logger.error("Service status check failed:", error)
       setServiceStatus({
         error: "Failed to check service status",
         details: error instanceof Error ? error.message : "Unknown error",
@@ -74,7 +74,7 @@ export default function DetailedEmailTestPage() {
       const data = await response.json()
       setResult(data)
     } catch (error) {
-      console.error("Email test failed:", error)
+      logger.error("Email test failed:", error)
       setResult({
         error: "Failed to test email",
         details: error instanceof Error ? error.message : "Unknown error",

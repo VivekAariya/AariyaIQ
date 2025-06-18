@@ -59,7 +59,7 @@ export async function registerUser(formData: FormData): Promise<RegistrationResu
       userId,
     }
   } catch (error) {
-    console.error("Error registering user:", error)
+    logger.error("Error registering user:", error)
     return {
       success: false,
       message: "An error occurred during registration. Please try again.",

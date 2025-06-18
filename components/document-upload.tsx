@@ -57,7 +57,7 @@ export function DocumentUpload({
       setDocument(null)
       onDocumentChange(null)
     } catch (error) {
-      console.error("Error deleting document:", error)
+      logger.error("Error deleting document:", error)
     } finally {
       setIsDeleting(false)
     }

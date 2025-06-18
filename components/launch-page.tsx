@@ -119,7 +119,7 @@ export function LaunchPage() {
           playsInline
           crossOrigin="anonymous"
           onError={(e) => {
-            console.error("Video failed to load:", e)
+            logger.error("Video failed to load:", e)
             e.currentTarget.style.display = "none"
           }}
           onLoadStart={() => console.log("Video loading started")}

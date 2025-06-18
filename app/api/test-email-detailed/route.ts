@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         results.emails.launchNotification = launchResult
         console.log("Launch notification result:", launchResult)
       } catch (error) {
-        console.error("Launch notification error:", error)
+        logger.error("Launch notification error:", error)
         results.emails.launchNotification = { success: false, error: error.message }
       }
 
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         results.emails.adminNotification = adminResult
         console.log("Admin notification result:", adminResult)
       } catch (error) {
-        console.error("Admin notification error:", error)
+        logger.error("Admin notification error:", error)
         results.emails.adminNotification = { success: false, error: error.message }
       }
     }
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         results.emails.learnerRegistration = learnerResult
         console.log("Learner registration result:", learnerResult)
       } catch (error) {
-        console.error("Learner registration error:", error)
+        logger.error("Learner registration error:", error)
         results.emails.learnerRegistration = { success: false, error: error.message }
       }
     }
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
         results.emails.instructorApplication = instructorResult
         console.log("Instructor application result:", instructorResult)
       } catch (error) {
-        console.error("Instructor application error:", error)
+        logger.error("Instructor application error:", error)
         results.emails.instructorApplication = { success: false, error: error.message }
       }
     }
@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error("Detailed email test error:", error)
+    logger.error("Detailed email test error:", error)
     return NextResponse.json(
       {
         success: false,

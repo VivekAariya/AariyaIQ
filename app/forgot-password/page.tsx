@@ -7,6 +7,7 @@ import { QuantumBackground } from "@/components/quantum-background";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { logger } from "@/utils/logger";
 import { ArrowLeft, Mail, Shield } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
@@ -20,7 +21,7 @@ export default function ForgotPasswordPage() {
             const email = formData.get("email") as string;
 
             const result = await forgotPassword(email);
-            console.log("Forgot password result:", result);
+            logger.log("Forgot password result:", result);
 
             setState(result);
         });

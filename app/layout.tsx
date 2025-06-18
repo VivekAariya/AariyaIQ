@@ -1,6 +1,4 @@
-import ClientProvider from "@/components/client-provider";
 import { Toaster } from "@/components/ui/toaster";
-import { createServerClient } from "@/lib/supabase-server-client";
 import type { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
 import { Montserrat } from "next/font/google";
 import type React from "react";
@@ -24,16 +22,11 @@ export default async function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const supabase = createServerClient();
-    const {
-        data: { session },
-    } = await supabase.auth.getSession();
-
     return (
         <html lang="en" className={montserrat.variable}>
             <body className="font-lastica pt-16 relative bg-gradient-to-b from-slate-950 to-slate-900">
-                <ClientProvider initialSession={session}>{children}</ClientProvider>
                 <Toaster />
+                {children}
             </body>
         </html>
     );

@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { logger } from "@/utils/logger";
+import { createClient } from "@/utils/supabase/client";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -42,6 +44,23 @@ export function MainNav() {
             document.body.style.paddingTop = "0";
         };
     }, [isScrolled]);
+
+    const fetchUserData = async () => {
+        try {
+            const supabase = createClient();
+
+            const { data, error } = await supabase.auth.getUser();
+            logger.log("User data:", data);
+
+            if (error) {
+                logger.error("Error fetching user data:", error);
+                return null;
+            }
+        } catch (error) {
+            logger.error("Unexpected error fetching user data:", error);
+            return null;
+        }
+    };
 
     return (
         <header
@@ -135,6 +154,7 @@ export function MainNav() {
                         >
                             About
                         </Link>
+
                         <div className="flex flex-col gap-2 pt-2">
                             <Link href="/learner/login" onClick={() => setIsMenuOpen(false)}>
                                 <Button

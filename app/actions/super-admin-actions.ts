@@ -49,7 +49,7 @@ export async function loginSuperAdmin(formData: FormData) {
       message: "Invalid credentials. Please check your email, password, and security key.",
     }
   } catch (error) {
-    console.error("Super admin login error:", error)
+    logger.error("Super admin login error:", error)
     return {
       success: false,
       message: "An error occurred during authentication. Please try again.",
@@ -74,7 +74,7 @@ export async function requestSuperAdminPasswordReset(email: string) {
       message: "If your email is registered as a super admin, you will receive a password reset link shortly.",
     }
   } catch (error) {
-    console.error("Super admin password reset request error:", error)
+    logger.error("Super admin password reset request error:", error)
     return {
       success: false,
       message: "An error occurred. Please try again later.",

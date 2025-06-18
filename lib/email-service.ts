@@ -7,12 +7,12 @@ function initializeResend() {
     const apiKey = process.env.RESEND_API_KEY;
 
     if (!apiKey) {
-        console.error("RESEND_API_KEY environment variable is not set");
+        logger.error("RESEND_API_KEY environment variable is not set");
         throw new Error("Email service is not configured. Please set RESEND_API_KEY environment variable.");
     }
 
     if (!apiKey.startsWith("re_")) {
-        console.error("Invalid Resend API key format. Key should start with 're_'");
+        logger.error("Invalid Resend API key format. Key should start with 're_'");
         throw new Error("Invalid email service configuration.");
     }
 
@@ -273,7 +273,7 @@ export async function sendEmail(type: EmailType, data: EmailData) {
 
         // Check if API key is available
         if (!process.env.RESEND_API_KEY) {
-            console.error("[EMAIL SERVICE] RESEND_API_KEY not found in environment variables");
+            logger.error("[EMAIL SERVICE] RESEND_API_KEY not found in environment variables");
             return {
                 success: false,
                 error: "Email service not configured. Please contact administrator.",
@@ -289,7 +289,7 @@ export async function sendEmail(type: EmailType, data: EmailData) {
             resend = initializeResend();
             console.log("[EMAIL SERVICE] Resend client initialized successfully");
         } catch (initError) {
-            console.error("[EMAIL SERVICE] Failed to initialize Resend:", initError);
+            logger.error("[EMAIL SERVICE] Failed to initialize Resend:", initError);
             return {
                 success: false,
                 error: "Failed to initialize email service",
@@ -308,7 +308,7 @@ export async function sendEmail(type: EmailType, data: EmailData) {
                 throw new Error(`Email HTML is not a string, got: ${typeof emailHtml}`);
             }
         } catch (renderError) {
-            console.error("[EMAIL SERVICE] Failed to generate email HTML:", renderError);
+            logger.error("[EMAIL SERVICE] Failed to generate email HTML:", renderError);
             return {
                 success: false,
                 error: "Failed to generate email content",
@@ -353,7 +353,7 @@ export async function sendEmail(type: EmailType, data: EmailData) {
             },
         };
     } catch (error) {
-        console.error("[EMAIL SERVICE] Error sending email:", error);
+        logger.error("[EMAIL SERVICE] Error sending email:", error);
 
         // Provide more specific error messages
         let errorMessage = "Failed to send email. Please try again later.";
@@ -460,7 +460,7 @@ export async function testEmailService() {
         const apiKey = process.env.RESEND_API_KEY;
 
         if (!apiKey) {
-            console.error("[EMAIL SERVICE] No API key found");
+            logger.error("[EMAIL SERVICE] No API key found");
             return {
                 success: false,
                 error: "RESEND_API_KEY environment variable is not set",
@@ -476,7 +476,7 @@ export async function testEmailService() {
         console.log(`[EMAIL SERVICE] API key found, checking format...`);
 
         if (!apiKey.startsWith("re_")) {
-            console.error("[EMAIL SERVICE] Invalid API key format");
+            logger.error("[EMAIL SERVICE] Invalid API key format");
             return {
                 success: false,
                 error: "Invalid API key format. Should start with 're_'",
@@ -512,7 +512,7 @@ export async function testEmailService() {
                 },
             };
         } catch (resendError) {
-            console.error("[EMAIL SERVICE] Failed to create Resend client:", resendError);
+            logger.error("[EMAIL SERVICE] Failed to create Resend client:", resendError);
             return {
                 success: false,
                 error: "Failed to initialize Resend client",
@@ -526,7 +526,7 @@ export async function testEmailService() {
             };
         }
     } catch (error) {
-        console.error("[EMAIL SERVICE] Test service error:", error);
+        logger.error("[EMAIL SERVICE] Test service error:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",

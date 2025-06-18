@@ -30,7 +30,7 @@ export async function uploadToBlob(
       uploadedAt: new Date(),
     }
   } catch (error) {
-    console.error("Error uploading to Blob storage:", error)
+    logger.error("Error uploading to Blob storage:", error)
     throw new Error("Failed to upload file. Please try again.")
   }
 }
@@ -45,7 +45,7 @@ export async function deleteFromBlob(url: string): Promise<{ success: boolean }>
     await del(url)
     return { success: true }
   } catch (error) {
-    console.error("Error deleting from Blob storage:", error)
+    logger.error("Error deleting from Blob storage:", error)
     return { success: false }
   }
 }
@@ -60,7 +60,7 @@ export async function listBlobFiles(prefix = "uploads/"): Promise<any[]> {
     const { blobs } = await list({ prefix })
     return blobs
   } catch (error) {
-    console.error("Error listing Blob storage files:", error)
+    logger.error("Error listing Blob storage files:", error)
     return []
   }
 }
@@ -75,7 +75,7 @@ export async function getBlobMetadata(url: string): Promise<any | null> {
     const metadata = await head(url)
     return metadata
   } catch (error) {
-    console.error("Error getting Blob metadata:", error)
+    logger.error("Error getting Blob metadata:", error)
     return null
   }
 }

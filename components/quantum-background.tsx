@@ -9,13 +9,13 @@ export function QuantumBackground() {
     console.log("Enhanced quantum-neural processing simulation initializing")
     const canvas = canvasRef.current
     if (!canvas) {
-      console.error("Canvas element not found")
+      logger.error("Canvas element not found")
       return
     }
 
     const ctx = canvas.getContext("2d", { alpha: true, antialias: true })
     if (!ctx) {
-      console.error("Could not get canvas context")
+      logger.error("Could not get canvas context")
       return
     }
 

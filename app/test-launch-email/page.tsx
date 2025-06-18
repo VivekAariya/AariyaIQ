@@ -31,7 +31,7 @@ export default function TestLaunchEmailPage() {
       const response = await submitLaunchInterest(null, formData)
       setResult(response)
     } catch (error) {
-      console.error("Test failed:", error)
+      logger.error("Test failed:", error)
       setResult({
         success: false,
         error: "Test failed: " + (error instanceof Error ? error.message : "Unknown error"),

@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       message: "Test emails sent successfully!",
     })
   } catch (error) {
-    console.error("Test email error:", error)
+    logger.error("Test email error:", error)
     return NextResponse.json({ error: "Failed to send test emails", details: error }, { status: 500 })
   }
 }

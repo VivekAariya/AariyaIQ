@@ -131,7 +131,7 @@ export default function ApprovalsPage() {
         // Set loading to false when data is "loaded"
         setIsLoading(false)
       } catch (err) {
-        console.error("Error loading approval data:", err)
+        logger.error("Error loading approval data:", err)
         setError("Failed to load approval data. Please try again.")
         setIsLoading(false)
       }
@@ -166,7 +166,7 @@ export default function ApprovalsPage() {
               description: "The applicant has been notified to proceed with payment.",
             })
           } catch (error) {
-            console.error("Email error:", error)
+            logger.error("Email error:", error)
             toast({
               title: "Email Error",
               description: "Status updated but there was an error sending the email.",
@@ -198,7 +198,7 @@ export default function ApprovalsPage() {
               description: "The applicant has been notified to proceed with payment.",
             })
           } catch (error) {
-            console.error("Email error:", error)
+            logger.error("Email error:", error)
             toast({
               title: "Email Error",
               description: "Status updated but there was an error sending the email.",
@@ -208,7 +208,7 @@ export default function ApprovalsPage() {
         }
       }
     } catch (err) {
-      console.error("Error in handleApproveInitial:", err)
+      logger.error("Error in handleApproveInitial:", err)
       toast({
         title: "Operation Failed",
         description: "There was an error processing this request. Please try again.",
@@ -246,7 +246,7 @@ export default function ApprovalsPage() {
               description: "The applicant has been notified of their approval.",
             })
           } catch (error) {
-            console.error("Email error:", error)
+            logger.error("Email error:", error)
             toast({
               title: "Email Error",
               description: "Status updated but there was an error sending the email.",
@@ -279,7 +279,7 @@ export default function ApprovalsPage() {
               description: "The applicant has been notified of their approval.",
             })
           } catch (error) {
-            console.error("Email error:", error)
+            logger.error("Email error:", error)
             toast({
               title: "Email Error",
               description: "Status updated but there was an error sending the email.",
@@ -289,7 +289,7 @@ export default function ApprovalsPage() {
         }
       }
     } catch (err) {
-      console.error("Error in handleApproveFinal:", err)
+      logger.error("Error in handleApproveFinal:", err)
       toast({
         title: "Operation Failed",
         description: "There was an error processing this request. Please try again.",
@@ -319,7 +319,7 @@ export default function ApprovalsPage() {
               description: "A payment reminder email has been sent to the applicant.",
             })
           } catch (error) {
-            console.error("Email error:", error)
+            logger.error("Email error:", error)
             toast({
               title: "Email Error",
               description: "There was an error sending the payment reminder email.",
@@ -343,7 +343,7 @@ export default function ApprovalsPage() {
               description: "A payment reminder email has been sent to the applicant.",
             })
           } catch (error) {
-            console.error("Email error:", error)
+            logger.error("Email error:", error)
             toast({
               title: "Email Error",
               description: "There was an error sending the payment reminder email.",
@@ -353,7 +353,7 @@ export default function ApprovalsPage() {
         }
       }
     } catch (err) {
-      console.error("Error in sendPaymentReminder:", err)
+      logger.error("Error in sendPaymentReminder:", err)
       toast({
         title: "Operation Failed",
         description: "There was an error sending the payment reminder. Please try again.",
@@ -381,7 +381,7 @@ export default function ApprovalsPage() {
               description: "A compliance check notification email has been sent to the applicant.",
             })
           } catch (error) {
-            console.error("Email error:", error)
+            logger.error("Email error:", error)
             toast({
               title: "Email Error",
               description: "There was an error sending the compliance notification email.",
@@ -404,7 +404,7 @@ export default function ApprovalsPage() {
               description: "A compliance check notification email has been sent to the applicant.",
             })
           } catch (error) {
-            console.error("Email error:", error)
+            logger.error("Email error:", error)
             toast({
               title: "Email Error",
               description: "There was an error sending the compliance notification email.",
@@ -414,7 +414,7 @@ export default function ApprovalsPage() {
         }
       }
     } catch (err) {
-      console.error("Error in sendComplianceNotification:", err)
+      logger.error("Error in sendComplianceNotification:", err)
       toast({
         title: "Operation Failed",
         description: "There was an error sending the compliance notification. Please try again.",
@@ -436,7 +436,7 @@ export default function ApprovalsPage() {
         description: "The applicant will be notified of the rejection.",
       })
     } catch (err) {
-      console.error("Error in handleReject:", err)
+      logger.error("Error in handleReject:", err)
       toast({
         title: "Operation Failed",
         description: "There was an error rejecting the application. Please try again.",

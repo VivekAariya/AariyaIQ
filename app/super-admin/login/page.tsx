@@ -44,7 +44,7 @@ export default function SuperAdminLoginPage() {
         })
       }
     } catch (error) {
-      console.error("Login error:", error)
+      logger.error("Login error:", error)
       setError("An unexpected error occurred. Please try again.")
       toast({
         title: "System Error",

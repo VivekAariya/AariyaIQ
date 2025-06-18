@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error("Launch email test error:", error)
+    logger.error("Launch email test error:", error)
     return NextResponse.json(
       {
         success: false,
