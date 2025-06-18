@@ -1,44 +1,43 @@
 "use client";
 
+import { login } from "@/app/actions/auth-actions";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLoginPage() {
     const router = useRouter();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { toast } = useToast();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
+    const [isPending, startTransition] = useTransition();
+    const [showPassword, setShowPassword] = useState(false);
 
-        try {
-            // Simulate login process
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+    const handleSubmit = async (formData: FormData) => {
+        startTransition(async () => {
+            const result = await login(null, formData, "instructor");
 
-            // For demo purposes, always succeed
-            toast({
-                title: "Login Successful",
-                description: "Welcome back to AariyaIQ Instructor Portal!",
-            });
-
-            router.push("/admin/dashboard");
-        } catch (error) {
-            toast({
-                title: "Login Failed",
-                description: "Invalid email or password",
-                variant: "destructive",
-            });
-        } finally {
-            setIsSubmitting(false);
-        }
+            if (!result?.success) {
+                toast({
+                    title: "Login Failed",
+                    description: result.error,
+                    variant: "destructive",
+                });
+            } else if (result?.success) {
+                toast({
+                    title: "Login Successful",
+                    description: "Welcome back to AariyaIQ!",
+                });
+                router.replace(result?.redirectUrl);
+            }
+        });
     };
 
     return (
@@ -53,7 +52,7 @@ export default function AdminLoginPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="pt-6">
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <form action={handleSubmit} className="space-y-5">
                             <div className="space-y-2">
                                 <Label htmlFor="email" className="text-gray-200 text-base">
                                     Email
@@ -67,7 +66,7 @@ export default function AdminLoginPage() {
                                     className="bg-gray-800 border-gray-700 text-white h-11"
                                 />
                             </div>
-                            <div className="space-y-2">
+                            <div className="space-y-2 relative">
                                 <div className="flex items-center justify-between">
                                     <Label htmlFor="password" className="text-gray-200 text-base">
                                         Password
@@ -82,17 +81,26 @@ export default function AdminLoginPage() {
                                 <Input
                                     id="password"
                                     name="password"
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     required
-                                    className="bg-gray-800 border-gray-700 text-white h-11"
+                                    className="bg-gray-800 border-gray-700 text-white h-11 pr-10"
                                 />
+                                <button
+                                    type="button"
+                                    tabIndex={-1}
+                                    className="absolute right-2 top-12 -translate-y-1/2 text-gray-400 hover:text-purple-400"
+                                    onClick={() => setShowPassword((v) => !v)}
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
                             <Button
                                 type="submit"
                                 className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
-                                disabled={isSubmitting}
+                                disabled={isPending}
                             >
-                                {isSubmitting ? "Signing in..." : "Sign In"}
+                                {isPending ? "Signing in..." : "Sign In"}
                             </Button>
                         </form>
                     </CardContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import { loginLearner } from "@/app/actions/auth-actions";
+import { login } from "@/app/actions/auth-actions";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import logger from "@/utils/logger";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,8 +22,7 @@ export default function LoginPage() {
 
     const handleSubmit = async (formData: FormData) => {
         startTransition(async () => {
-            const result = await loginLearner(null, formData);
-            logger.log("LoginPage - Login Result:", result);
+            const result = await login(null, formData, "learner");
 
             if (!result?.success) {
                 toast({
@@ -37,7 +35,7 @@ export default function LoginPage() {
                     title: "Login Successful",
                     description: "Welcome back to AariyaIQ!",
                 });
-                router.replace("/learner/dashboard");
+                router.replace(result?.redirectUrl);
             }
         });
     };

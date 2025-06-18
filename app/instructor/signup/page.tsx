@@ -1,7 +1,6 @@
 "use client";
 
-import type React from "react";
-
+import { registerInstructor } from "@/app/actions/auth-actions";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { RegistrationStatusIndicator } from "@/components/registration-status-indicator";
@@ -12,58 +11,39 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-
-// Import the email action at the top of the file
-import { sendInstructorApplicationEmail } from "@/app/actions/email-actions";
+import { useState, useTransition } from "react";
 
 export default function InstructorRegistrationPage() {
     const router = useRouter();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { toast } = useToast();
 
-    // Update the handleSubmit function to send an email
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
+    const [isPending, startTransition] = useTransition();
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-        // Get form data
-        const formData = new FormData(e.target as HTMLFormElement);
-        const firstName = formData.get("firstName") as string;
-        const lastName = formData.get("lastName") as string;
-        const email = formData.get("email") as string;
-        const expertise = formData.get("expertise") as string;
-        const fullName = `${firstName} ${lastName}`;
+    const handleSubmit = async (formData: FormData) => {
+        startTransition(async () => {
+            const result = await registerInstructor(null, formData);
 
-        try {
-            // Simulate API call to save application
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            // Send confirmation email
-            await sendInstructorApplicationEmail({
-                instructorName: fullName,
-                instructorEmail: email,
-                expertise: expertise,
-                applicationDate: new Date().toLocaleDateString(),
-                loginLink: "https://aariyatech.co.uk/dashboard/instructor-application",
-            });
-
-            setIsSubmitting(false);
-            toast({
-                title: "Application Submitted",
-                description:
-                    "Your instructor application has been submitted and is pending approval. Check your email for confirmation.",
-            });
-            router.push("/dashboard/instructor-application");
-        } catch (error) {
-            setIsSubmitting(false);
-            toast({
-                title: "Application Error",
-                description: "There was an error submitting your application. Please try again.",
-                variant: "destructive",
-            });
-        }
+            if (!result?.success) {
+                toast({
+                    title: "Error",
+                    description: result.error || result?.message || "An unexpected error occurred",
+                    variant: "destructive",
+                });
+            } else if (result?.success) {
+                toast({
+                    title: "Success",
+                    description:
+                        result.message ||
+                        "Account created successfully! Please check your email to verify your account.",
+                });
+                router.replace("/verify-email");
+            }
+        });
     };
 
     return (
@@ -88,55 +68,62 @@ export default function InstructorRegistrationPage() {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                    <form action={handleSubmit} className="space-y-6">
                                         <div className="space-y-4">
                                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                                 <div className="space-y-2">
                                                     <Label htmlFor="firstName">First Name</Label>
-                                                    <Input id="firstName" required />
+                                                    <Input id="firstName" name="firstName" required />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <Label htmlFor="lastName">Last Name</Label>
-                                                    <Input id="lastName" required />
+                                                    <Input id="lastName" name="lastName" required />
                                                 </div>
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="email">Email</Label>
-                                                <Input id="email" type="email" required />
+                                                <Input id="email" name="email" type="email" required />
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="phone">Phone Number</Label>
-                                                <Input id="phone" type="tel" required />
+                                                <Input id="phone" name="phone" type="tel" required />
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="location">Location</Label>
-                                                <Input id="location" placeholder="City, Country" required />
+                                                <Input
+                                                    id="location"
+                                                    name="location"
+                                                    placeholder="City, Country"
+                                                    required
+                                                />
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="expertise">Areas of Expertise</Label>
-                                                <Select defaultValue="ai">
+                                                <Select defaultValue="ai" name="expertise">
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select primary expertise" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectItem value="ai">Artificial Intelligence</SelectItem>
-                                                        <SelectItem value="web">Web Development</SelectItem>
-                                                        <SelectItem value="data">Data Science</SelectItem>
-                                                        <SelectItem value="cloud">Cloud Computing</SelectItem>
+                                                        <SelectItem value="web_development">Web Development</SelectItem>
+                                                        <SelectItem value="data_science">Data Science</SelectItem>
+                                                        <SelectItem value="cloud_computing">Cloud Computing</SelectItem>
                                                         <SelectItem value="devops">DevOps</SelectItem>
-                                                        <SelectItem value="mobile">Mobile Development</SelectItem>
-                                                        <SelectItem value="ux">UX/UI Design</SelectItem>
+                                                        <SelectItem value="mobile_development">
+                                                            Mobile Development
+                                                        </SelectItem>
+                                                        <SelectItem value="ux_ui_design">UX/UI Design</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="experience">Years of Experience</Label>
-                                                <Select defaultValue="3-5">
+                                                <Select defaultValue="3-5" name="experience">
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select years of experience" />
                                                     </SelectTrigger>
@@ -153,6 +140,7 @@ export default function InstructorRegistrationPage() {
                                                 <Label htmlFor="bio">Professional Bio</Label>
                                                 <Textarea
                                                     id="bio"
+                                                    name="bio"
                                                     placeholder="Tell us about your professional background and teaching experience"
                                                     rows={5}
                                                     required
@@ -163,6 +151,7 @@ export default function InstructorRegistrationPage() {
                                                 <Label htmlFor="linkedin">LinkedIn Profile</Label>
                                                 <Input
                                                     id="linkedin"
+                                                    name="linkedin"
                                                     type="url"
                                                     placeholder="https://linkedin.com/in/yourprofile"
                                                 />
@@ -172,6 +161,7 @@ export default function InstructorRegistrationPage() {
                                                 <Label htmlFor="portfolio">Portfolio/Website</Label>
                                                 <Input
                                                     id="portfolio"
+                                                    name="portfolio"
                                                     type="url"
                                                     placeholder="https://yourwebsite.com"
                                                 />
@@ -181,10 +171,57 @@ export default function InstructorRegistrationPage() {
                                                 <Label htmlFor="courseIdeas">Proposed Course Ideas</Label>
                                                 <Textarea
                                                     id="courseIdeas"
+                                                    name="courseIdeas"
                                                     placeholder="Describe the courses you would like to teach"
                                                     rows={3}
                                                     required
                                                 />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <Label htmlFor="password">Password</Label>
+                                                <div className="relative">
+                                                    <Input
+                                                        id="password"
+                                                        name="password"
+                                                        type={showPassword ? "text" : "password"}
+                                                        required
+                                                        className="pr-10"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        tabIndex={-1}
+                                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-cyan-400"
+                                                        onClick={() => setShowPassword((v) => !v)}
+                                                        aria-label={showPassword ? "Hide password" : "Show password"}
+                                                    >
+                                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                                <div className="relative">
+                                                    <Input
+                                                        id="confirmPassword"
+                                                        name="confirmPassword"
+                                                        type={showConfirmPassword ? "text" : "password"}
+                                                        required
+                                                        className="pr-10"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        tabIndex={-1}
+                                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-cyan-400"
+                                                        onClick={() => setShowConfirmPassword((v) => !v)}
+                                                        aria-label={
+                                                            showConfirmPassword ? "Hide password" : "Show password"
+                                                        }
+                                                    >
+                                                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div className="flex items-start space-x-2">
@@ -202,9 +239,9 @@ export default function InstructorRegistrationPage() {
                                         <Button
                                             type="submit"
                                             className="w-full bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white"
-                                            disabled={isSubmitting}
+                                            disabled={isPending}
                                         >
-                                            {isSubmitting ? "Submitting..." : "Submit Application"}
+                                            {isPending ? "Submitting..." : "Submit Application"}
                                         </Button>
                                     </form>
                                 </CardContent>
