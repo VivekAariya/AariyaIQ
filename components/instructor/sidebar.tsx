@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-export function AdminSidebar() {
+export function InstructorSidebar() {
     const pathname = usePathname();
 
     const [isOpen, setIsOpen] = useState(false);
@@ -46,18 +46,18 @@ export function AdminSidebar() {
                     </div>
                     <nav className="flex-1 space-y-1">
                         <Link
-                            href="/admin/dashboard"
+                            href="/instructor/dashboard"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname === "/admin/dashboard" ? "bg-white/20 text-white" : "hover:bg-white/10"
+                                pathname === "/instructor/dashboard" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
                         >
                             <Home className="mr-2 h-4 w-4" />
                             Dashboard
                         </Link>
                         <Link
-                            href="/admin/dashboard/courses"
+                            href="/instructor/dashboard/courses"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname.startsWith("/admin/dashboard/courses")
+                                pathname.startsWith("/instructor/dashboard/courses")
                                     ? "bg-purple-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
@@ -66,9 +66,9 @@ export function AdminSidebar() {
                             Manage Courses
                         </Link>
                         <Link
-                            href="/admin/dashboard/users"
+                            href="/instructor/dashboard/users"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname.startsWith("/admin/dashboard/users")
+                                pathname.startsWith("/instructor/dashboard/users")
                                     ? "bg-purple-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
@@ -77,9 +77,9 @@ export function AdminSidebar() {
                             Manage Users
                         </Link>
                         <Link
-                            href="/admin/dashboard/settings"
+                            href="/instructor/dashboard/settings"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname === "/admin/dashboard/settings"
+                                pathname === "/instructor/dashboard/settings"
                                     ? "bg-white/20 text-white"
                                     : "hover:bg-white/10"
                             }`}
