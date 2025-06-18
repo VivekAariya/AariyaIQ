@@ -1,5 +1,5 @@
 import type React from "react"
-import { Sidebar } from "@/components/dashboard/sidebar"
+import { Sidebar } from "@/components/learner/sidebar"
 
 export default function DashboardLayout({
   children,

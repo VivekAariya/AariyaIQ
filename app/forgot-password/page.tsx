@@ -7,7 +7,7 @@ import { QuantumBackground } from "@/components/quantum-background";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { logger } from "@/utils/logger";
+import logger from "@/utils/logger";
 import { ArrowLeft, Mail, Shield } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";

@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import logger from "../logger";
 
 export async function createClient() {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

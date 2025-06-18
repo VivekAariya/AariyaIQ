@@ -1,17 +1,40 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { logger } from "@/utils/logger";
+import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 export function MainNav() {
+    const lastScrollY = useRef(0);
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isScrollingUp, setIsScrollingUp] = useState(false);
-    const lastScrollY = useRef(0);
+    const [userData, setUserData] = useState<User | null>(null);
+
+    const fetchUserData = async () => {
+        try {
+            const supabase = createClient();
+
+            const { data, error } = await supabase.auth.getUser();
+
+            // logger.log("User data:", data);
+
+            if (error || !data) {
+                // logger.error("Error fetching user data:", error);
+                return null;
+            }
+
+            setUserData(data?.user);
+        } catch (error) {
+            logger.error("Unexpected error fetching user data:", error);
+            return null;
+        }
+    };
 
     useEffect(() => {
         // Add padding to body to account for fixed header
@@ -45,22 +68,9 @@ export function MainNav() {
         };
     }, [isScrolled]);
 
-    const fetchUserData = async () => {
-        try {
-            const supabase = createClient();
-
-            const { data, error } = await supabase.auth.getUser();
-            logger.log("User data:", data);
-
-            if (error) {
-                logger.error("Error fetching user data:", error);
-                return null;
-            }
-        } catch (error) {
-            logger.error("Unexpected error fetching user data:", error);
-            return null;
-        }
-    };
+    useEffect(() => {
+        fetchUserData();
+    }, []);
 
     return (
         <header
@@ -107,25 +117,40 @@ export function MainNav() {
                         </Link>
                     </nav>
                 </div>
-                <div className="hidden md:flex md:items-center md:gap-4">
-                    <Link href="/learner/login">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="border-gray-700 text-gray-200 hover:text-white hover:border-gray-500"
-                        >
-                            Learner Login
-                        </Button>
-                    </Link>
-                    <Link href="/instructor/login">
-                        <Button
-                            size="sm"
-                            className="bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white backdrop-blur-md bg-opacity-80"
-                        >
-                            Instructor Login
-                        </Button>
-                    </Link>
+
+                <div>
+                    {userData ? (
+                        <div>
+                            <Link
+                                href={`/${userData?.user_metadata?.role}/dashboard`}
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                <Button className="w-full">View Dashboard</Button>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="hidden md:flex md:items-center md:gap-4">
+                            <Link href="/learner/login">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="border-gray-700 text-gray-200 hover:text-white hover:border-gray-500"
+                                >
+                                    Learner Login
+                                </Button>
+                            </Link>
+                            <Link href="/instructor/login">
+                                <Button
+                                    size="sm"
+                                    className="bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white backdrop-blur-md bg-opacity-80"
+                                >
+                                    Instructor Login
+                                </Button>
+                            </Link>
+                        </div>
+                    )}
                 </div>
+
                 <button className="block md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     {isMenuOpen ? <X size={24} className="text-white" /> : <Menu size={24} className="text-white" />}
                 </button>
@@ -155,20 +180,33 @@ export function MainNav() {
                             About
                         </Link>
 
-                        <div className="flex flex-col gap-2 pt-2">
-                            <Link href="/learner/login" onClick={() => setIsMenuOpen(false)}>
-                                <Button
-                                    variant="outline"
-                                    className="w-full border-gray-700 text-gray-200 hover:text-white hover:border-gray-500"
-                                >
-                                    Learner Login
-                                </Button>
-                            </Link>
-                            <Link href="/instructor/login" onClick={() => setIsMenuOpen(false)}>
-                                <Button className="w-full bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white bg-opacity-80 backdrop-blur-md">
-                                    Instructor Login
-                                </Button>
-                            </Link>
+                        <div>
+                            {userData ? (
+                                <div>
+                                    <Link
+                                        href={`/${userData?.user_metadata?.role}/dashboard`}
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        <Button className="w-full">View Dashboard</Button>
+                                    </Link>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-2 pt-2">
+                                    <Link href="/learner/login" onClick={() => setIsMenuOpen(false)}>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full border-gray-700 text-gray-200 hover:text-white hover:border-gray-500"
+                                        >
+                                            Learner Login
+                                        </Button>
+                                    </Link>
+                                    <Link href="/instructor/login" onClick={() => setIsMenuOpen(false)}>
+                                        <Button className="w-full bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white bg-opacity-80 backdrop-blur-md">
+                                            Instructor Login
+                                        </Button>
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                     </nav>
                 </div>

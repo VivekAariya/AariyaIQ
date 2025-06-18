@@ -1,14 +1,27 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/utils/supabase/client";
 import { BookOpen, FileText, Home, LogOut, Menu, Settings, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export function Sidebar() {
-    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleLogout = async () => {
+        const supabase = createClient();
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+            console.error("Error logging out:", error);
+        } else {
+            window.location.href = "/";
+        }
+    };
 
     return (
         <>
@@ -83,7 +96,11 @@ export function Sidebar() {
                         </Link>
                     </nav>
                     <div className="pt-4">
-                        <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10">
+                        <Button
+                            variant="ghost"
+                            className="w-full justify-start text-white hover:bg-white/10"
+                            onClick={handleLogout}
+                        >
                             <LogOut className="mr-2 h-4 w-4" />
                             Logout
                         </Button>

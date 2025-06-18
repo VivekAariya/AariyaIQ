@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { logger } from "../logger";
+import logger from "../logger";
 
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
@@ -34,13 +34,9 @@ export async function updateSession(request: NextRequest) {
 
     // IMPORTANT: DO NOT REMOVE auth.getUser()
 
-    const { data, error } = await supabase.auth.getUser();
+    const { data } = await supabase.auth.getUser();
 
-    if (error) {
-        logger.error("Error fetching user:", error);
-    }
-
-    logger.log("Middleware user:", data);
+    // logger.log("Middleware user:", data);
 
     const protectedPrefixes = [
         "/learner/dashboard",

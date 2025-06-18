@@ -1,7 +1,7 @@
 "use server";
 
 import { sendEmail } from "@/lib/email-service";
-import { logger } from "@/utils/logger";
+import logger from "@/utils/logger";
 
 export async function submitLaunchInterest(prevState: any, formData: FormData) {
     try {
