@@ -3,7 +3,7 @@
 import { registerInstructor } from "@/app/actions/auth-actions";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
-import { RegistrationStatusIndicator } from "@/components/registration-status-indicator";
+import { RegistrationStatusIndicator } from "@/components/super-admin/registration-status-indicator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -103,20 +103,22 @@ export default function InstructorRegistrationPage() {
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="expertise">Areas of Expertise</Label>
-                                                <Select defaultValue="ai" name="expertise">
+                                                <Select defaultValue="Artificial Intelligence" name="expertise">
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select primary expertise" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="ai">Artificial Intelligence</SelectItem>
-                                                        <SelectItem value="web_development">Web Development</SelectItem>
-                                                        <SelectItem value="data_science">Data Science</SelectItem>
-                                                        <SelectItem value="cloud_computing">Cloud Computing</SelectItem>
-                                                        <SelectItem value="devops">DevOps</SelectItem>
-                                                        <SelectItem value="mobile_development">
+                                                        <SelectItem value="Artificial Intelligence">
+                                                            Artificial Intelligence
+                                                        </SelectItem>
+                                                        <SelectItem value="Web Development">Web Development</SelectItem>
+                                                        <SelectItem value="Data Science">Data Science</SelectItem>
+                                                        <SelectItem value="Cloud Computing">Cloud Computing</SelectItem>
+                                                        <SelectItem value="DevOps">DevOps</SelectItem>
+                                                        <SelectItem value="Mobile Development">
                                                             Mobile Development
                                                         </SelectItem>
-                                                        <SelectItem value="ux_ui_design">UX/UI Design</SelectItem>
+                                                        <SelectItem value="UX/UI Design">UX/UI Design</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </div>

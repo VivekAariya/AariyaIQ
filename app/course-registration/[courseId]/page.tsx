@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
 import { courses } from "@/lib/courses"
-import { RegistrationStatusIndicator } from "@/components/registration-status-indicator"
+import { RegistrationStatusIndicator } from "@/components/super-admin/registration-status-indicator"
 
 // Import the email action at the top of the file
 import { sendLearnerRegistrationEmail } from "@/app/actions/email-actions"

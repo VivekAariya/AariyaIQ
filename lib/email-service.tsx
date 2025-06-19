@@ -1,13 +1,55 @@
-import type { EmailData, EmailType } from "@/lib/email-service";
+"use server";
+
+import logger from "@/utils/logger";
+import { render } from "@react-email/render";
 import type React from "react";
+import { Resend } from "resend";
+
+// Email configuration
+const emailConfig = {
+    sender: "hello@aariyatech.co.uk",
+};
+
+// Email types
+export type EmailType =
+    | "learner-registration-received"
+    | "learner-initial-approval"
+    | "learner-payment-required"
+    | "learner-compliance-check"
+    | "learner-final-approval"
+    | "instructor-application-received"
+    | "instructor-initial-approval"
+    | "instructor-payment-required"
+    | "instructor-compliance-check"
+    | "instructor-final-approval"
+    | "password-reset"
+    | "launch-page-notification"
+    | "admin-launch-notification"
+    | "email-verification";
+
+export interface EmailData {
+    recipientName: string;
+    recipientEmail: string;
+    courseName?: string;
+    courseStartDate?: string;
+    paymentAmount?: string;
+    paymentLink?: string;
+    applicationDate?: string;
+    expertise?: string;
+    loginLink?: string;
+    approvalStage?: string;
+    nextSteps?: string[];
+    resetLink?: string;
+    resetExpiry?: string;
+    verificationLink?: string;
+}
 
 interface EmailTemplateProps {
     type: EmailType;
     data: EmailData;
 }
 
-export function EmailTemplate({ type, data }: EmailTemplateProps) {
-    // Get the appropriate template based on the email type
+export async function EmailTemplate({ type, data }: EmailTemplateProps) {
     switch (type) {
         case "learner-registration-received":
             return <LearnerRegistrationReceivedTemplate data={data} />;
@@ -21,16 +63,16 @@ export function EmailTemplate({ type, data }: EmailTemplateProps) {
             return <LearnerFinalApprovalTemplate data={data} />;
         case "instructor-application-received":
             return <InstructorApplicationReceivedTemplate data={data} />;
-        case "instructor-initial-approval":
-            return <InstructorInitialApprovalTemplate data={data} />;
-        case "instructor-payment-required":
-            return <InstructorPaymentRequiredTemplate data={data} />;
-        case "instructor-compliance-check":
-            return <InstructorComplianceCheckTemplate data={data} />;
+        // case "instructor-initial-approval":
+        //     return <InstructorInitialApprovalTemplate data={data} />;
+        // case "instructor-payment-required":
+        //     return <InstructorPaymentRequiredTemplate data={data} />;
+        // case "instructor-compliance-check":
+        //     return <InstructorComplianceCheckTemplate data={data} />;
         case "instructor-final-approval":
             return <InstructorFinalApprovalTemplate data={data} />;
-        case "password-reset":
-            return <PasswordResetTemplate data={data} />;
+        // case "password-reset":
+        //     return <PasswordResetTemplate data={data} />;
         case "launch-page-notification":
             return <LaunchPageNotificationTemplate data={data} />;
         case "admin-launch-notification":
@@ -40,7 +82,6 @@ export function EmailTemplate({ type, data }: EmailTemplateProps) {
     }
 }
 
-// Launch Page Notification Template (User)
 function LaunchPageNotificationTemplate({ data }: { data: EmailData }) {
     return (
         <BaseTemplate title="Thank you for your interest in AariyaIQ!">
@@ -92,7 +133,6 @@ function LaunchPageNotificationTemplate({ data }: { data: EmailData }) {
     );
 }
 
-// Admin Launch Notification Template
 function AdminLaunchNotificationTemplate({ data }: { data: EmailData }) {
     return (
         <BaseTemplate title="New Launch Page Interest - AariyaIQ">
@@ -121,7 +161,6 @@ function AdminLaunchNotificationTemplate({ data }: { data: EmailData }) {
     );
 }
 
-// Base email template with common styling
 function BaseTemplate({ children, title }: { children: React.ReactNode; title: string }) {
     return (
         <html>
@@ -130,7 +169,6 @@ function BaseTemplate({ children, title }: { children: React.ReactNode; title: s
                 <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
                 <title>{title}</title>
                 <style>{`
-          /* Base styles */
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
@@ -228,7 +266,6 @@ function BaseTemplate({ children, title }: { children: React.ReactNode; title: s
     );
 }
 
-// Default template as a fallback
 function DefaultTemplate({ data }: { data: EmailData }) {
     return (
         <BaseTemplate title="AariyaIQ Notification">
@@ -243,7 +280,6 @@ function DefaultTemplate({ data }: { data: EmailData }) {
     );
 }
 
-// All other existing template functions remain the same...
 function LearnerRegistrationReceivedTemplate({ data }: { data: EmailData }) {
     return (
         <BaseTemplate title="Registration Received">
@@ -347,7 +383,6 @@ function PasswordResetTemplate({ data }: { data: EmailData }) {
     );
 }
 
-// Placeholder for other template functions
 function LearnerPaymentRequiredTemplate({ data }: { data: EmailData }) {
     return (
         <BaseTemplate title="Payment Required">
@@ -533,4 +568,290 @@ function InstructorFinalApprovalTemplate({ data }: { data: EmailData }) {
             </p>
         </BaseTemplate>
     );
+}
+
+// Initialize Resend with API key and error handling
+// function initializeResend() {
+//     const apiKey = process.env.RESEND_API_KEY;
+
+//     if (!apiKey) {
+//         logger.error("RESEND_API_KEY environment variable is not set");
+//         throw new Error("Email service is not configured. Please set RESEND_API_KEY environment variable.");
+//     }
+
+//     return new Resend(apiKey);
+// }
+
+/**
+ * Send an email notification using React template
+ * @param type Email template type
+ * @param data Email data
+ * @returns Promise with send result
+ */
+export async function sendEmail(type: EmailType, data: EmailData) {
+    try {
+        logger.log(`[EMAIL SERVICE] Starting email send process for type: ${type}`);
+        logger.log(`[EMAIL SERVICE] Recipient: ${data.recipientEmail}`);
+
+        const apiKey = process.env.RESEND_API_KEY;
+
+        if (!apiKey) {
+            logger.error("[EMAIL SERVICE] RESEND_API_KEY not found in environment variables");
+            return {
+                success: false,
+                error: "Email service not configured. Please contact administrator.",
+                debug: { step: "api_key_check", hasKey: false },
+            };
+        }
+        logger.log(`[EMAIL SERVICE] API key found, length: ${apiKey.length}`);
+
+        let resend;
+        try {
+            resend = new Resend(apiKey);
+            logger.log("[EMAIL SERVICE] Resend client initialized successfully");
+        } catch (initError) {
+            const errorMsg = initError instanceof Error ? initError.message : String(initError);
+            logger.error("[EMAIL SERVICE] Failed to initialize Resend:", errorMsg);
+            return {
+                success: false,
+                error: "Failed to initialize email service",
+                debug: { step: "resend_init", error: errorMsg },
+            };
+        }
+
+        // Render React email template to HTML
+        let emailHtml: string;
+        try {
+            emailHtml = await render(<EmailTemplate type={type} data={data} />);
+            logger.log(`[EMAIL SERVICE] Email HTML generated successfully, length: ${emailHtml.length}`);
+
+            if (typeof emailHtml !== "string") {
+                throw new Error(`Email HTML is not a string, got: ${typeof emailHtml}`);
+            }
+        } catch (renderError) {
+            const errorMsg = renderError instanceof Error ? renderError.message : String(renderError);
+            logger.error("[EMAIL SERVICE] Failed to generate email HTML:", errorMsg);
+            return {
+                success: false,
+                error: "Failed to generate email content",
+                debug: { step: "html_generation", error: errorMsg },
+            };
+        }
+
+        // Get email subject based on type
+        const subject = getEmailSubject(type, data);
+        logger.log(`[EMAIL SERVICE] Email subject: ${subject}`);
+
+        const emailData = {
+            from: `AariyaIQ <${emailConfig.sender}>`,
+            to: data.recipientEmail,
+            subject: subject,
+            html: emailHtml,
+        };
+        logger.log(`[EMAIL SERVICE] Attempting to send email via Resend API`);
+        logger.log(`[EMAIL SERVICE] Email data prepared:`, {
+            from: emailData.from,
+            to: emailData.to,
+            subject: emailData.subject,
+            htmlLength: emailHtml.length,
+            htmlType: typeof emailHtml,
+        });
+
+        const result = await resend.emails.send(emailData);
+        const messageId = (result as any).id || (result as any).data?.id || null;
+        logger.log(`[EMAIL SERVICE] Email sent successfully! Message ID: ${messageId}`);
+
+        return {
+            success: true,
+            messageId,
+            debug: {
+                step: "send_success",
+                subject,
+                recipient: data.recipientEmail,
+                type,
+                htmlLength: emailHtml.length,
+            },
+        };
+    } catch (error) {
+        logger.error("[EMAIL SERVICE] Error sending email:", error);
+        let errorMessage = "Failed to send email. Please try again later.";
+        const debugInfo: any = { step: "send_error" };
+        if (error instanceof Error) {
+            debugInfo.errorMessage = error.message;
+            debugInfo.errorName = error.name;
+            if (error.message.includes("API key")) {
+                errorMessage = "Email service configuration error. Please contact administrator.";
+                debugInfo.issue = "api_key_invalid";
+            } else if (error.message.includes("domain")) {
+                errorMessage = "Email domain not verified. Please contact administrator.";
+                debugInfo.issue = "domain_not_verified";
+            } else if (error.message.includes("rate limit")) {
+                errorMessage = "Email rate limit exceeded. Please try again later.";
+                debugInfo.issue = "rate_limit";
+            } else if (error.message.includes("invalid email")) {
+                errorMessage = "Invalid email address provided.";
+                debugInfo.issue = "invalid_email";
+            } else if (error.message.includes("validation_error")) {
+                errorMessage = "Email validation error. Please check the email format.";
+                debugInfo.issue = "validation_error";
+            }
+        }
+        return {
+            success: false,
+            error: errorMessage,
+            debug: debugInfo,
+        };
+    }
+}
+
+/**
+ * Get email subject based on type
+ */
+function getEmailSubject(type: EmailType, data: EmailData): string {
+    const subjects: Record<EmailType, string> = {
+        "learner-registration-received": `Your AariyaIQ Registration: ${data.courseName || "Course"} - Received`,
+        "learner-initial-approval": `Your AariyaIQ Registration: ${data.courseName || "Course"} - Initially Approved`,
+        "learner-payment-required": `Action Required: Payment for ${data.courseName || "Course"} Registration`,
+        "learner-compliance-check": `Your AariyaIQ Registration: Compliance Check in Progress`,
+        "learner-final-approval": `Congratulations! Your AariyaIQ Course Registration is Approved`,
+        "instructor-application-received": "Your AariyaIQ Instructor Application - Received",
+        "instructor-initial-approval": "Your AariyaIQ Instructor Application - Initially Approved",
+        "instructor-payment-required": "Action Required: Payment for Instructor Registration",
+        "instructor-compliance-check": "Your AariyaIQ Instructor Application: Compliance Check in Progress",
+        "instructor-final-approval": "Congratulations! Your AariyaIQ Instructor Application is Approved",
+        "password-reset": "Reset Your AariyaIQ Password",
+        "launch-page-notification": "Thank you for your interest in AariyaIQ!",
+        "admin-launch-notification": "New Launch Page Interest - AariyaIQ",
+        "email-verification": "Verify Your AariyaIQ Account - Welcome to the Future!",
+    };
+
+    return subjects[type];
+}
+
+// /**
+//  * Send a password reset email
+//  * @param recipientEmail Email address to send to
+//  * @param recipientName Name of the recipient
+//  * @param resetLink Password reset link
+//  * @param resetExpiry Expiry time for the reset link
+//  * @returns Promise with send result
+//  */
+// export async function sendPasswordResetEmail(
+//     recipientEmail: string,
+//     recipientName: string,
+//     resetLink: string,
+//     resetExpiry?: string
+// ) {
+//     return await sendEmail("password-reset", {
+//         recipientName,
+//         recipientEmail,
+//         resetLink,
+//         resetExpiry: resetExpiry || "24 hours",
+//     });
+// }
+
+// /**
+//  * Send an email verification email
+//  * @param recipientEmail Email address to send to
+//  * @param recipientName Name of the recipient
+//  * @param verificationLink Email verification link
+//  * @returns Promise with send result
+//  */
+// export async function sendEmailVerification(recipientEmail: string, recipientName: string, verificationLink: string) {
+//     return await sendEmail("email-verification", {
+//         recipientName,
+//         recipientEmail,
+//         verificationLink,
+//     });
+// }
+
+/**
+ * Test email service configuration
+ */
+export async function testEmailService() {
+    try {
+        logger.log("[EMAIL SERVICE] Testing email service configuration...");
+
+        const apiKey = process.env.RESEND_API_KEY;
+
+        if (!apiKey) {
+            logger.error("[EMAIL SERVICE] No API key found");
+            return {
+                success: false,
+                error: "RESEND_API_KEY environment variable is not set",
+                debug: {
+                    hasApiKey: false,
+                    apiKeyFormat: "N/A",
+                    environment: process.env.NODE_ENV || "unknown",
+                    timestamp: new Date().toISOString(),
+                },
+            };
+        }
+
+        logger.log(`[EMAIL SERVICE] API key found, checking format...`);
+
+        if (!apiKey.startsWith("re_")) {
+            logger.error("[EMAIL SERVICE] Invalid API key format");
+            return {
+                success: false,
+                error: "Invalid API key format. Should start with 're_'",
+                debug: {
+                    hasApiKey: true,
+                    apiKeyFormat: "Invalid",
+                    keyPrefix: apiKey.substring(0, 3),
+                    keyLength: apiKey.length,
+                    environment: process.env.NODE_ENV || "unknown",
+                    timestamp: new Date().toISOString(),
+                },
+            };
+        }
+
+        logger.log("[EMAIL SERVICE] API key format is valid");
+
+        // Try to initialize Resend
+        try {
+            const resend = new Resend(apiKey);
+            logger.log("[EMAIL SERVICE] Resend client created successfully");
+
+            return {
+                success: true,
+                message: "Email service configured correctly",
+                debug: {
+                    hasApiKey: true,
+                    apiKeyFormat: "Valid",
+                    keyPrefix: apiKey.substring(0, 3),
+                    keyLength: apiKey.length,
+                    environment: process.env.NODE_ENV || "unknown",
+                    sender: emailConfig.sender,
+                    timestamp: new Date().toISOString(),
+                },
+            };
+        } catch (resendError) {
+            logger.error("[EMAIL SERVICE] Failed to create Resend client:", resendError);
+            return {
+                success: false,
+                error: "Failed to initialize Resend client",
+                debug: {
+                    hasApiKey: true,
+                    apiKeyFormat: "Valid",
+                    initError: resendError instanceof Error ? resendError.message : "Unknown error",
+                    environment: process.env.NODE_ENV || "unknown",
+                    timestamp: new Date().toISOString(),
+                },
+            };
+        }
+    } catch (error) {
+        logger.error("[EMAIL SERVICE] Test service error:", error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+            debug: {
+                hasApiKey: !!process.env.RESEND_API_KEY,
+                apiKeyFormat: process.env.RESEND_API_KEY?.startsWith("re_") ? "Valid" : "Invalid",
+                environment: process.env.NODE_ENV || "unknown",
+                testError: error instanceof Error ? error.message : "Unknown error",
+                timestamp: new Date().toISOString(),
+            },
+        };
+    }
 }

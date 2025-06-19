@@ -283,7 +283,7 @@ export async function registerInstructor(
 export async function login(
     prevState: any,
     formData: FormData,
-    userType: "learner" | "instructor"
+    userType: "learner" | "instructor" | "super-admin"
 ): Promise<{ error?: string; success: boolean; redirectUrl: string }> {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;

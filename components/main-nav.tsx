@@ -1,6 +1,14 @@
 "use client";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -120,14 +128,36 @@ export function MainNav() {
 
                 <div>
                     {userData ? (
-                        <div>
-                            <Link
-                                href={`/${userData?.user_metadata?.role}/dashboard`}
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                <Button className="w-full">View Dashboard</Button>
-                            </Link>
-                        </div>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <div className="cursor-pointer">
+                                    <Avatar>
+                                        <AvatarFallback>
+                                            {userData.user_metadata?.first_name
+                                                ? userData.user_metadata.first_name.charAt(0).toUpperCase()
+                                                : userData.email?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem asChild>
+                                    <Link href={`/${userData?.user_metadata?.role || "learner"}/dashboard`}>
+                                        Dashboard
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                    onClick={async () => {
+                                        const supabase = createClient();
+                                        await supabase.auth.signOut();
+                                        window.location.reload();
+                                    }}
+                                >
+                                    Logout
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     ) : (
                         <div className="hidden md:flex md:items-center md:gap-4">
                             <Link href="/learner/login">
@@ -182,14 +212,36 @@ export function MainNav() {
 
                         <div>
                             {userData ? (
-                                <div>
-                                    <Link
-                                        href={`/${userData?.user_metadata?.role}/dashboard`}
-                                        onClick={() => setIsMenuOpen(false)}
-                                    >
-                                        <Button className="w-full">View Dashboard</Button>
-                                    </Link>
-                                </div>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <div className="cursor-pointer">
+                                            <Avatar>
+                                                <AvatarFallback>
+                                                    {userData.user_metadata?.first_name
+                                                        ? userData.user_metadata.first_name.charAt(0).toUpperCase()
+                                                        : userData.email?.charAt(0).toUpperCase()}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        </div>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuItem asChild>
+                                            <Link href={`/${userData?.user_metadata?.role || "learner"}/dashboard`}>
+                                                Dashboard
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            onClick={async () => {
+                                                const supabase = createClient();
+                                                await supabase.auth.signOut();
+                                                window.location.reload();
+                                            }}
+                                        >
+                                            Logout
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             ) : (
                                 <div className="flex flex-col gap-2 pt-2">
                                     <Link href="/learner/login" onClick={() => setIsMenuOpen(false)}>

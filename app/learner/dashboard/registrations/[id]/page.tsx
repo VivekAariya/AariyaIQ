@@ -7,7 +7,7 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { RegistrationStatusIndicator } from "@/components/registration-status-indicator"
+import { RegistrationStatusIndicator } from "@/components/super-admin/registration-status-indicator"
 import { courses } from "@/lib/courses"
 import { Bell, FileText, MessageSquare, AlertTriangle, CheckCircle } from "lucide-react"
 
