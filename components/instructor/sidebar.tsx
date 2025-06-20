@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
-import { BookOpen, Home, LogOut, Menu, Settings, Users, X } from "lucide-react";
+import { BookOpen, HelpCircle, Home, LogOut, Menu, User, Users, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -77,15 +77,26 @@ export function InstructorSidebar() {
                             Manage Users
                         </Link>
                         <Link
-                            href="/instructor/dashboard/settings"
+                            href="/instructor/dashboard/profile"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname === "/instructor/dashboard/settings"
+                                pathname === "/instructor/dashboard/profile"
                                     ? "bg-white/20 text-white"
                                     : "hover:bg-white/10"
                             }`}
                         >
-                            <Settings className="mr-2 h-4 w-4" />
-                            Settings
+                            <User className="mr-2 h-4 w-4" />
+                            Profile
+                        </Link>
+                        <Link
+                            href="/instructor/dashboard/help"
+                            className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+                                pathname === "/instructor/dashboard/help"
+                                    ? "bg-white/20 text-white"
+                                    : "hover:bg-white/10"
+                            }`}
+                        >
+                            <HelpCircle className="mr-2 h-4 w-4" />
+                            Help
                         </Link>
                     </nav>
                     <div className="pt-4">
