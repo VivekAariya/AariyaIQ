@@ -2,9 +2,6 @@
 
 import { EmailData, sendEmail } from "@/lib/email-service";
 
-/**
- * Send learner registration notification email
- */
 export async function sendLearnerRegistrationEmail(data: {
     learnerName: string;
     learnerEmail: string;
@@ -25,9 +22,6 @@ export async function sendLearnerRegistrationEmail(data: {
     return sendEmail("learner-registration-received", emailData);
 }
 
-/**
- * Send learner initial approval email
- */
 export async function sendLearnerInitialApprovalEmail(data: {
     learnerName: string;
     learnerEmail: string;
@@ -50,9 +44,6 @@ export async function sendLearnerInitialApprovalEmail(data: {
     return sendEmail("learner-initial-approval", emailData);
 }
 
-/**
- * Send learner payment required email
- */
 export async function sendLearnerPaymentEmail(data: {
     learnerName: string;
     learnerEmail: string;
@@ -73,9 +64,6 @@ export async function sendLearnerPaymentEmail(data: {
     return sendEmail("learner-payment-required", emailData);
 }
 
-/**
- * Send learner compliance check email
- */
 export async function sendLearnerComplianceEmail(data: {
     learnerName: string;
     learnerEmail: string;
@@ -92,9 +80,6 @@ export async function sendLearnerComplianceEmail(data: {
     return sendEmail("learner-compliance-check", emailData);
 }
 
-/**
- * Send learner final approval email
- */
 export async function sendLearnerFinalApprovalEmail(data: {
     learnerName: string;
     learnerEmail: string;
@@ -115,9 +100,6 @@ export async function sendLearnerFinalApprovalEmail(data: {
     return sendEmail("learner-final-approval", emailData);
 }
 
-/**
- * Send instructor application notification email
- */
 export async function sendInstructorApplicationEmail(data: {
     instructorName: string;
     instructorEmail: string;
@@ -136,9 +118,6 @@ export async function sendInstructorApplicationEmail(data: {
     return sendEmail("instructor-application-received", emailData);
 }
 
-/**
- * Send instructor initial approval email
- */
 export async function sendInstructorInitialApprovalEmail(data: {
     instructorName: string;
     instructorEmail: string;
@@ -159,9 +138,6 @@ export async function sendInstructorInitialApprovalEmail(data: {
     return sendEmail("instructor-initial-approval", emailData);
 }
 
-/**
- * Send instructor payment required email
- */
 export async function sendInstructorPaymentEmail(data: {
     instructorName: string;
     instructorEmail: string;
@@ -178,9 +154,6 @@ export async function sendInstructorPaymentEmail(data: {
     return sendEmail("instructor-payment-required", emailData);
 }
 
-/**
- * Send instructor compliance check email
- */
 export async function sendInstructorComplianceEmail(data: {
     instructorName: string;
     instructorEmail: string;
@@ -195,9 +168,6 @@ export async function sendInstructorComplianceEmail(data: {
     return sendEmail("instructor-compliance-check", emailData);
 }
 
-/**
- * Send instructor final approval email
- */
 export async function sendInstructorFinalApprovalEmail(data: {
     instructorName: string;
     instructorEmail: string;
@@ -212,4 +182,20 @@ export async function sendInstructorFinalApprovalEmail(data: {
     };
 
     return sendEmail("instructor-final-approval", emailData);
+}
+
+export async function sendInstructorRejectionEmail(data: {
+    instructorName: string;
+    instructorEmail: string;
+    loginLink: string;
+    nextSteps: string[];
+}) {
+    const emailData: EmailData = {
+        recipientName: data.instructorName,
+        recipientEmail: data.instructorEmail,
+        loginLink: data.loginLink,
+        nextSteps: data.nextSteps,
+    };
+
+    return sendEmail("instructor-rejection", emailData);
 }

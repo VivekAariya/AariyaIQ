@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import logger from "@/utils/logger";
 import { CheckCircle, Clock, FileText, Filter, Mail, Search, XCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 export default function ApprovalsDashboard({
     initialLearnerData,
@@ -31,8 +31,7 @@ export default function ApprovalsDashboard({
     const [selectedInstructor, setSelectedInstructor] = useState<string | null>(null);
     const [learnerData, setLearnerData] = useState(initialLearnerData);
     const [instructorData, setInstructorData] = useState(initialInstructorData);
-
-    logger.log("instructorData:", instructorData);
+    const [isPending, startTransition] = useTransition();
 
     // Handler functions from original ApprovalsPage
     // const handleApproveInitial = async (type: "learner" | "instructor", id: string) => {
@@ -130,44 +129,50 @@ export default function ApprovalsDashboard({
         } else {
             const instructor = instructorData.find((item) => item.id === id);
             if (instructor) {
-                setInstructorData((prev) =>
-                    prev.map((item) => (item.id === id ? { ...item, profile_status: "approved" } : item))
-                );
-                try {
-                    const res = await fetch("/api/super-admin/approvals", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            instructorId: instructor.id,
-                            instructorName: instructor.first_name,
-                            instructorEmail: instructor.email,
-                            loginLink: `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/dashboard`,
-                            nextSteps: [
-                                "Log in to your instructor dashboard",
-                                "Complete your instructor profile",
-                                "Prepare your course materials",
-                                "Schedule an onboarding session with our team",
-                            ],
-                        }),
-                    });
+                startTransition(async () => {
+                    try {
+                        const res = await fetch("/api/super-admin/approvals", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                action: "approved",
+                                instructorId: instructor.id,
+                                instructorName: instructor.first_name,
+                                instructorEmail: instructor.email,
+                                loginLink: `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/dashboard`,
+                                nextSteps: [
+                                    "Log in to your instructor dashboard",
+                                    "Complete your instructor profile",
+                                    "Prepare your course materials",
+                                    "Schedule an onboarding session with our team",
+                                ],
+                            }),
+                        });
 
-                    if (!res.ok) {
-                        logger.error("API call failed", res.statusText);
-                        throw new Error("API call failed");
+                        if (!res.ok) {
+                            logger.error("API call failed", res.statusText);
+                            throw new Error("API call failed");
+                        }
+
+                        setInstructorData((prev) =>
+                            prev.map((item) => (item.id === id ? { ...item, profile_status: "approved" } : item))
+                        );
+                        setInstructorData((instructor) => instructor.filter((item) => item.id !== id));
+                        setSelectedInstructor(null);
+
+                        toast({
+                            title: "Final Approval Granted",
+                            description: "The applicant has been notified of their approval.",
+                        });
+                    } catch (error) {
+                        logger.error("API error:", error);
+                        toast({
+                            title: "Email Error",
+                            description: "Status updated but there was an error sending the email.",
+                            variant: "destructive",
+                        });
                     }
-
-                    toast({
-                        title: "Final Approval Granted",
-                        description: "The applicant has been notified of their approval.",
-                    });
-                } catch (error) {
-                    logger.error("API error:", error);
-                    toast({
-                        title: "Email Error",
-                        description: "Status updated but there was an error sending the email.",
-                        variant: "destructive",
-                    });
-                }
+                });
             }
         }
     };
@@ -277,12 +282,50 @@ export default function ApprovalsDashboard({
         if (type === "learner") {
             setLearnerData((prev) => prev.filter((item) => item.id !== id));
         } else {
-            setInstructorData((prev) => prev.filter((item) => item.id !== id));
+            const instructor = instructorData.find((item) => item.id === id);
+            if (instructor) {
+                startTransition(async () => {
+                    try {
+                        const res = await fetch("/api/super-admin/approvals", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                action: "suspended",
+                                instructorId: instructor.id,
+                                instructorName: instructor.first_name,
+                                instructorEmail: instructor.email,
+                                loginLink: "",
+                                nextSteps: [],
+                            }),
+                        });
+
+                        if (!res.ok) {
+                            logger.error("API call failed", res.statusText);
+                            throw new Error("API call failed");
+                        }
+
+                        setInstructorData((prev) =>
+                            prev.map((item) => (item.id === id ? { ...item, profile_status: "suspended" } : item))
+                        );
+                        setInstructorData((instructor) => instructor.filter((item) => item.id !== id));
+                        setSelectedInstructor(null);
+
+                        toast({
+                            title: "Application Rejected",
+                            description: "The applicant has been notified of their rejection.",
+                            variant: "warn",
+                        });
+                    } catch (error) {
+                        logger.error("API error:", error);
+                        toast({
+                            title: "Email Error",
+                            description: "Status updated but there was an error sending the email.",
+                            variant: "destructive",
+                        });
+                    }
+                });
+            }
         }
-        toast({
-            title: "Application Rejected",
-            description: "The applicant will be notified of the rejection.",
-        });
     };
 
     const getStatusBadge = (status: string) => {
@@ -306,27 +349,43 @@ export default function ApprovalsDashboard({
         const steps = [
             { id: 1, name: "Submit Application", status: "completed" },
             { id: 2, name: "Initial Review", status: status === "pending" ? "current" : "completed" },
-            // {
-            //     id: 3,
-            //     name: "Payment",
-            //     status: status === "pending_payment" ? "current" : status === "pending" ? "upcoming" : "completed",
-            // },
-            // {
-            //     id: 4,
-            //     name: "Compliance Check",
-            //     status:
-            //         status === "pending_compliance"
-            //             ? "current"
-            //             : ["pending", "pending_payment"].includes(status)
-            //               ? "upcoming"
-            //               : "completed",
-            // },
+            {
+                id: 3,
+                name: "Payment",
+                status: status === "pending_payment" ? "current" : status === "pending" ? "upcoming" : "completed",
+            },
+            {
+                id: 4,
+                name: "Compliance Check",
+                status:
+                    status === "pending_compliance"
+                        ? "current"
+                        : ["pending", "pending_payment"].includes(status)
+                          ? "upcoming"
+                          : "completed",
+            },
             {
                 id: 5,
                 name: "Final Approval",
                 status: status === "approved" ? "current" : status === "approved" ? "completed" : "upcoming",
             },
         ];
+        return steps.map((step) => ({
+            ...step,
+            status: step.status as "completed" | "current" | "upcoming" | "error",
+        }));
+    };
+
+    const getInstructorStatusSteps = (status: string) => {
+        const steps = [
+            { id: 1, name: "Submit Application", status: "completed" },
+            {
+                id: 2,
+                name: "Final Approval",
+                status: status === "approved" ? "completed" : "current",
+            },
+        ];
+
         return steps.map((step) => ({
             ...step,
             status: step.status as "completed" | "current" | "upcoming" | "error",
@@ -826,7 +885,7 @@ export default function ApprovalsDashboard({
                                             <h3 className="text-sm font-medium">Application Status</h3>
                                             <div className="mt-2">
                                                 <RegistrationStatusIndicator
-                                                    steps={getLearnerStatusSteps(
+                                                    steps={getInstructorStatusSteps(
                                                         instructorData.find((r) => r.id === selectedInstructor)
                                                             ?.profile_status
                                                     )}
@@ -850,92 +909,74 @@ export default function ApprovalsDashboard({
                                                     onClick={() =>
                                                         handleApproveApplication("instructor", selectedInstructor)
                                                     }
+                                                    disabled={isPending}
                                                 >
-                                                    <CheckCircle className="mr-2 h-4 w-4" />
-                                                    Approve Application
+                                                    {isPending ? (
+                                                        <span className="flex items-center">
+                                                            <svg
+                                                                className="animate-spin h-4 w-4 mr-2"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <circle
+                                                                    className="opacity-25"
+                                                                    cx="12"
+                                                                    cy="12"
+                                                                    r="10"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="4"
+                                                                ></circle>
+                                                                <path
+                                                                    className="opacity-75"
+                                                                    fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8v8z"
+                                                                ></path>
+                                                            </svg>
+                                                            Processing...
+                                                        </span>
+                                                    ) : (
+                                                        <>
+                                                            <CheckCircle className="mr-2 h-4 w-4" />
+                                                            Approve Application
+                                                        </>
+                                                    )}
                                                 </Button>
                                                 <Button
                                                     variant="outline"
                                                     className="w-full text-red-500"
                                                     onClick={() => handleReject("instructor", selectedInstructor)}
+                                                    disabled={isPending}
                                                 >
-                                                    <XCircle className="mr-2 h-4 w-4" />
-                                                    Reject Application
+                                                    {isPending ? (
+                                                        <span className="flex items-center">
+                                                            <svg
+                                                                className="animate-spin h-4 w-4 mr-2"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <circle
+                                                                    className="opacity-25"
+                                                                    cx="12"
+                                                                    cy="12"
+                                                                    r="10"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="4"
+                                                                ></circle>
+                                                                <path
+                                                                    className="opacity-75"
+                                                                    fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8v8z"
+                                                                ></path>
+                                                            </svg>
+                                                            Processing...
+                                                        </span>
+                                                    ) : (
+                                                        <>
+                                                            <XCircle className="mr-2 h-4 w-4" />
+                                                            Reject Application
+                                                        </>
+                                                    )}
                                                 </Button>
                                             </div>
                                         )}
-
-                                        {/* {instructorData.find((r) => r.id === selectedInstructor)?.profile_status ===
-                                            "pending_payment" && (
-                                            <div className="space-y-2">
-                                                <Button
-                                                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700"
-                                                    onClick={() =>
-                                                        sendPaymentReminder("instructor", selectedInstructor)
-                                                    }
-                                                >
-                                                    <Mail className="mr-2 h-4 w-4" />
-                                                    Send Payment Email
-                                                </Button>
-                                                <Button variant="outline" className="w-full">
-                                                    <Clock className="mr-2 h-4 w-4" />
-                                                    Check Payment Status
-                                                </Button>
-                                            </div>
-                                        )} */}
-
-                                        {/* {instructorData.find((r) => r.id === selectedInstructor)?.profile_status ===
-                                            "pending_compliance" && (
-                                            <div className="space-y-2">
-                                                <Button className="w-full bg-gradient-to-r from-purple-600 to-purple-700">
-                                                    <FileText className="mr-2 h-4 w-4" />
-                                                    View Compliance Documents
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    className="w-full"
-                                                    onClick={() => {
-                                                        setInstructorData((prev) =>
-                                                            prev.map((item) =>
-                                                                item.id === selectedInstructor
-                                                                    ? { ...item, status: "pending_final" }
-                                                                    : item
-                                                            )
-                                                        );
-                                                        sendComplianceNotification("instructor", selectedInstructor);
-                                                        toast({
-                                                            title: "Compliance Check Completed",
-                                                            description:
-                                                                "The application is now ready for final approval.",
-                                                        });
-                                                    }}
-                                                >
-                                                    <CheckCircle className="mr-2 h-4 w-4" />
-                                                    Mark Compliance as Complete
-                                                </Button>
-                                            </div>
-                                        )} */}
-
-                                        {/* {instructorData.find((r) => r.id === selectedInstructor)?.status ===
-                                            "pending_final" && (
-                                            <div className="space-y-2">
-                                                <Button
-                                                    className="w-full bg-gradient-to-r from-green-600 to-green-700"
-                                                    onClick={() => handleApproveFinal("instructor", selectedInstructor)}
-                                                >
-                                                    <CheckCircle className="mr-2 h-4 w-4" />
-                                                    Grant Final Approval
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    className="w-full text-red-500"
-                                                    onClick={() => handleReject("instructor", selectedInstructor)}
-                                                >
-                                                    <XCircle className="mr-2 h-4 w-4" />
-                                                    Reject Application
-                                                </Button>
-                                            </div>
-                                        )} */}
 
                                         {instructorData.find((r) => r.id === selectedInstructor)?.profile_status ===
                                             "approved" && (
@@ -947,9 +988,18 @@ export default function ApprovalsDashboard({
                                                     <CheckCircle className="mr-2 h-4 w-4" />
                                                     Approved
                                                 </Button>
-                                                <Button variant="outline" className="w-full">
-                                                    <Mail className="mr-2 h-4 w-4" />
-                                                    Send Welcome Email
+                                            </div>
+                                        )}
+
+                                        {instructorData.find((r) => r.id === selectedInstructor)?.profile_status ===
+                                            "suspended" && (
+                                            <div className="space-y-2">
+                                                <Button
+                                                    className="w-full bg-gradient-to-r from-yellow-600 to-yellow-700"
+                                                    disabled
+                                                >
+                                                    <XCircle className="mr-2 h-4 w-4" />
+                                                    Suspended
                                                 </Button>
                                             </div>
                                         )}
