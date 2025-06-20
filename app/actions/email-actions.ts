@@ -199,3 +199,35 @@ export async function sendInstructorRejectionEmail(data: {
 
     return sendEmail("instructor-rejection", emailData);
 }
+
+export async function sendInstructorBanEmail(data: {
+    instructorName: string;
+    instructorEmail: string;
+    loginLink: string;
+    nextSteps: string[];
+}) {
+    const emailData: EmailData = {
+        recipientName: data.instructorName,
+        recipientEmail: data.instructorEmail,
+        loginLink: data.loginLink,
+        nextSteps: data.nextSteps,
+    };
+
+    return sendEmail("instructor-ban", emailData);
+}
+
+export async function sendInstructorSuspendEmail(data: {
+    instructorName: string;
+    instructorEmail: string;
+    loginLink: string;
+    nextSteps: string[];
+}) {
+    const emailData: EmailData = {
+        recipientName: data.instructorName,
+        recipientEmail: data.instructorEmail,
+        loginLink: data.loginLink,
+        nextSteps: data.nextSteps,
+    };
+
+    return sendEmail("instructor-rejection", emailData);
+}

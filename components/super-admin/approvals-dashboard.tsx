@@ -32,6 +32,7 @@ export default function ApprovalsDashboard({
     const [learnerData, setLearnerData] = useState(initialLearnerData);
     const [instructorData, setInstructorData] = useState(initialInstructorData);
     const [isPending, startTransition] = useTransition();
+    const [instructorSearch, setInstructorSearch] = useState("");
 
     // Handler functions from original ApprovalsPage
     // const handleApproveInitial = async (type: "learner" | "instructor", id: string) => {
@@ -392,6 +393,16 @@ export default function ApprovalsDashboard({
         }));
     };
 
+    // Filtered instructor data based on search
+    const filteredInstructorData = instructorData.filter((instructor) => {
+        const search = instructorSearch.toLowerCase();
+        return (
+            (instructor.first_name + " " + instructor.last_name).toLowerCase().includes(search) ||
+            (instructor.area_of_expertise || "").toLowerCase().includes(search) ||
+            (instructor.email || "").toLowerCase().includes(search)
+        );
+    });
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -660,7 +671,13 @@ export default function ApprovalsDashboard({
                     <div className="flex items-center justify-between">
                         <div className="relative w-64">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input type="search" placeholder="Search applications..." className="w-full pl-8" />
+                            <Input
+                                type="search"
+                                placeholder="Search applications..."
+                                className="w-full pl-8"
+                                value={instructorSearch}
+                                onChange={(e) => setInstructorSearch(e.target.value)}
+                            />
                         </div>
                     </div>
 
@@ -680,8 +697,8 @@ export default function ApprovalsDashboard({
                                         <div className="col-span-2">Actions</div>
                                     </div>
 
-                                    {instructorData.length > 0 ? (
-                                        instructorData.map((instructor) => (
+                                    {filteredInstructorData.length > 0 ? (
+                                        filteredInstructorData.map((instructor) => (
                                             <div
                                                 key={instructor.id}
                                                 className={`grid grid-cols-12 gap-2 border-t p-4 items-center ${

@@ -3,6 +3,7 @@ import type { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
 import { Montserrat } from "next/font/google";
 import type React from "react";
 import "./globals.css";
+import { Toaster as SonnerToast } from "@/components/ui/sonner";
 
 // Since Lastica isn't available in Google Fonts, we'll use a similar font
 // and add custom font styles in globals.css
@@ -26,6 +27,7 @@ export default async function RootLayout({
         <html lang="en" className={montserrat.variable}>
             <body className="font-lastica pt-16 relative bg-gradient-to-b from-slate-950 to-slate-900">
                 <Toaster />
+                <SonnerToast richColors closeButton />
                 {children}
             </body>
         </html>

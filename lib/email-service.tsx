@@ -23,6 +23,8 @@ export type EmailType =
     | "instructor-compliance-check"
     | "instructor-final-approval"
     | "instructor-rejection"
+    | "instructor-ban"
+    | "instructor-suspend"
     | "password-reset"
     | "launch-page-notification"
     | "admin-launch-notification"
@@ -74,6 +76,10 @@ export async function EmailTemplate({ type, data }: EmailTemplateProps) {
             return <InstructorFinalApprovalTemplate data={data} />;
         case "instructor-rejection":
             return <InstructorRejectionTemplate data={data} />;
+        case "instructor-ban":
+            return <InstructorBanTemplate data={data} />;
+        case "instructor-suspend":
+            return <InstructorSuspendTemplate data={data} />;
         // case "password-reset":
         //     return <PasswordResetTemplate data={data} />;
         case "launch-page-notification":
@@ -607,6 +613,40 @@ function InstructorRejectionTemplate({ data }: { data: EmailData }) {
     );
 }
 
+function InstructorBanTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Instructor Account Banned">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                We regret to inform you that your instructor account with AariyaIQ Learning Hub has been <strong>banned</strong> due to a serious violation of our terms of service or code of conduct.
+            </p>
+            <p>
+                If you believe this was a mistake or would like to appeal, please contact our support team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+            <p>
+                Thank you for your understanding.
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function InstructorSuspendTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Instructor Account Suspended">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Your instructor account with AariyaIQ Learning Hub has been <strong>suspended</strong>. This action was taken due to a violation of our policies or pending investigation.
+            </p>
+            <p>
+                If you have questions or wish to resolve this matter, please contact our support team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+            <p>
+                We appreciate your cooperation.
+            </p>
+        </BaseTemplate>
+    );
+}
+
 // Initialize Resend with API key and error handling
 // function initializeResend() {
 //     const apiKey = process.env.RESEND_API_KEY;
@@ -630,7 +670,7 @@ export async function sendEmail(type: EmailType, data: EmailData) {
         logger.log(`[EMAIL SERVICE] Starting email send process for type: ${type}`);
         logger.log(`[EMAIL SERVICE] Recipient: ${data.recipientEmail}`);
 
-        const apiKey = process.env.RESEND_API_KEY;
+        const apiKey = process.env.RESEND_API_KEYe;
 
         if (!apiKey) {
             logger.error("[EMAIL SERVICE] RESEND_API_KEY not found in environment variables");
@@ -757,6 +797,8 @@ function getEmailSubject(type: EmailType, data: EmailData): string {
         "instructor-compliance-check": "Your AariyaIQ Instructor Application: Compliance Check in Progress",
         "instructor-final-approval": "Congratulations! Your AariyaIQ Instructor Application is Approved",
         "instructor-rejection": "Update on Your AariyaIQ Instructor Application",
+        "instructor-ban": "Your AariyaIQ Instructor Account Has Been Banned",
+        "instructor-suspend": "Your AariyaIQ Instructor Account Has Been Suspended",
         "password-reset": "Reset Your AariyaIQ Password",
         "launch-page-notification": "Thank you for your interest in AariyaIQ!",
         "admin-launch-notification": "New Launch Page Interest - AariyaIQ",
