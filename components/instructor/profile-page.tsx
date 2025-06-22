@@ -37,6 +37,8 @@ export default function ProfilePage({ profile }: { profile: any }) {
     const [isPending, startTransition] = useTransition();
     const [isEditing, setIsEditing] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showNewConfirmPassword, setShowNewConfirmPassword] = useState(false);
 
     const stats = {
         totalCourses: 12,
@@ -478,7 +480,7 @@ export default function ProfilePage({ profile }: { profile: any }) {
                             </Card>
 
                             {/* Notification Preferences */}
-                            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10">
+                            {/* <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10">
                                 <CardHeader>
                                     <CardTitle className="text-white flex items-center gap-2">
                                         <Bell className="w-5 h-5 text-yellow-400" />
@@ -525,7 +527,7 @@ export default function ProfilePage({ profile }: { profile: any }) {
                                         />
                                     </div>
                                 </CardContent>
-                            </Card>
+                            </Card> */}
                         </div>
                     </TabsContent>
 
