@@ -56,3 +56,90 @@ export async function updateInstructorProfile(formData: FormData) {
         };
     }
 }
+
+export async function createCourse(prevState: any, formData: FormData) {
+    try {
+        // Extract and validate fields
+        const course_title = formData.get("title");
+        const short_description = formData.get("shortDescription");
+        const full_description = formData.get("description") || formData.get("longDescription");
+        const course_contents = formData.get("courseContents");
+        const duration = formData.get("duration");
+        const course_image = formData.get("courseImage");
+        const start_date = formData.get("startDate");
+        const external_learning_platform_link = formData.get("externalLearningPlatformLink");
+        const price = formData.get("price");
+        const category = formData.get("category");
+        const level = formData.get("level");
+        const enrollment_count = formData.get("enrollmentCount");
+        const prerequisites = formData.get("prerequisites");
+        const learning_outcomes = formData.get("learningOutcomes");
+        const instructor = formData.get("instructorId");
+        const status = "pending";
+
+        // Required fields validation
+        if (!course_title) return { success: false, message: "Course title is required." };
+        if (!short_description) return { success: false, message: "Short description is required." };
+        if (!full_description) return { success: false, message: "Full description is required." };
+        if (!course_contents) return { success: false, message: "Course contents are required." };
+        if (!price) return { success: false, message: "Price is required." };
+        if (!category) return { success: false, message: "Category is required." };
+        if (!level) return { success: false, message: "Level is required." };
+        if (!start_date) return { success: false, message: "Start date is required." };
+        if (!course_image) return { success: false, message: "Course image is required." };
+        if (!duration) return { success: false, message: "Duration is required." };
+        if (!prerequisites) return { success: false, message: "Prerequisites are required." };
+        if (!learning_outcomes) return { success: false, message: "Learning outcomes are required." };
+        if (!external_learning_platform_link) return { success: false, message: "Learning outcomes are required." };
+
+        // Additional checks
+        if (isNaN(Number(price)) || Number(price) < 0) {
+            return { success: false, message: "Price must be a non-negative number." };
+        }
+
+        if (enrollment_count && (isNaN(Number(enrollment_count)) || Number(enrollment_count) < 0)) {
+            return { success: false, message: "Enrollment count must be a non-negative number." };
+        }
+
+        if (start_date && isNaN(Date.parse(start_date.toString()))) {
+            return { success: false, message: "Start date is invalid." };
+        }
+
+        if (external_learning_platform_link && !/^https?:\/\//.test(external_learning_platform_link.toString())) {
+            return { success: false, message: "External link must be a valid URL." };
+        }
+
+        const { data, error } = await supabaseServiceRoleClient
+            .from("courses")
+            .insert({
+                course_title,
+                short_description,
+                full_description,
+                course_contents,
+                duration,
+                course_image,
+                start_date,
+                external_learning_platform_link,
+                price: Number(price),
+                category,
+                level,
+                enrollment_count: Number(enrollment_count),
+                status,
+                prerequisites,
+                learning_outcomes,
+                instructor,
+            })
+            .select()
+            .single();
+
+        if (error) {
+            logger.error("Error creating course:", error);
+            return { success: false, message: error?.message || "Failed to create course." };
+        }
+
+        return { success: true, message: "Course created successfully!", data };
+    } catch (error: any) {
+        logger.error("Exception in createCourse:", error);
+        return { success: false, message: error.message || "An error occurred." };
+    }
+}
