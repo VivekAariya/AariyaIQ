@@ -1,7 +1,6 @@
 "use server";
 
 import logger from "@/utils/logger";
-import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
 
 export async function updateInstructorProfile(formData: FormData) {
@@ -140,6 +139,32 @@ export async function createCourse(prevState: any, formData: FormData) {
         return { success: true, message: "Course created successfully!", data };
     } catch (error: any) {
         logger.error("Exception in createCourse:", error);
+        return { success: false, message: error.message || "An error occurred." };
+    }
+}
+
+export async function submitCourseMaterial(formData: FormData, material: any) {
+    try {
+        const course = formData.get("courseId");
+        const instructor = formData.get("userId");
+
+        const { error } = await supabaseServiceRoleClient.from("materials").insert({
+            view_url: material?.url,
+            download_url: material?.downloadUrl,
+            size: material?.size,
+            pathname: material?.pathname,
+            course,
+            instructor,
+        });
+
+        if (error) {
+            logger.error("Error uploading course material:", error);
+            return { success: false, message: error?.message || "Error uploading course material." };
+        }
+
+        return { success: true, message: "Course material uploaded successfully!" };
+    } catch (error: any) {
+        logger.error("Exception in submitCourseMaterial:", error);
         return { success: false, message: error.message || "An error occurred." };
     }
 }

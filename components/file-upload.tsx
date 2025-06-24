@@ -11,7 +11,7 @@ interface FileUploadProps {
     onUploadError?: (error: string) => void;
 }
 
-export function FileUpload({
+export function FileUploadNew({
     folder = "uploads",
     maxSize,
     acceptedTypes,
