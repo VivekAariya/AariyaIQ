@@ -1,118 +1,64 @@
 "use client";
 
-import { type CourseMaterial } from "@/components/course-material-uploader"; // Assuming this component exists and is styled
+import { editCourse } from "@/app/actions/instructor-actions";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import logger from "@/utils/logger";
-import { createClient } from "@/utils/supabase/client";
-import { User } from "@supabase/supabase-js";
 import {
     AlertTriangle,
-    ArrowLeft,
-    ArrowRight,
-    Brain,
+    CheckCircle,
+    Clock,
     DollarSign,
     Edit3,
     FileText,
     Info,
-    Link,
     ListChecks,
+    UserIcon,
+    XCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type React from "react";
-import { useEffect, useState, useTransition } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-
-// Mock categories and levels if not already defined elsewhere
-const courseCategories = [
-    { value: "web-development", label: "Web Development" },
-    { value: "data-science", label: "Data Science" },
-    { value: "ai-ml", label: "AI & Machine Learning" },
-    { value: "cybersecurity", label: "Cybersecurity" },
-    { value: "cloud-computing", label: "Cloud Computing" },
-    { value: "design", label: "UI/UX Design" },
-    { value: "other", label: "Other" },
-];
-
-const courseLevels = [
-    { value: "Beginner", label: "Beginner" },
-    { value: "Intermediate", label: "Intermediate" },
-    { value: "Advanced", label: "Advanced" },
-    { value: "Expert", label: "Expert" },
-];
+import { useTransition } from "react";
 
 export default function CourseEdit({ course }: { course: any }) {
     const { toast } = useToast();
     const router = useRouter();
 
-    const [courseData, setCourseData] = useState(course);
-    const [isStartDatePassed, setIsStartDatePassed] = useState(false);
-    const [isEditingDisabled, setIsEditingDisabled] = useState(false);
-    const [supabase] = useState(() => createClient());
-    const [user, setUser] = useState<User | null>(null);
     const [isPending, startTransition] = useTransition();
-    const [error, setError] = useState<any>({
-        isError: false,
-        message: "Unknown error",
-    });
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const { data, error } = await supabase.auth.getUser();
-
-                if (error || !data.user) {
-                    logger.error("Error fetching user data:", error);
-                    setError({ isError: true, message: error?.message });
-                }
-
-                setUser(data?.user);
-            } catch (error: any) {
-                logger.error("Error fetching user data:", error);
-                setError({ isError: true, message: error?.message });
-            }
-        };
-
-        fetchUser();
-    }, []);
-
-    useEffect(() => {
-        const startDate = new Date(courseData.start_date);
-        const today = new Date();
-        const passed = startDate < today;
-        setIsStartDatePassed(passed);
-        // Disable editing if start date has passed AND course is not in a mutable status like "Draft"
-        // For simplicity, we'll just use passed date for now. Add status check if needed.
-        setIsEditingDisabled(passed);
-    }, [courseData.start_date]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setCourseData((prev: any) => ({ ...prev, [name]: value }));
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "approved":
+                return "bg-green-500/20 text-green-400 border-green-500/30";
+            case "pending":
+                return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+            case "suspended":
+                return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+            case "banned":
+                return "bg-red-600/20 text-red-300 border-red-600/30";
+            default:
+                return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+        }
     };
 
-    const handleSelectChange = (name: string, value: string) => {
-        setCourseData((prev: any) => ({ ...prev, [name]: value }));
-    };
-
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        // Allow empty string for clearing, or convert to number
-        setCourseData((prev: any) => ({ ...prev, price: value === "" ? 0 : Number.parseFloat(value) || 0 }));
-    };
-
-    const handleMaterialsChange = (materials: CourseMaterial[]) => {
-        setCourseData((prev: any) => ({ ...prev, materials }));
-    };
-
-    const handleSaveChanges = () => {
-        // API call to save changes
-        console.log("Saving changes:", courseData);
-        // Add toast notification for success/failure
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case "approved":
+                return <CheckCircle className="h-4 w-4" />;
+            case "pending":
+                return <Clock className="h-4 w-4" />;
+            case "suspended":
+                return <XCircle className="h-4 w-4" />;
+            case "banned":
+                return <AlertTriangle className="h-4 w-4" />;
+            default:
+                return <UserIcon className="h-4 w-4" />;
+        }
     };
 
     const inputClassName =
@@ -120,22 +66,30 @@ export default function CourseEdit({ course }: { course: any }) {
     const labelClassName = "text-slate-300 font-medium";
     const readOnlyInputClassName = `${inputClassName} opacity-70 cursor-not-allowed bg-slate-800/30`;
 
-    if (error.isError) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">{error.message || "Something went wrong"}</h1>
-                    <p className="text-gray-400">Unknown error</p>
-                    <Button variant="outline" className="mt-4" asChild>
-                        <Link href="/">
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back to Home
-                        </Link>
-                    </Button>
-                </div>
-            </div>
-        );
-    }
+    const isEditingDisabled = (() => {
+        const startDate = new Date(course.start_date);
+        const today = new Date();
+        return startDate < today;
+    })();
+
+    const handleFormSubmit = async (formData: FormData) => {
+        startTransition(async () => {
+            const result = await editCourse(null, formData);
+            if (!result?.success) {
+                toast({
+                    title: "Error",
+                    description: result?.message || "An unexpected error occurred",
+                    variant: "destructive",
+                });
+            } else {
+                toast({
+                    title: "Success",
+                    description: result.message || "Course updated successfully!",
+                });
+                router.refresh();
+            }
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-slate-100 p-4 sm:p-6 lg:p-8">
@@ -144,22 +98,24 @@ export default function CourseEdit({ course }: { course: any }) {
                     <div className="flex items-center gap-3">
                         <Edit3 className="h-8 w-8 text-cyan-400" />
                         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 text-transparent bg-clip-text">
-                            Edit Course: {courseData.course_title}
+                            Edit Course: {course.course_title}
                         </h1>
                     </div>
                     <div className="flex gap-3">
                         <Button
                             variant="outline"
                             className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
+                            onClick={() => router.back()}
                         >
                             Cancel
                         </Button>
                         <Button
-                            onClick={handleSaveChanges}
-                            disabled={isEditingDisabled}
+                            type="submit"
+                            form="courseEditForm"
+                            disabled={isEditingDisabled || isPending}
                             className="bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {isEditingDisabled ? "Editing Locked" : "Save Changes"}
+                            {isEditingDisabled ? "Editing Locked" : isPending ? "Saving..." : "Save Changes"}
                         </Button>
                     </div>
                 </div>
@@ -179,7 +135,8 @@ export default function CourseEdit({ course }: { course: any }) {
                     </Card>
                 )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <form id="courseEditForm" action={handleFormSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <input type="hidden" name="id" value={course.id} />
                     {/* Column 1: Core Info */}
                     <div className="lg:col-span-2 space-y-6">
                         <Card className="bg-slate-800/50 border-slate-700 shadow-xl backdrop-blur-md">
@@ -197,7 +154,8 @@ export default function CourseEdit({ course }: { course: any }) {
                                     <Input
                                         id="course_id"
                                         name="id"
-                                        value={courseData.id}
+                                        required
+                                        value={course.id}
                                         readOnly
                                         className={readOnlyInputClassName}
                                     />
@@ -208,9 +166,9 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Input
                                         id="course_title"
-                                        name="title"
-                                        value={courseData.course_title}
-                                        onChange={handleInputChange}
+                                        name="course_title"
+                                        required
+                                        defaultValue={course.course_title}
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
                                     />
@@ -221,9 +179,9 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Textarea
                                         id="short_description"
-                                        name="shortDescription"
-                                        value={courseData.short_description}
-                                        onChange={handleInputChange}
+                                        name="short_description"
+                                        required
+                                        defaultValue={course.short_description}
                                         rows={2}
                                         maxLength={150}
                                         readOnly={isEditingDisabled}
@@ -236,9 +194,9 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Textarea
                                         id="full_description"
-                                        name="fullDescription"
-                                        value={courseData.full_description}
-                                        onChange={handleInputChange}
+                                        name="full_description"
+                                        required
+                                        defaultValue={course.full_description}
                                         rows={5}
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
@@ -250,9 +208,9 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Textarea
                                         id="course_contents"
-                                        name="courseContents"
-                                        value={courseData.course_contents}
-                                        onChange={handleInputChange}
+                                        name="course_contents"
+                                        required
+                                        defaultValue={course.course_contents}
                                         rows={8}
                                         placeholder="e.g., Module 1: Topic A, Topic B..."
                                         readOnly={isEditingDisabled}
@@ -266,8 +224,8 @@ export default function CourseEdit({ course }: { course: any }) {
                                     <Textarea
                                         id="prerequisites"
                                         name="prerequisites"
-                                        value={courseData.prerequisites}
-                                        onChange={handleInputChange}
+                                        required
+                                        defaultValue={course.prerequisites}
                                         rows={3}
                                         placeholder="e.g., Basic algebra, Familiarity with computers..."
                                         readOnly={isEditingDisabled}
@@ -280,9 +238,9 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Textarea
                                         id="learning_outcomes"
-                                        name="learningOutcomes"
-                                        value={courseData.learning_outcomes}
-                                        onChange={handleInputChange}
+                                        name="learning_outcomes"
+                                        required
+                                        defaultValue={course.learning_outcomes}
                                         rows={4}
                                         placeholder="e.g., Students will be able to...\nUnderstand concepts of..."
                                         readOnly={isEditingDisabled}
@@ -303,6 +261,15 @@ export default function CourseEdit({ course }: { course: any }) {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                <div className="flex items-center space-x-3 mb-2">
+                                    <Label htmlFor="status" className={labelClassName}>
+                                        Status
+                                    </Label>
+                                    <Badge className={`${getStatusColor(course.status)} flex items-center space-x-1`}>
+                                        {getStatusIcon(course.status)}
+                                        <span className={"capitalize"}>{course.status}</span>
+                                    </Badge>
+                                </div>
                                 <div>
                                     <Label htmlFor="duration" className={labelClassName}>
                                         Duration (e.g., 8 Weeks, 40 Hours)
@@ -310,8 +277,8 @@ export default function CourseEdit({ course }: { course: any }) {
                                     <Input
                                         id="duration"
                                         name="duration"
-                                        value={courseData.duration}
-                                        onChange={handleInputChange}
+                                        required
+                                        defaultValue={course.duration}
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
                                     />
@@ -323,8 +290,7 @@ export default function CourseEdit({ course }: { course: any }) {
                                     <Select
                                         name="level"
                                         required
-                                        defaultValue={courseData.level}
-                                        onValueChange={(value) => handleSelectChange("level", value)}
+                                        defaultValue={course.level}
                                         disabled={isEditingDisabled}
                                     >
                                         <SelectTrigger
@@ -366,8 +332,8 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Select
                                         name="category"
-                                        defaultValue={courseData.category}
-                                        onValueChange={(value) => handleSelectChange("category", value)}
+                                        required
+                                        defaultValue={course.category}
                                         disabled={isEditingDisabled}
                                     >
                                         <SelectTrigger
@@ -400,9 +366,9 @@ export default function CourseEdit({ course }: { course: any }) {
                                         <Input
                                             id="price"
                                             name="price"
+                                            required
                                             type="number"
-                                            value={courseData.price}
-                                            onChange={handlePriceChange}
+                                            defaultValue={course.price}
                                             placeholder="e.g., 4999"
                                             readOnly={isEditingDisabled}
                                             className={`${isEditingDisabled ? readOnlyInputClassName : inputClassName} pl-10`}
@@ -410,19 +376,42 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </div>
                                 </div>
                                 <div>
-                                    <Label htmlFor="course_image" className={labelClassName}>
-                                        Course Image URL
-                                    </Label>
+                                    <div className="flex items-center justify-start mb-1">
+                                        <Label htmlFor="course_image" className={labelClassName}>
+                                            Course Image URL
+                                        </Label>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                    <Info className="ml-2 h-4 w-4 text-slate-400" />
+                                                </TooltipTrigger>
+                                                <TooltipContent className="bg-slate-800 border-2 border-slate-700 ">
+                                                    <p className="text-sm">
+                                                        You can use this website to upload your image and then paste the
+                                                        link here
+                                                        <br />
+                                                        <a
+                                                            href="https://imgbb.com/upload"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="underline"
+                                                        >
+                                                            https://imgbb.com/upload
+                                                        </a>
+                                                    </p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
                                     <Input
                                         id="course_image"
-                                        name="image"
-                                        value={courseData.course_image}
-                                        onChange={handleInputChange}
+                                        name="course_image"
+                                        required
+                                        defaultValue={course.course_image}
                                         placeholder="https://example.com/image.png"
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
                                     />
-                                    {/* Consider adding FileUploader component here */}
                                 </div>
                                 <div>
                                     <Label htmlFor="start_date" className={labelClassName}>
@@ -430,10 +419,11 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Input
                                         id="start_date"
-                                        name="startDate"
+                                        name="start_date"
+                                        required
                                         type="date"
-                                        value={courseData.start_date.split("T")[0]}
-                                        onChange={handleInputChange}
+                                        min={new Date(Date.now() + 12096e5).toISOString().split("T")[0]}
+                                        defaultValue={course.start_date.split("T")[0]}
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
                                     />
@@ -444,9 +434,9 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Input
                                         id="external_learning_platform_link"
-                                        name="externalLink"
-                                        value={courseData.external_learning_platform_link || ""}
-                                        onChange={handleInputChange}
+                                        name="external_learning_platform_link"
+                                        required
+                                        defaultValue={course.external_learning_platform_link || ""}
                                         placeholder="e.g., Zoom, Google Classroom link"
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
@@ -458,36 +448,24 @@ export default function CourseEdit({ course }: { course: any }) {
                                     </Label>
                                     <Input
                                         id="enrollment_count"
-                                        name="enrollmentCount"
+                                        name="enrollment_count"
+                                        required
                                         type="number"
-                                        value={courseData.enrollment_count}
-                                        onChange={handleInputChange}
+                                        defaultValue={course.enrollment_count}
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
-                                    />
-                                </div>
-                                <div>
-                                    <Label htmlFor="status" className={labelClassName}>
-                                        Status
-                                    </Label>
-                                    <Input
-                                        id="status"
-                                        name="status"
-                                        value={courseData.status}
-                                        readOnly
-                                        className={readOnlyInputClassName}
                                     />
                                 </div>
                             </CardContent>
                         </Card>
                     </div>
-                </div>
+                </form>
 
                 <Button
                     size="lg"
-                    className="w-full bg-slate-700 text-pink-200 hover:bg-pink-700/80 font-semibold text-lg group mb-6"
+                    className="w-full bg-slate-900 text-pink-400 hover:bg-slate-800 font-semibold text-lg group mb-6"
                     onClick={() => {
-                        router.push(`/instructor/dashboard/courses/${courseData.id}/materials`);
+                        router.push(`/instructor/dashboard/courses/${course.id}/materials`);
                     }}
                 >
                     <FileText className="mr-2 h-5 w-5" />
