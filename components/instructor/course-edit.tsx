@@ -22,6 +22,7 @@ import {
     UserIcon,
     XCircle,
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
@@ -96,6 +97,19 @@ export default function CourseEdit({ course }: { course: any }) {
             <div className="max-w-7xl mx-auto space-y-8">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
+                        {course.course_image && (
+                            <Image
+                                src={course.course_image || "/placeholder.svg"}
+                                alt="Course"
+                                className="rounded-lg border-2 border-slate-700 shadow"
+                                width={64}
+                                height={64}
+                                style={{
+                                    objectFit: "fill",
+                                    aspectRatio: "1/1",
+                                }}
+                            />
+                        )}
                         <Edit3 className="h-8 w-8 text-cyan-400" />
                         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 text-transparent bg-clip-text">
                             Edit Course: {course.course_title}
