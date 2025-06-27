@@ -5,7 +5,6 @@ import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
 import { AlertTriangle, CheckCircle, Clock, Search, User, XCircle } from "lucide-react";
 import Link from "next/link";
 
-// Accept searchParams from Next.js
 export default async function InstructorsPage({ searchParams }: { searchParams?: { search?: string } }) {
     const search = searchParams?.search || "";
     let supabaseInstructors = [];

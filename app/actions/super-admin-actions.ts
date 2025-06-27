@@ -174,3 +174,68 @@ export async function handleSuspendInstructorProfile(id: string) {
         };
     }
 }
+
+export async function handleCourseEdit(formData: FormData) {
+    try {
+        const id = formData.get("course_id");
+        const course_title = formData.get("course_title");
+        const short_description = formData.get("short_description");
+        const full_description = formData.get("full_description");
+        const course_contents = formData.get("course_contents");
+        const duration = formData.get("duration");
+        const course_image = formData.get("course_image");
+        const start_date = formData.get("start_date");
+        const external_learning_platform_link = formData.get("external_learning_platform_link");
+        const price = formData.get("price");
+        const category = formData.get("category");
+        const level = formData.get("level");
+        const enrollment_count = formData.get("enrollment_count");
+        const prerequisites = formData.get("prerequisites");
+        const learning_outcomes = formData.get("learning_outcomes");
+        const status = formData.get("status");
+
+        if (isNaN(Number(price)) || Number(price) < 0) {
+            return { success: false, message: "Price must be a non-negative number." };
+        }
+        if (enrollment_count && (isNaN(Number(enrollment_count)) || Number(enrollment_count) < 0)) {
+            return { success: false, message: "Enrollment count must be a non-negative number." };
+        }
+        if (start_date && isNaN(Date.parse(start_date.toString()))) {
+            return { success: false, message: "Start date is invalid." };
+        }
+        if (external_learning_platform_link && !/^https?:\/\//.test(external_learning_platform_link.toString())) {
+            return { success: false, message: "External link must be a valid URL." };
+        }
+
+        const { error } = await supabaseServiceRoleClient
+            .from("courses")
+            .update({
+                course_title,
+                short_description,
+                full_description,
+                course_contents,
+                duration,
+                course_image,
+                start_date,
+                external_learning_platform_link,
+                price: Number(price),
+                category,
+                level,
+                enrollment_count: Number(enrollment_count),
+                prerequisites,
+                learning_outcomes,
+                status,
+            })
+            .eq("id", id);
+
+        if (error) {
+            logger.error("Error updating course:", error);
+            return { success: false, message: error?.message || "Failed to update course." };
+        }
+
+        return { success: true, message: "Course updated successfully!" };
+    } catch (error: any) {
+        logger.error("Exception in editCourse:", error);
+        return { success: false, message: error.message || "An error occurred." };
+    }
+}

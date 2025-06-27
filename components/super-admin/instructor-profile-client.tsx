@@ -38,30 +38,6 @@ export interface InstructorProfileClientProps {
     instructor: any;
 }
 
-// const instructor = {
-//     id: params.id,
-//     name: "John Doe",
-//     email: "john@aariyatech.com",
-//     phone: "+1 (555) 123-4567",
-//     address: "123 Tech Street, Silicon Valley, CA 94000",
-//     bio: "Experienced software engineer with 10+ years in full-stack development. Passionate about teaching modern web technologies and helping students build real-world applications.",
-//     area_of_expertise: ["React", "Node.js", "Python", "Machine Learning"],
-//     experience: "10+ years",
-//     education: "MS Computer Science, Stanford University",
-//     certifications: ["AWS Certified", "Google Cloud Professional", "Certified Kubernetes Administrator"],
-//     status: "approved", // pending, approved, rejected, banned
-//     joinDate: "2023-01-15",
-//     lastLogin: "2023-04-15",
-//     coursesCreated: 12,
-//     studentsEnrolled: 1250,
-//     rating: 4.8,
-//     totalReviews: 156,
-//     isActive: true,
-//     canCreateCourses: true,
-//     maxStudentsPerCourse: 100,
-//     profileImage: "/placeholder.svg?height=120&width=120&text=JD",
-// };
-
 export function InstructorProfileClient({ instructor }: InstructorProfileClientProps) {
     const { toast } = useToast();
     const router = useRouter();
