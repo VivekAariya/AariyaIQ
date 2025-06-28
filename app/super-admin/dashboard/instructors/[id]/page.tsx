@@ -23,6 +23,11 @@ export default async function InstructorProfilePage({ params, searchParams }: In
         .eq("id", params.id)
         .single();
 
+    const { data: courses, error: courseError } = await supabaseServiceRoleClient
+        .from("courses")
+        .select("*")
+        .eq("instructor", params.id);
+
     if (error) {
         logger.error("Error fetching instructors:", error);
         errorMsg = error.message || "Unknown error";
@@ -33,7 +38,27 @@ export default async function InstructorProfilePage({ params, searchParams }: In
                     <h1 className="text-2xl font-bold mb-4">Error Fetching Instructor</h1>
                     <p className="text-gray-400">{errorMsg}</p>
                     <Button variant="outline" className="mt-4" asChild>
-                        <Link href="/super-admin/dashboard/admins">
+                        <Link href="/super-admin/dashboard">
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Admins
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    if (courseError) {
+        logger.error("Error fetching courses:", courseError);
+        errorMsg = courseError.message || "Unknown error";
+
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">Error Fetching Courses</h1>
+                    <p className="text-gray-400">{errorMsg}</p>
+                    <Button variant="outline" className="mt-4" asChild>
+                        <Link href="/super-admin/dashboard">
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             Back to Admins
                         </Link>
@@ -50,7 +75,7 @@ export default async function InstructorProfilePage({ params, searchParams }: In
                     <h1 className="text-2xl font-bold mb-4">Instructor Not Found</h1>
                     <p className="text-gray-400">{errorMsg || "The requested instructor profile does not exist."}</p>
                     <Button variant="outline" className="mt-4" asChild>
-                        <Link href="/super-admin/dashboard/admins">
+                        <Link href="/super-admin/dashboard">
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             Back to Admins
                         </Link>
@@ -60,5 +85,22 @@ export default async function InstructorProfilePage({ params, searchParams }: In
         );
     }
 
-    return <InstructorProfileClient instructor={instructor} />;
+    if (!courses) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">Courses Not Found</h1>
+                    <p className="text-gray-400">{errorMsg || "The requested courses does not exist."}</p>
+                    <Button variant="outline" className="mt-4" asChild>
+                        <Link href="/super-admin/dashboard">
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Admins
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    return <InstructorProfileClient instructor={instructor} courses={courses} />;
 }

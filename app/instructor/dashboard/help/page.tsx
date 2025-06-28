@@ -1,32 +1,42 @@
 "use client";
 
+import { feedback, support } from "@/app/actions/instructor-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle, CheckCircle, Mail, MessageSquare, Send } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useToast } from "@/hooks/use-toast";
+import logger from "@/utils/logger";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
+import { Mail, MessageSquare, Send } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
 
 export default function AdminHelpPage() {
+    const { toast } = useToast();
+
     const [isPending, startTransition] = useTransition();
-    const [contactState, setContactState] = useState<any>(null);
-    const [feedbackState, setFeedbackState] = useState<any>(null);
+
+    const [supabase] = useState(() => createClient());
+    const [user, setUser] = useState<User | null>(null);
 
     const handleContactSubmit = async (formData: FormData) => {
         startTransition(async () => {
-            try {
-                // Simulate API call
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                setContactState({
-                    success: true,
-                    message: "Your message has been sent successfully! We'll get back to you within 24 hours.",
+            formData.set("id", user?.id || "");
+
+            const result = await support(formData);
+            if (!result?.success) {
+                toast({
+                    title: "Error",
+                    description: result?.message || "An unexpected error occurred",
+                    variant: "destructive",
                 });
-            } catch (error) {
-                setContactState({
-                    success: false,
-                    message: "Failed to send message. Please try again.",
+            } else if (result?.success) {
+                toast({
+                    title: "Success",
+                    description: result?.message || "Message sent successfully!",
                 });
             }
         });
@@ -34,21 +44,39 @@ export default function AdminHelpPage() {
 
     const handleFeedbackSubmit = async (formData: FormData) => {
         startTransition(async () => {
-            try {
-                // Simulate API call
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                setFeedbackState({
-                    success: true,
-                    message: "Thank you for your feedback! Your suggestions help us improve the platform.",
+            const result = await feedback(formData);
+            if (!result?.success) {
+                toast({
+                    title: "Error",
+                    description: result?.message || "An unexpected error occurred",
+                    variant: "destructive",
                 });
-            } catch (error) {
-                setFeedbackState({
-                    success: false,
-                    message: "Failed to submit feedback. Please try again.",
+            } else if (result?.success) {
+                toast({
+                    title: "Success",
+                    description: result?.message || "Message sent successfully!",
                 });
             }
         });
     };
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const { data, error } = await supabase.auth.getUser();
+
+                if (error || !data.user) {
+                    logger.error("Error fetching user data:", error);
+                }
+
+                setUser(data?.user);
+            } catch (error: any) {
+                logger.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUser();
+    }, []);
 
     return (
         <div className="container mx-auto p-6 max-w-4xl">
@@ -77,7 +105,8 @@ export default function AdminHelpPage() {
                                 Contact Support
                             </CardTitle>
                             <CardDescription>
-                                Need help? Send us a message and we'll respond within 24 hours.
+                                Need help? Send us a message and we'll respond within 24 hours. Or you can also email us
+                                at hello@aariyatech.co.uk
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -119,6 +148,7 @@ export default function AdminHelpPage() {
                                     <select
                                         id="contact-priority"
                                         name="priority"
+                                        required
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent"
                                     >
                                         <option value="low" className="bg-transparent text-black">
@@ -154,23 +184,6 @@ export default function AdminHelpPage() {
                                         </>
                                     )}
                                 </Button>
-
-                                {contactState && (
-                                    <div
-                                        className={`flex items-center gap-2 p-4 rounded-md ${
-                                            contactState.success
-                                                ? "bg-green-50 text-green-800 border border-green-200"
-                                                : "bg-red-50 text-red-800 border border-red-200"
-                                        }`}
-                                    >
-                                        {contactState.success ? (
-                                            <CheckCircle className="h-5 w-5" />
-                                        ) : (
-                                            <AlertCircle className="h-5 w-5" />
-                                        )}
-                                        <span>{contactState.message}</span>
-                                    </div>
-                                )}
                             </form>
                         </CardContent>
                     </Card>
@@ -214,6 +227,7 @@ export default function AdminHelpPage() {
                                     <select
                                         id="feedback-category"
                                         name="category"
+                                        required
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-transparent"
                                     >
                                         <option value="feature" className="bg-transparent text-black">
@@ -239,16 +253,31 @@ export default function AdminHelpPage() {
 
                                 <div className="space-y-2">
                                     <Label htmlFor="feedback-rating">Overall Experience</Label>
-                                    <div className="flex gap-2">
-                                        {[1, 2, 3, 4, 5].map((rating) => (
-                                            <label key={rating} className="flex items-center">
-                                                <input type="radio" name="rating" value={rating} className="sr-only" />
-                                                <div className="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer hover:border-purple-500 hover:bg-purple-50">
-                                                    {rating}
-                                                </div>
-                                            </label>
-                                        ))}
-                                    </div>
+                                    <select
+                                        id="feedback-rating"
+                                        name="rating"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-transparent"
+                                    >
+                                        <option value="" disabled selected>
+                                            Select a rating
+                                        </option>
+                                        <option className="text-black" value="1">
+                                            1 - Poor
+                                        </option>
+                                        <option className="text-black" value="2">
+                                            2
+                                        </option>
+                                        <option className="text-black" value="3">
+                                            3
+                                        </option>
+                                        <option className="text-black" value="4">
+                                            4
+                                        </option>
+                                        <option className="text-black" value="5">
+                                            5 - Excellent
+                                        </option>
+                                    </select>
                                     <p className="text-sm text-gray-500">1 = Poor, 5 = Excellent</p>
                                 </div>
 
@@ -263,18 +292,6 @@ export default function AdminHelpPage() {
                                     />
                                 </div>
 
-                                <div className="flex items-center space-x-2">
-                                    <input
-                                        type="checkbox"
-                                        id="feedback-anonymous"
-                                        name="anonymous"
-                                        className="rounded border-gray-300"
-                                    />
-                                    <Label htmlFor="feedback-anonymous" className="text-sm">
-                                        Submit anonymously
-                                    </Label>
-                                </div>
-
                                 <Button type="submit" disabled={isPending} className="w-full">
                                     {isPending ? (
                                         "Submitting..."
@@ -285,66 +302,11 @@ export default function AdminHelpPage() {
                                         </>
                                     )}
                                 </Button>
-
-                                {feedbackState && (
-                                    <div
-                                        className={`flex items-center gap-2 p-4 rounded-md ${
-                                            feedbackState.success
-                                                ? "bg-green-50 text-green-800 border border-green-200"
-                                                : "bg-red-50 text-red-800 border border-red-200"
-                                        }`}
-                                    >
-                                        {feedbackState.success ? (
-                                            <CheckCircle className="h-5 w-5" />
-                                        ) : (
-                                            <AlertCircle className="h-5 w-5" />
-                                        )}
-                                        <span>{feedbackState.message}</span>
-                                    </div>
-                                )}
                             </form>
                         </CardContent>
                     </Card>
                 </TabsContent>
             </Tabs>
-
-            {/* Quick Help Section */}
-            {/* <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Quick Help</CardTitle>
-          <CardDescription>Common questions and resources</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <h4 className="font-semibold text-gray-900">Frequently Asked Questions</h4>
-              <div className="space-y-2">
-                <div className="p-3 bg-gray-50 rounded-md">
-                  <p className="font-medium text-sm">How do I create a new course?</p>
-                  <p className="text-sm text-white">Navigate to Manage Courses and click "Add New Course"</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-md">
-                  <p className="font-medium text-sm">How do I manage student enrollments?</p>
-                  <p className="text-sm text-white">Go to Manage Users to view and manage student accounts</p>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <h4 className="font-semibold text-gray-900">Contact Information</h4>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm">hello@aariyatech.co.uk</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">Response Time</Badge>
-                  <span className="text-sm">Within 24 hours</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card> */}
         </div>
     );
 }

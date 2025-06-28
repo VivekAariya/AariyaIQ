@@ -3,7 +3,7 @@
 import logger from "@/utils/logger";
 import { render } from "@react-email/render";
 import type React from "react";
-import { Resend } from "resend";
+import { CreateEmailOptions, Resend } from "resend";
 
 // Email configuration
 const emailConfig = {
@@ -618,14 +618,14 @@ function InstructorBanTemplate({ data }: { data: EmailData }) {
         <BaseTemplate title="Instructor Account Banned">
             <h2>Hello {data.recipientName || "there"},</h2>
             <p>
-                We regret to inform you that your instructor account with AariyaIQ Learning Hub has been <strong>banned</strong> due to a serious violation of our terms of service or code of conduct.
+                We regret to inform you that your instructor account with AariyaIQ Learning Hub has been{" "}
+                <strong>banned</strong> due to a serious violation of our terms of service or code of conduct.
             </p>
             <p>
-                If you believe this was a mistake or would like to appeal, please contact our support team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+                If you believe this was a mistake or would like to appeal, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
             </p>
-            <p>
-                Thank you for your understanding.
-            </p>
+            <p>Thank you for your understanding.</p>
         </BaseTemplate>
     );
 }
@@ -635,18 +635,127 @@ function InstructorSuspendTemplate({ data }: { data: EmailData }) {
         <BaseTemplate title="Instructor Account Suspended">
             <h2>Hello {data.recipientName || "there"},</h2>
             <p>
-                Your instructor account with AariyaIQ Learning Hub has been <strong>suspended</strong>. This action was taken due to a violation of our policies or pending investigation.
+                Your instructor account with AariyaIQ Learning Hub has been <strong>suspended</strong>. This action was
+                taken due to a violation of our policies or pending investigation.
             </p>
             <p>
-                If you have questions or wish to resolve this matter, please contact our support team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+                If you have questions or wish to resolve this matter, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
             </p>
-            <p>
-                We appreciate your cooperation.
-            </p>
+            <p>We appreciate your cooperation.</p>
         </BaseTemplate>
     );
 }
 
+function SupportTemplate({
+    data,
+}: {
+    data: {
+        id: string | null;
+        name: string | null;
+        email: string | null;
+        subject: string | null;
+        priority: string | null;
+        message: string | null;
+    };
+}) {
+    return (
+        <BaseTemplate title={`New Support Request`}>
+            <h2 style={{ color: "#0ea5e9" }}>Support Request</h2>
+            <div
+                style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f0f9ff",
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                }}
+            >
+                <p>
+                    <strong>Name:</strong> {data.name || "N/A"}
+                </p>
+                <p>
+                    <strong>Email:</strong> {data.email || "N/A"}
+                </p>
+                <p>
+                    <strong>Subject:</strong> {data.subject || "N/A"}
+                </p>
+                <p>
+                    <strong>Priority:</strong> {data.priority || "N/A"}
+                </p>
+                <p>
+                    <strong>User ID:</strong> {data.id || "N/A"}
+                </p>
+            </div>
+            <div
+                style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#fff7ed",
+                    borderRadius: "8px",
+                    border: "1px solid #f59e0b",
+                }}
+            >
+                <h4 style={{ margin: 0, color: "#d97706" }}>Message</h4>
+                <p style={{ margin: 0 }}>{data.message || "N/A"}</p>
+            </div>
+            <p style={{ fontSize: "14px", color: "#6b7280" }}>This email was sent from the AariyaIQ Support form.</p>
+        </BaseTemplate>
+    );
+}
+
+function FeedbackTemplate({
+    data,
+}: {
+    data: {
+        name: string | null;
+        email: string | null;
+        category: string | null;
+        rating: string | null;
+        message: string | null;
+    };
+}) {
+    return (
+        <BaseTemplate title="New Feedback Received">
+            <h2 style={{ color: "#10b981" }}>Feedback Submission</h2>
+            <div
+                style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f0fdf4",
+                    borderRadius: "8px",
+                    border: "1px solid #bbf7d0",
+                }}
+            >
+                <p>
+                    <strong>Name:</strong> {data.name || "N/A"}
+                </p>
+                <p>
+                    <strong>Email:</strong> {data.email || "N/A"}
+                </p>
+                <p>
+                    <strong>Category:</strong> {data.category || "N/A"}
+                </p>
+                <p>
+                    <strong>Rating:</strong> {data.rating || "N/A"}
+                </p>
+            </div>
+            <div
+                style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#fef9c3",
+                    borderRadius: "8px",
+                    border: "1px solid #fde68a",
+                }}
+            >
+                <h4 style={{ margin: 0, color: "#ca8a04" }}>Message</h4>
+                <p style={{ margin: 0 }}>{data.message || "N/A"}</p>
+            </div>
+            <p style={{ fontSize: "14px", color: "#6b7280" }}>This email was sent from the AariyaIQ Feedback form.</p>
+        </BaseTemplate>
+    );
+}
 // Initialize Resend with API key and error handling
 // function initializeResend() {
 //     const apiKey = process.env.RESEND_API_KEY;
@@ -932,6 +1041,188 @@ export async function testEmailService() {
                 testError: error instanceof Error ? error.message : "Unknown error",
                 timestamp: new Date().toISOString(),
             },
+        };
+    }
+}
+
+export async function sendSupportEmail({
+    id,
+    name,
+    email,
+    subject,
+    priority,
+    message,
+}: {
+    id: string | null;
+    name: string | null;
+    email: string | null;
+    subject: string | null;
+    priority: string | null;
+    message: string | null;
+}) {
+    try {
+        logger.log(`[SUPPORT/FEEDBACK EMAIL] Type: Support, From: ${email}, Name: ${name}`);
+
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] RESEND_API_KEY not found");
+            return {
+                success: false,
+                error: "Email service not configured. Please contact administrator.",
+                debug: { step: "api_key_check", hasKey: false },
+            };
+        }
+
+        let resend;
+        try {
+            resend = new Resend(apiKey);
+        } catch (initError) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] Failed to initialize Resend:", initError);
+            return {
+                success: false,
+                error: "Failed to initialize email service",
+                debug: { step: "resend_init", error: String(initError) },
+            };
+        }
+
+        // Compose the email HTML
+        let emailHtml: string;
+        try {
+            emailHtml = await render(<SupportTemplate data={{ id, name, email, subject, priority, message }} />);
+        } catch (renderError) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] Failed to render template:", renderError);
+            return {
+                success: false,
+                error: "Failed to generate email content",
+                debug: { step: "html_generation", error: String(renderError) },
+            };
+        }
+
+        const emailData: CreateEmailOptions = {
+            from: `AariyaIQ Support <${emailConfig.sender}>`,
+            to: emailConfig.sender,
+            subject: `[Support] ${subject || "No Subject"}`,
+            html: emailHtml,
+        };
+
+        const result = await resend.emails.send(emailData);
+        logger.log("[SUPPORT/FEEDBACK EMAIL] Email sent result:", result);
+
+        if (result.error) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending email:", result.error);
+            throw new Error(result.error.message);
+        }
+
+        const messageId = (result as any).id || (result as any).data?.id || null;
+
+        logger.log(`[SUPPORT/FEEDBACK EMAIL] Email sent! Message ID: ${messageId}`);
+
+        return {
+            success: true,
+            messageId,
+            debug: {
+                step: "send_success",
+                type: "support",
+                from: email,
+                subject,
+            },
+        };
+    } catch (error) {
+        logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending email:", error);
+        return {
+            success: false,
+            error: "Failed to send support/feedback email. Please try again later.",
+            debug: { step: "send_error", error: error instanceof Error ? error.message : String(error) },
+        };
+    }
+}
+
+export async function sendFeedbackEmail({
+    name,
+    email,
+    category,
+    rating,
+    message,
+}: {
+    name: string | null;
+    email: string | null;
+    category: string | null;
+    rating: string | null;
+    message: string | null;
+}) {
+    try {
+        logger.log(`[SUPPORT/FEEDBACK EMAIL] Type: FEEDBACK, From: ${email}, Name: ${name}`);
+
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] RESEND_API_KEY not found");
+            return {
+                success: false,
+                error: "Email service not configured. Please contact administrator.",
+                debug: { step: "api_key_check", hasKey: false },
+            };
+        }
+
+        let resend;
+        try {
+            resend = new Resend(apiKey);
+        } catch (initError) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] Failed to initialize Resend:", initError);
+            return {
+                success: false,
+                error: "Failed to initialize email service",
+                debug: { step: "resend_init", error: String(initError) },
+            };
+        }
+
+        // Compose the email HTML
+        let emailHtml: string;
+        try {
+            emailHtml = await render(<FeedbackTemplate data={{ name, email, category, rating, message }} />);
+        } catch (renderError) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] Failed to render template:", renderError);
+            return {
+                success: false,
+                error: "Failed to generate email content",
+                debug: { step: "html_generation", error: String(renderError) },
+            };
+        }
+
+        const emailData: CreateEmailOptions = {
+            from: `AariyaIQ FEEDBACK <${emailConfig.sender}>`,
+            to: emailConfig.sender,
+            subject: "[FEEDBACK]",
+            html: emailHtml,
+        };
+
+        const result = await resend.emails.send(emailData);
+        logger.log("[SUPPORT/FEEDBACK EMAIL] Email sent result:", result);
+
+        if (result.error) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending email:", result.error);
+            throw new Error(result.error.message);
+        }
+
+        const messageId = (result as any).id || (result as any).data?.id || null;
+
+        logger.log(`[SUPPORT/FEEDBACK EMAIL] Email sent! Message ID: ${messageId}`);
+
+        return {
+            success: true,
+            messageId,
+            debug: {
+                step: "send_success",
+                type: "feedback",
+                from: email,
+                subject: "FEEDBACK",
+            },
+        };
+    } catch (error) {
+        logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending email:", error);
+        return {
+            success: false,
+            error: "Failed to send support/feedback email. Please try again later.",
+            debug: { step: "send_error", error: error instanceof Error ? error.message : String(error) },
         };
     }
 }

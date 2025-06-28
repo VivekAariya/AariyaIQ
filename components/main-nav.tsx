@@ -112,7 +112,7 @@ export function MainNav() {
                             Home
                         </Link>
                         <Link
-                            href="/learnings"
+                            href="/courses"
                             className="flex items-center text-sm font-medium text-gray-300 hover:text-white"
                         >
                             Courses
@@ -196,7 +196,7 @@ export function MainNav() {
                             Home
                         </Link>
                         <Link
-                            href="/learnings"
+                            href="/courses"
                             className="flex items-center text-sm font-medium text-gray-300 hover:text-white"
                             onClick={() => setIsMenuOpen(false)}
                         >

@@ -1,5 +1,6 @@
 "use server";
 
+import { sendFeedbackEmail, sendSupportEmail } from "@/lib/email-service";
 import logger from "@/utils/logger";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
 
@@ -228,6 +229,62 @@ export async function submitCourseMaterial(formData: FormData, material: any) {
         return { success: true, message: "Course material uploaded successfully!" };
     } catch (error: any) {
         logger.error("Exception in submitCourseMaterial:", error);
+        return { success: false, message: error.message || "An error occurred." };
+    }
+}
+
+export async function support(formData: FormData) {
+    try {
+        const id = formData.get("id");
+        const name = formData.get("name");
+        const email = formData.get("email");
+        const subject = formData.get("subject");
+        const priority = formData.get("priority");
+        const message = formData.get("message");
+
+        if (!id || !name || !email || !subject || !priority || !message) {
+            return { success: false, message: "All fields are required." };
+        }
+
+        await sendSupportEmail({
+            id: id.toString(),
+            name: name.toString(),
+            email: email.toString(),
+            subject: subject.toString(),
+            priority: priority.toString(),
+            message: message.toString(),
+        });
+
+        return { success: true, message: "Message sent successfully!" };
+    } catch (error: any) {
+        logger.error("Exception in support:", error);
+        return { success: false, message: error.message || "An error occurred." };
+    }
+}
+
+export async function feedback(formData: FormData) {
+    try {
+        const name = formData.get("name");
+        const email = formData.get("email");
+        const category = formData.get("category");
+        const rating = formData.get("rating");
+        const feedback = formData.get("feedback");
+
+        if (!category || !rating || !feedback) {
+            return { success: false, message: `category, rating and feedback is required` };
+        }
+
+        await sendFeedbackEmail({
+            name: name?.toString() || "",
+            email: email?.toString() || "",
+            category: category?.toString() || "",
+            rating: rating.toString(),
+            message: feedback.toString(),
+        });
+
+        return { success: true, message: "Message sent successfully!" };
+    } catch (error: any) {
+        logger.error("Exception in feedback:", error);
         return { success: false, message: error.message || "An error occurred." };
     }
 }

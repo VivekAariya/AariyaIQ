@@ -36,9 +36,10 @@ import { useTransition } from "react";
 
 export interface InstructorProfileClientProps {
     instructor: any;
+    courses: any;
 }
 
-export function InstructorProfileClient({ instructor }: InstructorProfileClientProps) {
+export function InstructorProfileClient({ instructor, courses }: InstructorProfileClientProps) {
     const { toast } = useToast();
     const router = useRouter();
 
@@ -456,20 +457,61 @@ export function InstructorProfileClient({ instructor }: InstructorProfileClientP
 
                     {/* Courses Tab */}
                     <TabsContent value="courses" className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <Card className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-500/30 backdrop-blur-sm">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-cyan-300 text-sm font-medium">Courses Created</p>
-                                            <p className="text-3xl font-bold text-white">{instructor.coursesCreated}</p>
-                                        </div>
-                                        <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                                            <User className="h-6 w-6 text-cyan-400" />
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {courses && courses.length > 0 ? (
+                                courses.map((course: any) => (
+                                    <Card
+                                        key={course.id}
+                                        className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-500/30 backdrop-blur-sm hover:scale-105 transition-transform duration-200 shadow-lg"
+                                    >
+                                        <CardContent className="p-6 flex flex-col h-full justify-between">
+                                            <div>
+                                                <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
+                                                    {course.course_title}
+                                                </h3>
+                                                <p className="text-cyan-300 text-sm mb-2 line-clamp-2">
+                                                    {course.short_description}
+                                                </p>
+                                                <div className="flex items-center space-x-2 mb-2">
+                                                    <span className="text-xs text-gray-300 bg-cyan-700/30 px-2 py-1 rounded">
+                                                        {course.category || "General"}
+                                                    </span>
+                                                    <span className="text-xs text-gray-400">
+                                                        {course.level || "All Levels"}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center space-x-2 mb-4">
+                                                    <User className="h-4 w-4 text-cyan-400" />
+                                                    <span className="text-sm text-gray-200">
+                                                        {course.enrollment_count || 0} Students
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-end mt-4">
+                                                <Link
+                                                    href={`/super-admin/dashboard/courses/${course.id}`}
+                                                    passHref
+                                                    legacyBehavior
+                                                >
+                                                    <Button
+                                                        asChild
+                                                        variant="outline"
+                                                        className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10"
+                                                    >
+                                                        <a>View</a>
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))
+                            ) : (
+                                <Card className="col-span-3 bg-black/40 border-white/20 backdrop-blur-sm">
+                                    <CardContent className="p-6 text-center text-gray-400">
+                                        No courses found for this instructor.
+                                    </CardContent>
+                                </Card>
+                            )}
                         </div>
                     </TabsContent>
 

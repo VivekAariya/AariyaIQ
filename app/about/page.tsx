@@ -1092,7 +1092,7 @@ export default function AboutPage() {
                     courses and take the first step toward mastering the skills of tomorrow.
                   </p>
                   <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                    <Link href="/learnings">
+                    <Link href="/courses">
                       <Button className="bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white">
                         Explore Courses
                       </Button>

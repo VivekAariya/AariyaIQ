@@ -142,7 +142,7 @@ function HomeContent() {
               Discover industry-relevant courses designed to enhance your professional growth and career advancement.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Link href="/learnings">
+              <Link href="/courses">
                 <Button className="bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white">
                   Explore Courses
                 </Button>

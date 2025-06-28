@@ -36,7 +36,7 @@ export default function CourseRegistrationPage({ params }: { params: { courseId:
               <CardDescription>The course you are looking for does not exist.</CardDescription>
             </CardHeader>
             <CardFooter>
-              <Button onClick={() => router.push("/learnings")}>Back to Courses</Button>
+              <Button onClick={() => router.push("/courses")}>Back to Courses</Button>
             </CardFooter>
           </Card>
         </main>

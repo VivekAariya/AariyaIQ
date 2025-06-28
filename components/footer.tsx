@@ -39,7 +39,7 @@ export function Footer() {
                 Home
               </Link>
               <Link
-                href="/learnings"
+                href="/courses"
                 className="text-sm text-gray-400 hover:text-white relative neon-container neon-hover-only px-2 py-1 rounded w-fit"
               >
                 <div className="neon-right absolute"></div>
