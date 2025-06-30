@@ -100,6 +100,17 @@ export function SuperAdminSidebar() {
                             Approvals
                         </Link>
                         <Link
+                            href="/super-admin/dashboard/promo-codes"
+                            className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+                                pathname.startsWith("/super-admin/dashboard/promo-codes")
+                                    ? "bg-indigo-600/50 text-white font-bold"
+                                    : "hover:bg-white/10"
+                            }`}
+                        >
+                            <Shield className="mr-2 h-4 w-4" />
+                            Promo Codes
+                        </Link>
+                        <Link
                             href="/super-admin/dashboard/settings"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname === "/super-admin/dashboard/settings"
