@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
-import { BookOpen, FileText, Home, LogOut, Menu, Settings, User, X } from "lucide-react";
+import { BookOpen, FileText, HelpCircle, Home, LogOut, Menu, Settings, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -48,7 +48,7 @@ export function Sidebar() {
                         <Link
                             href="/learner/dashboard"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname === "/dashboard" ? "bg-white/20 text-white" : "hover:bg-white/10"
+                                pathname === "/learner/dashboard" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
                         >
                             <Home className="mr-2 h-4 w-4" />
@@ -68,7 +68,7 @@ export function Sidebar() {
                         <Link
                             href="/learner/dashboard/profile"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname === "/dashboard/profile" ? "bg-white/20 text-white" : "hover:bg-white/10"
+                                pathname === "/learner/dashboard/profile" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
                         >
                             <User className="mr-2 h-4 w-4" />
@@ -77,13 +77,22 @@ export function Sidebar() {
                         <Link
                             href="/learner/dashboard/learner-application"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname === "/dashboard/learner-application"
+                                pathname === "/learner/dashboard/learner-application"
                                     ? "bg-white/20 text-white"
                                     : "hover:bg-white/10"
                             }`}
                         >
                             <FileText className="mr-2 h-4 w-4" />
                             Learner Application Status
+                        </Link>
+                        <Link
+                            href="/learner/dashboard/help"
+                            className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+                                pathname === "/learner/dashboard/help" ? "bg-white/20 text-white" : "hover:bg-white/10"
+                            }`}
+                        >
+                            <HelpCircle className="mr-2 h-4 w-4" />
+                            Help
                         </Link>
                         <Button
                             variant="ghost"

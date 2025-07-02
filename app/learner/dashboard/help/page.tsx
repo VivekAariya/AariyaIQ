@@ -1,316 +1,312 @@
 "use client";
 
+import { feedback, support } from "@/app/actions/instructor-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, MessageSquare, Star } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useToast } from "@/hooks/use-toast";
+import logger from "@/utils/logger";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
+import { Mail, MessageSquare, Send } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
 
-export default function LearnerHelpPage() {
+export default function HelpPage() {
+    const { toast } = useToast();
+
     const [isPending, startTransition] = useTransition();
-    const [contactState, setContactState] = useState<any>(null);
-    const [feedbackState, setFeedbackState] = useState<any>(null);
-    const [rating, setRating] = useState(0);
+
+    const [supabase] = useState(() => createClient());
+    const [user, setUser] = useState<User | null>(null);
 
     const handleContactSubmit = async (formData: FormData) => {
         startTransition(async () => {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            setContactState({
-                success: true,
-                message: "Your message has been sent successfully! We'll get back to you within 24 hours.",
-            });
+            formData.set("id", user?.id || "");
+
+            const result = await support(formData);
+            if (!result?.success) {
+                toast({
+                    title: "Error",
+                    description: result?.message || "An unexpected error occurred",
+                    variant: "destructive",
+                });
+            } else if (result?.success) {
+                toast({
+                    title: "Success",
+                    description: result?.message || "Message sent successfully!",
+                });
+            }
         });
     };
 
     const handleFeedbackSubmit = async (formData: FormData) => {
         startTransition(async () => {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            setFeedbackState({
-                success: true,
-                message: "Thank you for your feedback! Your input helps us improve the learning experience.",
-            });
+            const result = await feedback(formData);
+            if (!result?.success) {
+                toast({
+                    title: "Error",
+                    description: result?.message || "An unexpected error occurred",
+                    variant: "destructive",
+                });
+            } else if (result?.success) {
+                toast({
+                    title: "Success",
+                    description: result?.message || "Message sent successfully!",
+                });
+            }
         });
     };
 
-    const StarRating = ({ rating, setRating }: { rating: number; setRating: (rating: number) => void }) => {
-        return (
-            <div className="flex space-x-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                        key={star}
-                        className={`h-6 w-6 cursor-pointer transition-colors ${
-                            star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                        }`}
-                        onClick={() => setRating(star)}
-                    />
-                ))}
-            </div>
-        );
-    };
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const { data, error } = await supabase.auth.getUser();
+
+                if (error || !data.user) {
+                    logger.error("Error fetching user data:", error);
+                }
+
+                setUser(data?.user);
+            } catch (error: any) {
+                logger.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUser();
+    }, []);
 
     return (
         <div className="container mx-auto p-6 max-w-4xl">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-white mb-2">Help & Support</h1>
-                <p className="text-white">Get assistance with your learning journey or share your feedback</p>
+                <p className="text-white">Get assistance or share your feedback to help us improve</p>
             </div>
 
-            <Tabs defaultValue="contact" className="space-y-6">
+            <Tabs defaultValue="contact" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="contact">Contact Support</TabsTrigger>
-                    <TabsTrigger value="feedback">Share Feedback</TabsTrigger>
+                    <TabsTrigger value="contact" className="flex items-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        Contact Support
+                    </TabsTrigger>
+                    <TabsTrigger value="feedback" className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        Send Feedback
+                    </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="contact" className="space-y-6">
+                <TabsContent value="contact" className="mt-6">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Mail className="h-5 w-5" />
+                                <Mail className="h-5 w-5 text-blue-600" />
                                 Contact Support
                             </CardTitle>
                             <CardDescription>
-                                Need help with your courses, account, or have technical issues? Send us a message and
-                                we'll assist you.
+                                Need help? Send us a message and we'll respond within 24 hours. Or you can also email us
+                                at hello@aariyatech.co.uk
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <form action={handleContactSubmit} className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label htmlFor="contact-name">Full Name *</Label>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="contact-name">Full Name</Label>
                                         <Input
                                             id="contact-name"
                                             name="name"
-                                            required
                                             placeholder="Enter your full name"
+                                            required
                                         />
                                     </div>
-                                    <div>
-                                        <Label htmlFor="contact-email">Email Address *</Label>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="contact-email">Email Address</Label>
                                         <Input
                                             id="contact-email"
                                             name="email"
                                             type="email"
+                                            placeholder="Enter your email"
                                             required
-                                            placeholder="Enter your email address"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label htmlFor="contact-subject">Subject *</Label>
-                                        <Input
-                                            id="contact-subject"
-                                            name="subject"
-                                            required
-                                            placeholder="Brief description of your issue"
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="contact-category">Category</Label>
-                                        <Select name="category">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select category" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="course-access">Course Access</SelectItem>
-                                                <SelectItem value="technical-issue">Technical Issue</SelectItem>
-                                                <SelectItem value="account-help">Account Help</SelectItem>
-                                                <SelectItem value="payment-billing">Payment & Billing</SelectItem>
-                                                <SelectItem value="general-inquiry">General Inquiry</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="contact-subject">Subject</Label>
+                                    <Input
+                                        id="contact-subject"
+                                        name="subject"
+                                        placeholder="Brief description of your inquiry"
+                                        required
+                                    />
                                 </div>
 
-                                <div>
+                                <div className="space-y-2">
                                     <Label htmlFor="contact-priority">Priority Level</Label>
-                                    <Select name="priority">
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select priority" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="low">Low - General question</SelectItem>
-                                            <SelectItem value="medium">Medium - Need assistance</SelectItem>
-                                            <SelectItem value="high">High - Urgent issue</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <select
+                                        id="contact-priority"
+                                        name="priority"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent"
+                                    >
+                                        <option value="low" className="bg-transparent text-black">
+                                            Low - General inquiry
+                                        </option>
+                                        <option value="medium" className="bg-transparent text-black">
+                                            Medium - Need assistance
+                                        </option>
+                                        <option value="high" className="bg-transparent text-black">
+                                            High - Urgent issue
+                                        </option>
+                                    </select>
                                 </div>
 
-                                <div>
-                                    <Label htmlFor="contact-message">Message *</Label>
+                                <div className="space-y-2">
+                                    <Label htmlFor="contact-message">Message</Label>
                                     <Textarea
                                         id="contact-message"
                                         name="message"
+                                        placeholder="Describe your issue or question in detail..."
+                                        rows={6}
                                         required
-                                        placeholder="Please describe your issue or question in detail..."
-                                        className="min-h-[120px]"
                                     />
                                 </div>
 
                                 <Button type="submit" disabled={isPending} className="w-full">
-                                    {isPending ? "Sending..." : "Send Message"}
+                                    {isPending ? (
+                                        "Sending..."
+                                    ) : (
+                                        <>
+                                            <Send className="mr-2 h-4 w-4" />
+                                            Send Message
+                                        </>
+                                    )}
                                 </Button>
-
-                                {contactState && (
-                                    <div
-                                        className={`p-4 rounded-md ${contactState.success ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"}`}
-                                    >
-                                        {contactState.message}
-                                    </div>
-                                )}
                             </form>
                         </CardContent>
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="feedback" className="space-y-6">
+                <TabsContent value="feedback" className="mt-6">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <MessageSquare className="h-5 w-5" />
-                                Share Your Feedback
+                                <MessageSquare className="h-5 w-5 text-purple-600" />
+                                Send Feedback
                             </CardTitle>
                             <CardDescription>
-                                Help us improve your learning experience by sharing your thoughts and suggestions.
+                                Help us improve by sharing your thoughts, suggestions, and ideas.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <form action={handleFeedbackSubmit} className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label htmlFor="feedback-name">Name (Optional)</Label>
-                                        <Input id="feedback-name" name="name" placeholder="Enter your name" />
+                                    <div className="space-y-2">
+                                        <Label htmlFor="feedback-name">Your Name</Label>
+                                        <Input
+                                            id="feedback-name"
+                                            name="name"
+                                            placeholder="Enter your name (optional)"
+                                        />
                                     </div>
-                                    <div>
-                                        <Label htmlFor="feedback-email">Email (Optional)</Label>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="feedback-email">Email Address</Label>
                                         <Input
                                             id="feedback-email"
                                             name="email"
                                             type="email"
-                                            placeholder="Enter your email"
+                                            placeholder="Enter your email (optional)"
                                         />
                                     </div>
                                 </div>
 
-                                <div>
+                                <div className="space-y-2">
                                     <Label htmlFor="feedback-category">Feedback Category</Label>
-                                    <Select name="category">
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="What would you like to give feedback about?" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="course-content">Course Content</SelectItem>
-                                            <SelectItem value="platform-usability">Platform Usability</SelectItem>
-                                            <SelectItem value="instructor-quality">Instructor Quality</SelectItem>
-                                            <SelectItem value="technical-performance">Technical Performance</SelectItem>
-                                            <SelectItem value="feature-request">Feature Request</SelectItem>
-                                            <SelectItem value="general-experience">General Experience</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <select
+                                        id="feedback-category"
+                                        name="category"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-transparent"
+                                    >
+                                        <option value="feature" className="bg-transparent text-black">
+                                            Feature Request
+                                        </option>
+                                        <option value="improvement" className="bg-transparent text-black">
+                                            Improvement Suggestion
+                                        </option>
+                                        <option value="bug" className="bg-transparent text-black">
+                                            Bug Report
+                                        </option>
+                                        <option value="ui" className="bg-transparent text-black">
+                                            User Interface
+                                        </option>
+                                        <option value="performance" className="bg-transparent text-black">
+                                            Performance
+                                        </option>
+                                        <option value="other" className="bg-transparent text-black">
+                                            Other
+                                        </option>
+                                    </select>
                                 </div>
 
-                                <div>
-                                    <Label>Overall Rating</Label>
-                                    <div className="flex items-center space-x-2 mt-2">
-                                        <StarRating rating={rating} setRating={setRating} />
-                                        <span className="text-sm text-white">
-                                            {rating > 0 && `${rating} out of 5 stars`}
-                                        </span>
-                                    </div>
-                                    <input type="hidden" name="rating" value={rating} />
+                                <div className="space-y-2">
+                                    <Label htmlFor="feedback-rating">Overall Experience</Label>
+                                    <select
+                                        id="feedback-rating"
+                                        name="rating"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-transparent"
+                                    >
+                                        <option value="" disabled selected>
+                                            Select a rating
+                                        </option>
+                                        <option className="text-black" value="1">
+                                            1 - Poor
+                                        </option>
+                                        <option className="text-black" value="2">
+                                            2
+                                        </option>
+                                        <option className="text-black" value="3">
+                                            3
+                                        </option>
+                                        <option className="text-black" value="4">
+                                            4
+                                        </option>
+                                        <option className="text-black" value="5">
+                                            5 - Excellent
+                                        </option>
+                                    </select>
+                                    <p className="text-sm text-gray-500">1 = Poor, 5 = Excellent</p>
                                 </div>
 
-                                <div>
-                                    <Label htmlFor="feedback-message">Your Feedback *</Label>
+                                <div className="space-y-2">
+                                    <Label htmlFor="feedback-message">Your Feedback</Label>
                                     <Textarea
                                         id="feedback-message"
                                         name="feedback"
+                                        placeholder="Share your thoughts, suggestions, or report issues..."
+                                        rows={6}
                                         required
-                                        placeholder="Share your thoughts, suggestions, or experiences..."
-                                        className="min-h-[120px]"
                                     />
                                 </div>
 
-                                <div className="flex items-center space-x-2">
-                                    <input type="checkbox" id="anonymous" name="anonymous" className="rounded" />
-                                    <Label htmlFor="anonymous" className="text-sm">
-                                        Submit anonymously (your contact details won't be shared)
-                                    </Label>
-                                </div>
-
                                 <Button type="submit" disabled={isPending} className="w-full">
-                                    {isPending ? "Submitting..." : "Submit Feedback"}
+                                    {isPending ? (
+                                        "Submitting..."
+                                    ) : (
+                                        <>
+                                            <MessageSquare className="mr-2 h-4 w-4" />
+                                            Submit Feedback
+                                        </>
+                                    )}
                                 </Button>
-
-                                {feedbackState && (
-                                    <div
-                                        className={`p-4 rounded-md ${feedbackState.success ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"}`}
-                                    >
-                                        {feedbackState.message}
-                                    </div>
-                                )}
                             </form>
                         </CardContent>
                     </Card>
                 </TabsContent>
             </Tabs>
-
-            {/* Quick Help Section */}
-            {/*  <Card className="mt-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <HelpCircle className="h-5 w-5" />
-            Quick Help
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold mb-3">Frequently Asked Questions</h4>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Q: How do I access my enrolled courses?</strong>
-                  <p className="text-white">Go to Dashboard → My Courses to view all your enrolled courses.</p>
-                </div>
-                <div>
-                  <strong>Q: I forgot my password. How can I reset it?</strong>
-                  <p className="text-white">
-                    Use the "Forgot Password" link on the login page to reset your password.
-                  </p>
-                </div>
-                <div>
-                  <strong>Q: How do I update my profile information?</strong>
-                  <p className="text-white">Navigate to Dashboard → Profile to update your personal information.</p>
-                </div>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3">Contact Information</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4" />
-                  <span>support@aariyatech.co.uk</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  <span>+44 (0) 20 1234 5678</span>
-                </div>
-                <div className="mt-3">
-                  <Badge variant="outline">Response Time: Within 24 hours</Badge>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>*/}
         </div>
     );
 }
