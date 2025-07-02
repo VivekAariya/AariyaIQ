@@ -5,20 +5,21 @@ import { MainNav } from "@/components/main-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useToast } from "@/hooks/use-toast";
+import logger from "@/utils/logger";
+import { createClient } from "@/utils/supabase/client";
 import { AlertCircle, CheckCircle, Eye, EyeOff, Loader2, Lock } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 
 export default function ResetPasswordPage() {
-    const supabase = useSupabaseClient();
-    const searchParams = useSearchParams();
+    const { toast } = useToast();
     const router = useRouter();
-    // const token = searchParams.get("token");
-    const code = searchParams.get("code");
 
     const [isPending, startTransition] = useTransition();
+
+    const [supabase] = useState(createClient());
     const [state, setState] = useState<any>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -85,84 +86,27 @@ export default function ResetPasswordPage() {
                 return;
             }
 
-            if (!code) {
-                setState({
-                    success: false,
-                    message: "Invalid reset code",
-                });
-                return;
-            }
-
             const result = await updatePassword(password);
             setState(result);
 
             if (result.success) {
-                setTimeout(() => {
-                    router.push("/login");
-                }, 2000);
+                logger.log("Password update result:", result);
+
+                toast({
+                    title: "Success",
+                    description: result.message,
+                });
+            } else {
+                logger.error("Password update error:", result);
+
+                toast({
+                    title: "Error",
+                    description: result.message,
+                    variant: "destructive",
+                });
             }
         });
     };
-
-    useEffect(() => {
-        if (code) {
-            supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
-                if (error) {
-                    logger.error("Code exchange error:", error.message);
-                    setState({
-                        success: false,
-                        message: error?.message || "Invalid or expired reset code. Please request a new one.",
-                    });
-                }
-            });
-        }
-    }, [code]);
-
-    if (!code || state?.error) {
-        return (
-            <div className="min-h-screen bg-slate-900 relative overflow-hidden">
-                {/* Quantum Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-                    <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-purple-500/10"></div>
-                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"></div>
-                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
-                </div>
-
-                <MainNav />
-                <main className="relative z-10 flex-1 flex items-center justify-center py-12 px-4 min-h-[calc(100vh-8rem)]">
-                    <div className="relative group">
-                        {/* Neon glow effect */}
-                        <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-
-                        <Card className="relative w-full max-w-md bg-slate-800/90 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
-                            <CardContent className="p-8 text-center">
-                                <div className="mb-6">
-                                    <div className="w-16 h-16 mx-auto bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center mb-4">
-                                        <AlertCircle className="w-8 h-8 text-white" />
-                                    </div>
-                                    <h2 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                                        Invalid Reset Link
-                                    </h2>
-                                </div>
-
-                                <p className="text-slate-300 mb-6">
-                                    This password reset link is invalid or has expired. Please request a new one.
-                                </p>
-
-                                <Link
-                                    href="/forgot-password"
-                                    className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-medium rounded-lg hover:from-cyan-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-cyan-500/25"
-                                >
-                                    Request New Reset Link
-                                </Link>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </main>
-                <Footer />
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-slate-900 relative overflow-hidden">
@@ -345,7 +289,7 @@ export default function ResetPasswordPage() {
                         <CardFooter className="flex justify-center pt-4">
                             <div className="text-sm text-slate-400">
                                 <Link
-                                    href="/login"
+                                    href="/learner/login"
                                     className="text-cyan-400 hover:text-cyan-300 transition-colors hover:underline"
                                 >
                                     Back to Sign In

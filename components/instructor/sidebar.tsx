@@ -66,9 +66,9 @@ export function InstructorSidebar() {
                             Manage Courses
                         </Link>
                         <Link
-                            href="/instructor/dashboard/users"
+                            href="/instructor/dashboard/learners"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname.startsWith("/instructor/dashboard/users")
+                                pathname.startsWith("/instructor/dashboard/learners")
                                     ? "bg-purple-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}

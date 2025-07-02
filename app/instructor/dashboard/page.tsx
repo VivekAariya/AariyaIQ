@@ -1,10 +1,82 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { courses } from "@/lib/courses";
-import { BarChart, BookOpen, PlusCircle, Users } from "lucide-react";
+import logger from "@/utils/logger";
+import { createClient } from "@/utils/supabase/server";
+import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
+import { ArrowLeft, BookOpen, PlusCircle, Users } from "lucide-react";
 import Link from "next/link";
 
-export default function InstructorDashboardPage() {
+export default async function InstructorDashboardPage() {
+    const supabase = await createClient();
+
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !userData?.user) {
+        logger.error("Error fetching user data:", userError);
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">Error fetching logged in user</h1>
+                    <p className="text-gray-400">{userError?.message}</p>
+                    <Button variant="outline" className="mt-4" asChild>
+                        <Link href="/instructor/dashboard">
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Dashboard
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    const { data: courseData, error: courseError } = await supabaseServiceRoleClient
+        .from("courses")
+        .select("id, course_title, level, start_date")
+        .eq("instructor", userData?.user?.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+    if (courseError) {
+        logger.error("Error fetching courses:", courseError);
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">Error Fetching Courses</h1>
+                    <p className="text-gray-400">{courseError.message}</p>
+                    <Button variant="outline" className="mt-4" asChild>
+                        <Link href="/instructor/dashboard">
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Dashboard
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    const { data: enrollments, error: enrollmentsError } = await supabaseServiceRoleClient
+        .from("enrollments")
+        .select("id, status")
+        .eq("instructor_id", userData?.user?.id);
+
+    if (enrollmentsError) {
+        logger.error("Error fetching learners:", enrollmentsError);
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">Error Fetching Learners</h1>
+                    <p className="text-gray-400">{enrollmentsError.message}</p>
+                    <Button variant="outline" className="mt-4" asChild>
+                        <Link href="/instructor/dashboard">
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Dashboard
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-8">
             <div>
@@ -13,116 +85,34 @@ export default function InstructorDashboardPage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid gap-4 md:grid-cols-4">
-                <Button variant="instructor" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
-                    <Link href="/instructor/dashboard/courses/new">
+            <div className="grid gap-4 md:grid-cols-3">
+                <Button variant="outline" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
+                    <Link href="/instructor/dashboard/courses/add-new">
                         <PlusCircle className="h-6 w-6" />
                         <span>Create New Course</span>
                     </Link>
                 </Button>
-                <Button variant="instructor" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
-                    <Link href="/instructor/dashboard/users">
+                <Button variant="outline" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
+                    <Link href="/instructor/dashboard/learners">
                         <Users className="h-6 w-6" />
                         <span>Manage Learners</span>
                     </Link>
                 </Button>
-                <Button variant="instructor" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
+                <Button variant="outline" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
                     <Link href="/instructor/dashboard/courses">
                         <BookOpen className="h-6 w-6" />
                         <span>View All Courses</span>
                     </Link>
                 </Button>
-                <Button variant="instructor" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
-                    <Link href="/instructor/dashboard/analytics">
-                        <BarChart className="h-6 w-6" />
-                        <span>View Analytics</span>
-                    </Link>
-                </Button>
             </div>
 
-            {/* Blurred Glass Panel for Admin Analytics */}
-            <div className="relative rounded-xl overflow-hidden border border-white/20 bg-gradient-to-br from-indigo-900/10 via-purple-800/10 to-cyan-900/10 backdrop-blur-md p-6 shadow-lg">
-                {/* Neon border elements */}
-                <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
-                    <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-indigo-500/50 to-transparent"></div>
-                    <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent"></div>
-                </div>
-
-                <div className="relative z-10">
-                    <h2 className="text-xl font-bold mb-4 bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                        Platform Analytics
-                    </h2>
-
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <div className="bg-black/40 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-                            <h3 className="text-sm font-medium text-gray-300 mb-2">Learner Engagement</h3>
-                            <div className="flex items-end space-x-1 mb-2">
-                                <div className="text-2xl font-bold">78%</div>
-                                <div className="text-xs text-green-400 pb-1">↑ 12%</div>
-                            </div>
-                            <p className="text-xs text-gray-400">Average course completion rate</p>
-                            <div className="mt-3 h-1.5 w-full bg-gray-700 rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full"
-                                    style={{ width: "78%" }}
-                                ></div>
-                            </div>
-                        </div>
-
-                        <div className="bg-black/40 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-                            <h3 className="text-sm font-medium text-gray-300 mb-2">Active Learners</h3>
-                            <div className="flex items-end space-x-1 mb-2">
-                                <div className="text-2xl font-bold">85</div>
-                                <div className="text-xs text-green-400 pb-1">↑ 8%</div>
-                            </div>
-                            <p className="text-xs text-gray-400">Learners active in the last 7 days</p>
-                            <div className="mt-3 flex space-x-1">
-                                {[65, 72, 68, 75, 82, 79, 85].map((value, i) => (
-                                    <div key={i} className="flex-1">
-                                        <div className="h-10 bg-gray-700 rounded-sm relative overflow-hidden">
-                                            <div
-                                                className="absolute bottom-0 w-full bg-gradient-to-t from-indigo-500 to-cyan-500 rounded-sm"
-                                                style={{ height: `${(value / 100) * 100}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="flex justify-between text-xs mt-1 text-gray-400">
-                                <span>Mon</span>
-                                <span>Wed</span>
-                                <span>Sun</span>
-                            </div>
-                        </div>
-
-                        <div className="bg-black/40 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-                            <h3 className="text-sm font-medium text-gray-300 mb-2">Admin Actions</h3>
-                            <div className="space-y-2">
-                                <Button variant="instructor" size="sm" className="w-full" asChild>
-                                    <Link href="/instructor/dashboard/courses/new">Create New Course</Link>
-                                </Button>
-                                <Button variant="instructor" size="sm" className="w-full" asChild>
-                                    <Link href="/instructor/dashboard/users">Manage Learners</Link>
-                                </Button>
-                                <Button variant="outline" size="sm" className="w-full border-white/20" asChild>
-                                    <Link href="/instructor/dashboard/logs">View System Logs</Link>
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{courses.length}</div>
-                        <p className="text-xs text-muted-foreground">+2 from last month</p>
+                        <div className="text-2xl font-bold">{courseData.length}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -130,8 +120,7 @@ export default function InstructorDashboardPage() {
                         <CardTitle className="text-sm font-medium">Total Learners</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">120</div>
-                        <p className="text-xs text-muted-foreground">+15 from last month</p>
+                        <div className="text-2xl font-bold">{enrollments.length}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -139,17 +128,9 @@ export default function InstructorDashboardPage() {
                         <CardTitle className="text-sm font-medium">Active Learners</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">85</div>
-                        <p className="text-xs text-muted-foreground">70% of total learners</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Course Completion</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">65%</div>
-                        <p className="text-xs text-muted-foreground">+5% from last month</p>
+                        <div className="text-2xl font-bold">
+                            {enrollments.filter((enrollment) => enrollment.status === "active").length}
+                        </div>
                     </CardContent>
                 </Card>
             </div>
@@ -168,30 +149,31 @@ export default function InstructorDashboardPage() {
                         <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                             Recent Courses
                         </h2>
-                        <Button variant="instructor" asChild>
-                            <Link href="/instructor/dashboard/courses/new">Add New Course</Link>
+                        <Button variant="outline" asChild>
+                            <Link href="/instructor/dashboard/courses/add-new">Add New Course</Link>
                         </Button>
                     </div>
                     <div className="mt-4 rounded-md border border-white/10 bg-black/40 backdrop-blur-sm">
-                        <div className="grid grid-cols-5 gap-4 p-4 font-medium">
+                        <div className="grid grid-cols-4 gap-4 p-4 font-medium">
                             <div>Title</div>
-                            <div>Instructor</div>
                             <div>Level</div>
                             <div>Start Date</div>
                             <div>Actions</div>
                         </div>
-                        {courses.slice(0, 5).map((course) => (
-                            <div key={course.id} className="grid grid-cols-5 gap-4 border-t p-4">
-                                <div>{course.title}</div>
-                                <div>{course.instructor}</div>
+                        {courseData.slice(0, 5).map((course) => (
+                            <div key={course.id} className="grid grid-cols-4 gap-4 border-t p-4">
+                                <div>{course.course_title}</div>
                                 <div>{course.level}</div>
-                                <div>{new Date(course.startDate).toLocaleDateString()}</div>
+                                <div>
+                                    {new Date(course.start_date).toLocaleDateString("en-UK", {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                    })}
+                                </div>
                                 <div className="flex space-x-2">
                                     <Button variant="outline" size="sm" asChild>
                                         <Link href={`/instructor/dashboard/courses/${course.id}`}>Edit</Link>
-                                    </Button>
-                                    <Button variant="outline" size="sm" className="text-red-500 hover:text-red-600">
-                                        Delete
                                     </Button>
                                 </div>
                             </div>

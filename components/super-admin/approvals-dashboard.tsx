@@ -491,7 +491,6 @@ export default function ApprovalsDashboard({
         const search = learnerSearch.toLowerCase();
         return (
             (learner.full_name || "").toLowerCase().includes(search) ||
-            (learner.course_id || "").toLowerCase().includes(search) ||
             (learner.email_address || "").toLowerCase().includes(search) ||
             (learner.phone_number || "").toLowerCase().includes(search) ||
             (learner.learner_id || "").toLowerCase().includes(search)

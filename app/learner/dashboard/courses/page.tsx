@@ -3,12 +3,12 @@ import { Input } from "@/components/ui/input";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
-import { AlertTriangle, CheckCircle, Clock, Search, User, XCircle } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 
 export default async function CoursesPage({ searchParams }: { searchParams?: { search?: string } }) {
     const search = searchParams?.search || "";
-    let supabaseCourses = [];
+    let enrollments: any = [];
     let errorMsg = null;
 
     try {
@@ -18,13 +18,22 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
         if (userError || !userData.user) {
             errorMsg = userError?.message || "User not authenticated";
             logger.error("Error fetching user:", errorMsg);
+
+            return (
+                <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                    <div className="text-center">
+                        <h1 className="text-2xl font-bold mb-4">Error fetching logged in user</h1>
+                        <p className="text-gray-400">{errorMsg}</p>
+                    </div>
+                </div>
+            );
         }
 
         let query = supabaseServiceRoleClient
-            .from("courses")
-            .select("*")
-            .eq("instructor", userData?.user?.id)
-            .order("created_at", { ascending: false });
+            .from("enrollments")
+            .select("id, course_id, instructor_id, enrollment_date, course:courses(id, course_title, category)")
+            .eq("learner_id", userData?.user?.id)
+            .order("enrollment_date", { ascending: false });
 
         if (search) {
             query = query.or(`course_title.ilike.%${search}%,category.ilike.%${search}%`);
@@ -35,48 +44,27 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
         if (error) {
             logger.error("Error fetching courses:", error);
             errorMsg = error.message || "Unknown error";
+
+            return (
+                <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                    <div className="text-center">
+                        <h1 className="text-2xl font-bold mb-4">Error fetching courses</h1>
+                        <p className="text-gray-400">{errorMsg}</p>
+                    </div>
+                </div>
+            );
         } else {
-            supabaseCourses = data || [];
+            enrollments = data || [];
         }
     } catch (error: any) {
         logger.error("Error fetching courses:", error);
         errorMsg = error?.message || "Unknown error";
     }
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "approved":
-                return "bg-green-500/20 text-green-400 border-green-500/30";
-            case "pending":
-                return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
-            case "suspended":
-                return "bg-orange-500/20 text-orange-400 border-orange-500/30";
-            case "banned":
-                return "bg-red-600/20 text-red-300 border-red-600/30";
-            default:
-                return "bg-gray-500/20 text-gray-400 border-gray-500/30";
-        }
-    };
-
-    const getStatusIcon = (status: string) => {
-        switch (status) {
-            case "approved":
-                return <CheckCircle className="h-4 w-4" />;
-            case "pending":
-                return <Clock className="h-4 w-4" />;
-            case "suspended":
-                return <XCircle className="h-4 w-4" />;
-            case "banned":
-                return <AlertTriangle className="h-4 w-4" />;
-            default:
-                return <User className="h-4 w-4" />;
-        }
-    };
-
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Manage Courses</h1>
+                <h1 className="text-3xl font-bold tracking-tight">View Courses</h1>
             </div>
 
             <form className="flex items-center justify-between" action="" method="get">
@@ -96,47 +84,28 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
                         Search
                     </Button>
                 </div>
-
-                <div>
-                    <Link
-                        href={`/instructor/dashboard/courses/add-new`}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                    >
-                        Add New Course
-                    </Link>
-                </div>
             </form>
 
             <div className="rounded-md border border-white/20 bg-black/90 backdrop-blur-none overflow-hidden">
                 <div className="grid grid-cols-5 gap-4 p-4 font-medium">
                     <div>Name</div>
                     <div>Category</div>
-                    <div>Status</div>
-                    <div>Created At</div>
+                    <div>Enrolled At</div>
                     <div>Actions</div>
                 </div>
 
                 {errorMsg ? (
                     <div className="p-4 text-red-500">Error: {errorMsg}</div>
-                ) : supabaseCourses.length === 0 ? (
+                ) : enrollments.length === 0 ? (
                     <div className="p-4 text-center text-gray-400">No courses found.</div>
                 ) : (
-                    supabaseCourses.map((course) => (
-                        <div key={course.id} className="grid grid-cols-5 gap-4 border-t p-4">
-                            <div className="truncate">{course.course_title}</div>
-                            <div className="truncate">{course.category}</div>
+                    enrollments.map((enrollment: any) => (
+                        <div key={enrollment?.id} className="grid grid-cols-5 gap-4 border-t p-4">
+                            <div className="truncate">{enrollment?.course?.course_title}</div>
+                            <div className="truncate">{enrollment?.course?.category}</div>
+                            <div className="truncate"></div>
                             <div className="truncate">
-                                <span
-                                    className={`inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-medium ${getStatusColor(
-                                        course.status
-                                    )}`}
-                                >
-                                    {getStatusIcon(course.status)}
-                                    {course?.status?.charAt(0).toUpperCase() + course?.status?.slice(1)}
-                                </span>
-                            </div>
-                            <div className="truncate">
-                                {new Date(course.created_at).toLocaleDateString("en-GB", {
+                                {new Date(enrollment?.enrollment_date).toLocaleDateString("en-GB", {
                                     day: "2-digit",
                                     month: "2-digit",
                                     year: "numeric",
@@ -145,11 +114,8 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
 
                             <div className="flex flex-wrap gap-2">
                                 <Button variant="outline" size="sm" asChild className="text-xs">
-                                    <Link href={`/instructor/dashboard/courses/${course.id}`}>Edit</Link>
-                                </Button>
-                                <Button variant="outline" size="sm" asChild className="text-xs">
-                                    <Link href={`/instructor/dashboard/courses/${course.id}/learners`}>
-                                        View Learners
+                                    <Link href={`/learner/dashboard/courses/${enrollment?.course?.id}`}>
+                                        View Course
                                     </Link>
                                 </Button>
                             </div>

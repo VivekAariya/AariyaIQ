@@ -1,9 +1,8 @@
-import ProfilePage from "@/components/instructor/profile-page";
+import ProfilePage from "@/components/learner/profile-page";
 import { Button } from "@/components/ui/button";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
-import { profile } from "console";
 import { ArrowLeft, Link } from "lucide-react";
 
 export default async function MyProfilePage() {
@@ -53,28 +52,5 @@ export default async function MyProfilePage() {
         );
     }
 
-    const { data: courses, error: courseError } = await supabaseServiceRoleClient
-        .from("courses")
-        .select("id")
-        .eq("instructor", userData?.user?.id);
-
-    if (courseError) {
-        logger.error("Error fetching course data:", courseError);
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">Error fetching course data</h1>
-                    <p className="text-gray-400">{courseError?.message}</p>
-                    <Button variant="outline" className="mt-4" asChild>
-                        <Link href="/instructor/dashboard">
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back to Dashboard
-                        </Link>
-                    </Button>
-                </div>
-            </div>
-        );
-    }
-
-    return <ProfilePage profile={profile} courses={courses} />;
+    return <ProfilePage profile={profile} />;
 }

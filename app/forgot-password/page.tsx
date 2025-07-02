@@ -1,19 +1,23 @@
 "use client";
 
-import { forgotPassword } from "@/app/actions/auth-actions";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { QuantumBackground } from "@/components/quantum-background";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import logger from "@/utils/logger";
 import { ArrowLeft, Mail, Shield } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
+import { forgotPassword } from "../actions/auth-actions";
 
 export default function ForgotPasswordPage() {
+    const { toast } = useToast();
+
     const [isPending, startTransition] = useTransition();
+
     const [state, setState] = useState<any>(null);
 
     const handleSubmit = async (formData: FormData) => {
@@ -21,9 +25,31 @@ export default function ForgotPasswordPage() {
             const email = formData.get("email") as string;
 
             const result = await forgotPassword(email);
-            logger.log("Forgot password result:", result);
 
-            setState(result);
+            if (!result.success) {
+                logger.error("Supabase password reset error:", result?.message);
+                setState({
+                    error: result?.message || "Failed to send reset email.",
+                    success: false,
+                });
+                toast({
+                    title: "Error",
+                    description: result?.message || "An unexpected error occurred",
+                    variant: "destructive",
+                });
+                return;
+            } else {
+                logger.log("Forgot password result:", result?.message);
+                setState({
+                    message: "Password reset email sent successfully. Please check your inbox.",
+                    success: true,
+                });
+                toast({
+                    title: "Success",
+                    description: result?.message || "Password reset email sent successfully. Please check your inbox.",
+                });
+                return;
+            }
         });
     };
 

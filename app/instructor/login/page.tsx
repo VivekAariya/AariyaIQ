@@ -72,7 +72,7 @@ export default function AdminLoginPage() {
                                         Password
                                     </Label>
                                     <Link
-                                        href="/admin/forgot-password"
+                                        href="/forgot-password"
                                         className="text-purple-400 hover:text-purple-300 text-sm font-medium"
                                     >
                                         Forgot password?

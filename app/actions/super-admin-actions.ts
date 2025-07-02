@@ -239,3 +239,40 @@ export async function handleCourseEdit(formData: FormData) {
         return { success: false, message: error.message || "An error occurred." };
     }
 }
+
+export async function handleLearnerProfileForm(formData: FormData) {
+    try {
+        const id = formData.get("learnerId");
+        const first_name = formData.get("firstName");
+        const last_name = formData.get("lastName");
+        const email = formData.get("email");
+
+        const { error } = await supabaseServiceRoleClient
+            .from("users")
+            .update({
+                first_name,
+                last_name,
+                email,
+            })
+            .eq("id", id);
+
+        if (error) {
+            logger.error("Error updating learner profile:", error);
+            return {
+                success: false,
+                message: error?.message || "Failed to update learner profile. Please try again.",
+            };
+        }
+
+        return {
+            success: true,
+            message: "learner profile updated successfully.",
+        };
+    } catch (error) {
+        logger.error("Error handling learner profile form:", error);
+        return {
+            success: false,
+            message: "An error occurred while updating the learner profile. Please try again.",
+        };
+    }
+}

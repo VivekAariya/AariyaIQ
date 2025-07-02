@@ -88,9 +88,7 @@ export function InstructorProfileClient({ instructor, courses }: InstructorProfi
             } else if (result?.success) {
                 toast({
                     title: "Success",
-                    description:
-                        result.message ||
-                        "Account created successfully! Please check your email to verify your account.",
+                    description: result.message || "Profile updated successfully!",
                 });
                 router.refresh();
             }

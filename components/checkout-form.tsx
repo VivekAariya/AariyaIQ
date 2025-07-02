@@ -178,12 +178,19 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                             </div>
                         </div>
                     </div>
-                    <Button
-                        onClick={() => (window.location.href = "/courses")}
-                        className="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white px-8 py-3"
-                    >
-                        Browse More Courses
-                    </Button>
+
+                    <div className="flex items-center justify-center gap-3">
+                        <Button
+                            onClick={() => (window.location.href = "/courses")}
+                            className="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white px-8 py-3"
+                        >
+                            Browse More Courses
+                        </Button>
+
+                        <Button variant={"outline"} onClick={() => (window.location.href = "/approval-flows")}>
+                            Next Steps
+                        </Button>
+                    </div>
                 </CardContent>
             </Card>
         );

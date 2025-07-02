@@ -46,7 +46,7 @@ export function Sidebar() {
                     </div>
                     <nav className="flex-1 space-y-1">
                         <Link
-                            href="/dashboard"
+                            href="/learner/dashboard"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname === "/dashboard" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
@@ -55,18 +55,18 @@ export function Sidebar() {
                             Dashboard
                         </Link>
                         <Link
-                            href="/dashboard/courses"
+                            href="/learner/dashboard/courses"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname.startsWith("/dashboard/courses")
                                     ? "bg-cyan-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
                         >
-                            <BookOpen className="mr-2 h-5 w-5 text-cyan-300" />
+                            <BookOpen className="mr-2 h-5 w-5" />
                             My Courses
                         </Link>
                         <Link
-                            href="/dashboard/profile"
+                            href="/learner/dashboard/profile"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname === "/dashboard/profile" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
@@ -75,16 +75,7 @@ export function Sidebar() {
                             Profile
                         </Link>
                         <Link
-                            href="/dashboard/settings"
-                            className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname === "/dashboard/settings" ? "bg-white/20 text-white" : "hover:bg-white/10"
-                            }`}
-                        >
-                            <Settings className="mr-2 h-4 w-4" />
-                            Settings
-                        </Link>
-                        <Link
-                            href="/dashboard/learner-application"
+                            href="/learner/dashboard/learner-application"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname === "/dashboard/learner-application"
                                     ? "bg-white/20 text-white"
@@ -94,17 +85,15 @@ export function Sidebar() {
                             <FileText className="mr-2 h-4 w-4" />
                             Learner Application Status
                         </Link>
-                    </nav>
-                    <div className="pt-4">
                         <Button
                             variant="ghost"
-                            className="w-full justify-start text-white hover:bg-white/10"
+                            className="w-full justify-start items-center px-3 py-2 text-white hover:bg-white/10"
                             onClick={handleLogout}
                         >
                             <LogOut className="mr-2 h-4 w-4" />
                             Logout
                         </Button>
-                    </div>
+                    </nav>
                 </div>
             </div>
         </>

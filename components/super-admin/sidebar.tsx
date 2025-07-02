@@ -67,9 +67,9 @@ export function SuperAdminSidebar() {
                             Manage Courses
                         </Link>
                         <Link
-                            href="/super-admin/dashboard/users"
+                            href="/super-admin/dashboard/learners"
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname.startsWith("/super-admin/dashboard/users")
+                                pathname.startsWith("/super-admin/dashboard/learners")
                                     ? "bg-indigo-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}

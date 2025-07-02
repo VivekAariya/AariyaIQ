@@ -344,27 +344,24 @@ export async function login(
     };
 }
 
-export async function forgotPassword(email: string): Promise<{ message?: string; error?: string; success: boolean }> {
+export async function forgotPassword(email: string): Promise<{ message?: string; success: boolean }> {
     try {
         if (!email) {
             return {
-                error: "Email is required",
+                message: "Email is required",
                 success: false,
             };
         }
 
         const supabase = await createClient();
-        const url = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`;
 
         // Use Supabase to send password reset email
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: url,
-        });
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
 
         if (error) {
             logger.error("Supabase password reset error:", error);
             return {
-                error: error?.message || "Failed to send reset email. Please check your email address.",
+                message: error?.message || "Failed to send reset email. Please check your email address.",
                 success: false,
             };
         }
@@ -376,37 +373,8 @@ export async function forgotPassword(email: string): Promise<{ message?: string;
     } catch (error) {
         logger.error("Password reset error:", error);
         return {
-            error: "Failed to send reset email. Please try again.",
+            message: "Failed to send reset email. Please try again.",
             success: false,
-        };
-    }
-}
-
-export async function updatePassword(newPassword: string) {
-    try {
-        const supabase = await createClient();
-
-        const { error } = await supabase.auth.updateUser({
-            password: newPassword,
-        });
-
-        if (error) {
-            logger.error("Password update error:", error);
-            return {
-                success: false,
-                message: error.message || "Failed to update password. Please try again.",
-            };
-        }
-
-        return {
-            success: true,
-            message: "Your password has been successfully updated.",
-        };
-    } catch (error) {
-        logger.error("Error updating password:", error);
-        return {
-            success: false,
-            message: "Failed to update your password. Please try again later.",
         };
     }
 }

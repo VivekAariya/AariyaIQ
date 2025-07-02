@@ -1,122 +1,144 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { courses } from "@/lib/courses"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import logger from "@/utils/logger";
+import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
+import Link from "next/link";
 
-export default function SuperAdminDashboardPage() {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Super Admin Dashboard</h1>
-        <p className="text-muted-foreground">Manage your entire learning platform</p>
-      </div>
+export default async function SuperAdminDashboardPage() {
+    let totalCourses: any = null;
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{courses.length}</div>
-          </CardContent>
-        </Card>
-        <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Learners</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">120</div>
-          </CardContent>
-        </Card>
-        <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Instructors</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">5</div>
-          </CardContent>
-        </Card>
-        <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Platform Health</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-500">Excellent</div>
-          </CardContent>
-        </Card>
-      </div>
+    const { data: coursesData, error: coursesError } = await supabaseServiceRoleClient.from("courses").select("id");
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold tracking-tight">Instructors</h2>
-            <Link href="/super-admin/dashboard/admins/new">
-              <Button className="bg-gradient-to-r from-purple-600 to-indigo-700 text-white">Add Instructor</Button>
-            </Link>
-          </div>
-          <div className="mt-4 rounded-md border">
-            <div className="grid grid-cols-12 gap-2 p-4 font-medium">
-              <div className="col-span-3">Name</div>
-              <div className="col-span-5">Email</div>
-              <div className="col-span-4">Actions</div>
+    if (coursesError) {
+        logger.error("Error fetching courses:", coursesError);
+        totalCourses = 0;
+    } else {
+        totalCourses = coursesData?.length || 0;
+    }
+
+    const { data: usersData, error: usersError } = await supabaseServiceRoleClient
+        .from("users")
+        .select("id, first_name, last_name, email, role, created_at, profile_status")
+        .order("created_at", { ascending: false });
+
+    if (usersError) {
+        logger.error("Error fetching users:", usersError);
+        return <div>Error loading data</div>;
+    }
+
+    const learners = usersData?.filter((u) => u.role === "learner") || [];
+    const instructors = usersData?.filter((u) => u.role === "instructor") || [];
+    const recentLearners = learners.slice(0, 4);
+
+    return (
+        <div className="space-y-8">
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">Super Admin Dashboard</h1>
+                <p className="text-muted-foreground">Manage your entire learning platform</p>
             </div>
-            {[
-              { id: "1", name: "John Doe", email: "john@aariyatech.com" },
-              { id: "2", name: "Jane Smith", email: "jane@aariyatech.com" },
-              { id: "3", name: "Robert Johnson", email: "robert@aariyatech.com" },
-            ].map((instructor) => (
-              <div key={instructor.id} className="grid grid-cols-12 gap-2 border-t p-4 items-center">
-                <div className="col-span-3 truncate">{instructor.name}</div>
-                <div className="col-span-5 truncate">{instructor.email}</div>
-                <div className="col-span-4 flex space-x-2">
-                  <Button variant="outline" size="sm">
-                    Edit
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-red-500 hover:text-red-600">
-                    Remove
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold tracking-tight">Recent Learners</h2>
-            <Link href="/super-admin/dashboard/users">
-              <Button variant="outline">View All</Button>
-            </Link>
-          </div>
-          <div className="mt-4 rounded-md border">
-            <div className="grid grid-cols-12 gap-2 p-4 font-medium">
-              <div className="col-span-4">Name</div>
-              <div className="col-span-4">Joined</div>
-              <div className="col-span-4">Status</div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{totalCourses}</div>
+                    </CardContent>
+                </Card>
+                <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Learners</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{learners.length}</div>
+                    </CardContent>
+                </Card>
+                <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Instructors</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{instructors.length}</div>
+                    </CardContent>
+                </Card>
             </div>
-            {[
-              { id: "1", name: "Alice Cooper", joined: "2023-04-15", status: "Active" },
-              { id: "2", name: "Bob Dylan", joined: "2023-04-14", status: "Active" },
-              { id: "3", name: "Charlie Brown", joined: "2023-04-12", status: "Inactive" },
-              { id: "4", name: "David Bowie", joined: "2023-04-10", status: "Active" },
-            ].map((learner) => (
-              <div key={learner.id} className="grid grid-cols-12 gap-2 border-t p-4 items-center">
-                <div className="col-span-4 truncate">{learner.name}</div>
-                <div className="col-span-4 truncate">{new Date(learner.joined).toLocaleDateString()}</div>
-                <div className="col-span-4">
-                  <span
-                    className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                      learner.status === "Active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {learner.status}
-                  </span>
+
+            <div className="grid gap-8 md:grid-cols-2">
+                <div>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold tracking-tight">Instructors</h2>
+                    </div>
+                    <div className="mt-4 rounded-md border">
+                        <div className="grid grid-cols-12 gap-2 p-4 font-medium">
+                            <div className="col-span-3">Name</div>
+                            <div className="col-span-4">Email</div>
+                            <div className="col-span-3">Status</div>
+                            <div className="col-span-2">Actions</div>
+                        </div>
+                        {instructors.map((instructor) => (
+                            <div key={instructor.id} className="grid grid-cols-12 gap-2 border-t p-4 items-center">
+                                <div className="col-span-3 truncate">
+                                    {instructor.first_name + " " + instructor.last_name}
+                                </div>
+                                <div className="col-span-4 truncate">{instructor.email}</div>
+                                <div className="col-span-3">
+                                    <span
+                                        className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                                            instructor.profile_status === "approved"
+                                                ? "bg-green-100 text-green-800"
+                                                : "bg-red-100 text-red-800"
+                                        }`}
+                                    >
+                                        {instructor.profile_status}
+                                    </span>
+                                </div>
+                                <div className="col-span-2 flex space-x-2">
+                                    <Link href={`/super-admin/dashboard/instructors/${instructor.id}`}>
+                                        <Button variant="outline" size="sm">
+                                            Edit
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-              </div>
-            ))}
-          </div>
+
+                <div>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold tracking-tight">Recent Learners</h2>
+                    </div>
+                    <div className="mt-4 rounded-md border">
+                        <div className="grid grid-cols-12 gap-2 p-4 font-medium">
+                            <div className="col-span-4">Name</div>
+                            <div className="col-span-4">Joined</div>
+                            <div className="col-span-4">Actions</div>
+                        </div>
+                        {recentLearners.map((learner) => (
+                            <div key={learner.id} className="grid grid-cols-12 gap-2 border-t p-4 items-center">
+                                <div className="col-span-4 truncate">
+                                    {learner.first_name + " " + learner.last_name}
+                                </div>
+                                <div className="col-span-4 truncate">
+                                    {new Date(learner.created_at).toLocaleDateString("en-UK", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}
+                                </div>
+                                <div className="col-span-4 flex space-x-2">
+                                    <Link href={`/super-admin/dashboard/learners/${learner.id}`}>
+                                        <Button variant="outline" size="sm">
+                                            Edit
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  )
+    );
 }
