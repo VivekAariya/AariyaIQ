@@ -3,8 +3,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, BookOpen, Calendar, CheckCircle, Clock, Info, Star, Users } from "lucide-react";
+import { ArrowLeft, BookOpen, Brain, Calendar, CheckCircle, Clock, Info, Star, Users } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 interface CourseDetailsProps {
@@ -337,6 +338,37 @@ export default function ViewCourse({ course, instructor }: CourseDetailsProps) {
                                                 day: "numeric",
                                             })}
                                         </span>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Materials and AI gen content */}
+                            <Card className="bg-gradient-to-br from-cyan-900/60 via-purple-900/60 to-indigo-900/60 border-cyan-700 shadow-2xl backdrop-blur-md animate-fade-in">
+                                <CardHeader>
+                                    <CardTitle className="text-xl text-cyan-300 flex items-center gap-2">
+                                        <Info className="h-5 w-5 text-cyan-400" />
+                                        Materials
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4 text-base">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500/30 to-purple-500/30">
+                                            <Brain className="h-6 w-6 text-cyan-300" />
+                                        </span>
+                                        <span className="font-semibold text-cyan-200">AI Assistance Used</span>
+                                    </div>
+                                    <p className="text-slate-200 leading-relaxed">
+                                        The instructor has leveraged the platform's integrated AI tools to generate
+                                        assignments, diagrams, and other course materials. This ensures high-quality,
+                                        up-to-date, and engaging content for your learning journey.
+                                    </p>
+                                    <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold shadow-lg hover:from-cyan-400 hover:to-purple-400 transition-all duration-200">
+                                        <Link href={`/learner/dashboard/courses/${course.id}/materials`}>
+                                            View Materials
+                                        </Link>
+                                    </Button>
+                                    <div className="text-xs text-slate-400 mt-2">
+                                        Materials were created or enhanced using AI via the uploaded course materials.
                                     </div>
                                 </CardContent>
                             </Card>

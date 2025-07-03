@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
             .select("*")
             .eq("course_id", courseId)
             .eq("tool_id", toolId)
-            .single();
+            .maybeSingle();
 
         if (error) {
             logger.error("Error fetching AI content:", error);

@@ -67,25 +67,6 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
                 <h1 className="text-3xl font-bold tracking-tight">View Courses</h1>
             </div>
 
-            <form className="flex items-center justify-between" action="" method="get">
-                <div className="flex items-center space-x-2">
-                    <div className="relative w-64">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="search"
-                            name="search"
-                            placeholder="Search courses..."
-                            className="w-full pl-8"
-                            defaultValue={search}
-                            autoComplete="off"
-                        />
-                    </div>
-                    <Button type="submit" className="ml-2" variant={"outline"}>
-                        Search
-                    </Button>
-                </div>
-            </form>
-
             <div className="rounded-md border border-white/20 bg-black/90 backdrop-blur-none overflow-hidden">
                 <div className="grid grid-cols-5 gap-4 p-4 font-medium">
                     <div>Name</div>
