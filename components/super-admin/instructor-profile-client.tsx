@@ -179,7 +179,7 @@ export function InstructorProfileClient({ instructor, courses }: InstructorProfi
                             <div className="relative">
                                 <Avatar>
                                     <AvatarImage
-                                        src={instructor.profile_image || "https://github.com/shadcn.png"}
+                                        src={instructor?.profile_image}
                                         alt={instructor.first_name + " " + instructor.last_name}
                                     />
                                     <AvatarFallback>{instructor.first_name.charAt(0).toUpperCase()}</AvatarFallback>

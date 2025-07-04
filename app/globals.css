@@ -4,612 +4,637 @@
 
 /* Import Lastica font */
 @font-face {
-  font-family: "Lastica";
-  src: url("/fonts/Lastica.woff2") format("woff2");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
+    font-family: "Lastica";
+    src: url("/fonts/Lastica.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 
 @layer base {
-  :root {
-    --background: 215 25% 8%; /* Dark slate background */
-    --foreground: 0 0% 98%; /* Light text for contrast */
-    --card: 215 25% 12%; /* Slightly lighter card background */
-    --card-foreground: 0 0% 98%;
-    --popover: 215 25% 12%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 190 100% 50%; /* Aqua blue */
-    --primary-foreground: 210 20% 98%;
-    --secondary: 215 25% 18%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 215 25% 18%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 215 25% 18%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 215 25% 18%;
-    --input: 215 25% 18%;
-    --ring: 190 100% 50%; /* Updated to match primary */
-    --radius: 0.5rem;
-    --font-lastica: "Lastica", system-ui, sans-serif;
-  }
+    :root {
+        --background: 215 25% 8%; /* Dark slate background */
+        --foreground: 0 0% 98%; /* Light text for contrast */
+        --card: 215 25% 12%; /* Slightly lighter card background */
+        --card-foreground: 0 0% 98%;
+        --popover: 215 25% 12%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 190 100% 50%; /* Aqua blue */
+        --primary-foreground: 210 20% 98%;
+        --secondary: 215 25% 18%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 215 25% 18%;
+        --muted-foreground: 240 5% 64.9%;
+        --accent: 215 25% 18%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 215 25% 18%;
+        --input: 215 25% 18%;
+        --ring: 190 100% 50%; /* Updated to match primary */
+        --radius: 0.5rem;
+        --font-lastica: "Lastica", system-ui, sans-serif;
+    }
 
-  /* Ensure backgrounds are properly applied */
-  body {
-    background-color: hsl(215 25% 8%); /* Dark slate background */
-    color: hsl(0 0% 98%); /* Light text for contrast */
-    font-family: var(--font-lastica);
-    position: relative;
-    overflow-x: hidden;
-  }
+    /* Ensure backgrounds are properly applied */
+    body {
+        background-color: hsl(215 25% 8%); /* Dark slate background */
+        color: hsl(0 0% 98%); /* Light text for contrast */
+        font-family: var(--font-lastica);
+        position: relative;
+        overflow-x: hidden;
+    }
 
-  /* Apply Lastica font to all text elements */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  span,
-  a,
-  button,
-  input,
-  textarea,
-  select,
-  label {
-    font-family: var(--font-lastica);
-  }
+    /* Apply Lastica font to all text elements */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    span,
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    label {
+        font-family: var(--font-lastica);
+    }
 
-  /* Adjust gradients for dark slate background */
-  .bg-gradient-to-br.from-purple-50\/80.via-indigo-50\/80.to-cyan-50\/80 {
-    background: linear-gradient(to bottom right, rgba(88, 28, 135, 0.2), rgba(67, 56, 202, 0.2), rgba(6, 182, 212, 0.2));
-  }
+    /* Adjust gradients for dark slate background */
+    .bg-gradient-to-br.from-purple-50\/80.via-indigo-50\/80.to-cyan-50\/80 {
+        background: linear-gradient(
+            to bottom right,
+            rgba(88, 28, 135, 0.2),
+            rgba(67, 56, 202, 0.2),
+            rgba(6, 182, 212, 0.2)
+        );
+    }
 
-  .bg-gradient-to-br.from-purple-600\/90.via-indigo-700\/90.to-cyan-500\/90 {
-    background: linear-gradient(to bottom right, rgba(88, 28, 135, 0.8), rgba(67, 56, 202, 0.8), rgba(6, 182, 212, 0.8));
-  }
+    .bg-gradient-to-br.from-purple-600\/90.via-indigo-700\/90.to-cyan-500\/90 {
+        background: linear-gradient(
+            to bottom right,
+            rgba(88, 28, 135, 0.8),
+            rgba(67, 56, 202, 0.8),
+            rgba(6, 182, 212, 0.8)
+        );
+    }
 
-  .bg-background\/70 {
-    background-color: rgba(15, 23, 42, 0.7);
-  }
+    .bg-background\/70 {
+        background-color: rgba(15, 23, 42, 0.7);
+    }
 
-  .bg-background\/60 {
-    background-color: rgba(15, 23, 42, 0.6);
-  }
+    .bg-background\/60 {
+        background-color: rgba(15, 23, 42, 0.6);
+    }
 
-  .bg-background\/50 {
-    background-color: rgba(15, 23, 42, 0.5);
-  }
+    .bg-background\/50 {
+        background-color: rgba(15, 23, 42, 0.5);
+    }
 
-  .bg-background\/40 {
-    background-color: rgba(15, 23, 42, 0.4);
-  }
+    .bg-background\/40 {
+        background-color: rgba(15, 23, 42, 0.4);
+    }
 
-  /* Additional styles for dark slate background */
-  .bg-gradient-to-br.from-purple-50.to-indigo-50 {
-    background: linear-gradient(to bottom right, hsl(215 25% 12%), hsl(215 25% 15%));
-  }
+    /* Additional styles for dark slate background */
+    .bg-gradient-to-br.from-purple-50.to-indigo-50 {
+        background: linear-gradient(to bottom right, hsl(215 25% 12%), hsl(215 25% 15%));
+    }
 
-  .bg-gradient-to-br.from-purple-600.via-indigo-700.to-purple-800 {
-    background: linear-gradient(to bottom right, hsl(270 70% 30%), hsl(240 70% 25%), hsl(270 70% 20%));
-  }
+    .bg-gradient-to-br.from-purple-600.via-indigo-700.to-purple-800 {
+        background: linear-gradient(to bottom right, hsl(270 70% 30%), hsl(240 70% 25%), hsl(270 70% 20%));
+    }
 
-  /* Glass container styles */
-  .glass-container {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(0, 200, 255, 0.3);
-    border-radius: 10px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    position: relative;
-  }
+    /* Glass container styles */
+    .glass-container {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(0, 200, 255, 0.3);
+        border-radius: 10px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+    }
 
-  .glass-container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  }
+    .glass-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
 
-  .glass-container-title {
-    color: rgba(0, 230, 255, 0.9);
-    font-weight: bold;
-    text-align: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(0, 200, 255, 0.3);
-  }
+    .glass-container-title {
+        color: rgba(0, 230, 255, 0.9);
+        font-weight: bold;
+        text-align: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0, 200, 255, 0.3);
+    }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
 }
 
 @layer utilities {
-  .animation-delay-1500 {
-    animation-delay: 1500ms;
-  }
-  .animation-delay-3000 {
-    animation-delay: 3000ms;
-  }
-  .animation-delay-4500 {
-    animation-delay: 4500ms;
-  }
-  .animation-delay-6000 {
-    animation-delay: 6000ms;
-  }
-  .animation-delay-7500 {
-    animation-delay: 7500ms;
-  }
-  .animation-delay-9000 {
-    animation-delay: 9000ms;
-  }
-  .animation-delay-10500 {
-    animation-delay: 10500ms;
-  }
-  .animation-delay-12000 {
-    animation-delay: 12000ms;
-  }
-  .animation-delay-13500 {
-    animation-delay: 13500ms;
-  }
-  .animation-delay-15000 {
-    animation-delay: 15000ms;
-  }
-  .animation-delay-16500 {
-    animation-delay: 16500ms;
-  }
-
-  .terminal-loop {
-    animation: hide-after 35s forwards;
-    animation-delay: 20s;
-    animation-iteration-count: 1;
-  }
-
-  @keyframes hide-after {
-    0%,
-    95% {
-      opacity: 1;
+    .animation-delay-1500 {
+        animation-delay: 1500ms;
     }
-    100% {
-      opacity: 0;
+    .animation-delay-3000 {
+        animation-delay: 3000ms;
     }
-  }
+    .animation-delay-4500 {
+        animation-delay: 4500ms;
+    }
+    .animation-delay-6000 {
+        animation-delay: 6000ms;
+    }
+    .animation-delay-7500 {
+        animation-delay: 7500ms;
+    }
+    .animation-delay-9000 {
+        animation-delay: 9000ms;
+    }
+    .animation-delay-10500 {
+        animation-delay: 10500ms;
+    }
+    .animation-delay-12000 {
+        animation-delay: 12000ms;
+    }
+    .animation-delay-13500 {
+        animation-delay: 13500ms;
+    }
+    .animation-delay-15000 {
+        animation-delay: 15000ms;
+    }
+    .animation-delay-16500 {
+        animation-delay: 16500ms;
+    }
 
-  .terminal-loop:has(.opacity-0) {
-    animation-play-state: running;
-  }
-
-  /* Make the terminal animation loop */
-  @media (prefers-reduced-motion: no-preference) {
     .terminal-loop {
-      animation-iteration-count: infinite;
+        animation: hide-after 35s forwards;
+        animation-delay: 20s;
+        animation-iteration-count: 1;
     }
 
-    .terminal-loop > p,
-    .terminal-loop > div {
-      animation-iteration-count: infinite;
-      animation-delay: calc(var(--animation-delay, 0ms) + 35s * var(--animation-loop-count, 0));
+    @keyframes hide-after {
+        0%,
+        95% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
     }
 
-    .terminal-loop > .animation-delay-1500 {
-      --animation-delay: 1500ms;
+    .terminal-loop:has(.opacity-0) {
+        animation-play-state: running;
     }
 
-    .terminal-loop > .animation-delay-3000 {
-      --animation-delay: 3000ms;
+    /* Make the terminal animation loop */
+    @media (prefers-reduced-motion: no-preference) {
+        .terminal-loop {
+            animation-iteration-count: infinite;
+        }
+
+        .terminal-loop > p,
+        .terminal-loop > div {
+            animation-iteration-count: infinite;
+            animation-delay: calc(var(--animation-delay, 0ms) + 35s * var(--animation-loop-count, 0));
+        }
+
+        .terminal-loop > .animation-delay-1500 {
+            --animation-delay: 1500ms;
+        }
+
+        .terminal-loop > .animation-delay-3000 {
+            --animation-delay: 3000ms;
+        }
+
+        .terminal-loop > .animation-delay-4500 {
+            --animation-delay: 4500ms;
+        }
+
+        .terminal-loop > .animation-delay-6000 {
+            --animation-delay: 6000ms;
+        }
+
+        .terminal-loop > .animation-delay-7500 {
+            --animation-delay: 7500ms;
+        }
+
+        .terminal-loop > .animation-delay-9000 {
+            --animation-delay: 9000ms;
+        }
+
+        .terminal-loop > .animation-delay-10500 {
+            --animation-delay: 10500ms;
+        }
+
+        .terminal-loop > .animation-delay-12000 {
+            --animation-delay: 12000ms;
+        }
+
+        .terminal-loop > .animation-delay-13500 {
+            --animation-delay: 13500ms;
+        }
+
+        .terminal-loop > .animation-delay-15000 {
+            --animation-delay: 15000ms;
+        }
+
+        .terminal-loop > .animation-delay-16500 {
+            --animation-delay: 16500ms;
+        }
     }
 
-    .terminal-loop > .animation-delay-4500 {
-      --animation-delay: 4500ms;
+    /* Holographic Neon Effect - FIXED VERSION */
+    .neon-container {
+        position: relative;
+        z-index: 1;
+        overflow: visible;
+        isolation: isolate; /* Add this to create a new stacking context */
     }
 
-    .terminal-loop > .animation-delay-6000 {
-      --animation-delay: 6000ms;
+    /* Border-only neon effect that only appears on hover */
+    .neon-container::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: transparent;
+        border-radius: inherit;
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
-    .terminal-loop > .animation-delay-7500 {
-      --animation-delay: 7500ms;
+    /* Top border */
+    .neon-container > .neon-top {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+            90deg,
+            rgba(6, 182, 212, 0) 0%,
+            rgba(6, 182, 212, 0.8) 20%,
+            rgba(124, 58, 237, 0.8) 50%,
+            rgba(6, 182, 212, 0.8) 80%,
+            rgba(6, 182, 212, 0) 100%
+        );
+        border-radius: var(--radius) var(--radius) 0 0;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        box-shadow: 0 0 10px 1px rgba(6, 182, 212, 0.5);
+        pointer-events: none;
     }
 
-    .terminal-loop > .animation-delay-9000 {
-      --animation-delay: 9000ms;
+    /* Right border */
+    .neon-container > .neon-right {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: -2px;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+            180deg,
+            rgba(124, 58, 237, 0) 0%,
+            rgba(124, 58, 237, 0.8) 20%,
+            rgba(6, 182, 212, 0.8) 50%,
+            rgba(124, 58, 237, 0.8) 80%,
+            rgba(124, 58, 237, 0) 100%
+        );
+        border-radius: 0 var(--radius) var(--radius) 0;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        box-shadow: 0 0 10px 1px rgba(124, 58, 237, 0.5);
+        pointer-events: none;
     }
 
-    .terminal-loop > .animation-delay-10500 {
-      --animation-delay: 10500ms;
+    /* Bottom border */
+    .neon-container > .neon-bottom {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+            90deg,
+            rgba(6, 182, 212, 0) 0%,
+            rgba(6, 182, 212, 0.8) 20%,
+            rgba(124, 58, 237, 0.8) 50%,
+            rgba(6, 182, 212, 0.8) 80%,
+            rgba(6, 182, 212, 0) 100%
+        );
+        border-radius: 0 0 var(--radius) var(--radius);
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        box-shadow: 0 0 10px 1px rgba(6, 182, 212, 0.5);
+        pointer-events: none;
     }
 
-    .terminal-loop > .animation-delay-12000 {
-      --animation-delay: 12000ms;
+    /* Left border */
+    .neon-container > .neon-left {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -2px;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+            180deg,
+            rgba(124, 58, 237, 0) 0%,
+            rgba(124, 58, 237, 0.8) 20%,
+            rgba(6, 182, 212, 0.8) 50%,
+            rgba(124, 58, 237, 0.8) 80%,
+            rgba(124, 58, 237, 0) 100%
+        );
+        border-radius: var(--radius) 0 0 var(--radius);
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        box-shadow: 0 0 10px 1px rgba(124, 58, 237, 0.5);
+        pointer-events: none;
     }
 
-    .terminal-loop > .animation-delay-13500 {
-      --animation-delay: 13500ms;
+    /* Show all borders on hover */
+    .neon-container:hover > .neon-top,
+    .neon-container:hover > .neon-right,
+    .neon-container:hover > .neon-bottom,
+    .neon-container:hover > .neon-left {
+        opacity: 1;
     }
 
-    .terminal-loop > .animation-delay-15000 {
-      --animation-delay: 15000ms;
+    /* Always-on neon effect that doesn't require hover */
+    .neon-always-on > .neon-top,
+    .neon-always-on > .neon-right,
+    .neon-always-on > .neon-bottom,
+    .neon-always-on > .neon-left {
+        opacity: 1;
     }
 
-    .terminal-loop > .animation-delay-16500 {
-      --animation-delay: 16500ms;
+    /* Explicitly hover-only for elements that should never have always-on effects */
+    .neon-hover-only::after,
+    .neon-hover-only > .neon-right,
+    .neon-hover-only > .neon-bottom,
+    .neon-hover-only > .neon-left {
+        opacity: 0;
     }
-  }
 
-  /* Holographic Neon Effect - FIXED VERSION */
-  .neon-container {
-    position: relative;
-    z-index: 1;
-    overflow: visible;
-    isolation: isolate; /* Add this to create a new stacking context */
-  }
-
-  /* Border-only neon effect that only appears on hover */
-  .neon-container::before {
-    content: "";
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: transparent;
-    border-radius: inherit;
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  /* Top border */
-  .neon-container > .neon-top {
-    content: "";
-    position: absolute;
-    top: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      rgba(6, 182, 212, 0) 0%,
-      rgba(6, 182, 212, 0.8) 20%,
-      rgba(124, 58, 237, 0.8) 50%,
-      rgba(6, 182, 212, 0.8) 80%,
-      rgba(6, 182, 212, 0) 100%
-    );
-    border-radius: var(--radius) var(--radius) 0 0;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    box-shadow: 0 0 10px 1px rgba(6, 182, 212, 0.5);
-    pointer-events: none;
-  }
-
-  /* Right border */
-  .neon-container > .neon-right {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: -2px;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-      180deg,
-      rgba(124, 58, 237, 0) 0%,
-      rgba(124, 58, 237, 0.8) 20%,
-      rgba(6, 182, 212, 0.8) 50%,
-      rgba(124, 58, 237, 0.8) 80%,
-      rgba(124, 58, 237, 0) 100%
-    );
-    border-radius: 0 var(--radius) var(--radius) 0;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    box-shadow: 0 0 10px 1px rgba(124, 58, 237, 0.5);
-    pointer-events: none;
-  }
-
-  /* Bottom border */
-  .neon-container > .neon-bottom {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      rgba(6, 182, 212, 0) 0%,
-      rgba(6, 182, 212, 0.8) 20%,
-      rgba(124, 58, 237, 0.8) 50%,
-      rgba(6, 182, 212, 0.8) 80%,
-      rgba(6, 182, 212, 0) 100%
-    );
-    border-radius: 0 0 var(--radius) var(--radius);
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    box-shadow: 0 0 10px 1px rgba(6, 182, 212, 0.5);
-    pointer-events: none;
-  }
-
-  /* Left border */
-  .neon-container > .neon-left {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -2px;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-      180deg,
-      rgba(124, 58, 237, 0) 0%,
-      rgba(124, 58, 237, 0.8) 20%,
-      rgba(6, 182, 212, 0.8) 50%,
-      rgba(124, 58, 237, 0.8) 80%,
-      rgba(124, 58, 237, 0) 100%
-    );
-    border-radius: var(--radius) 0 0 var(--radius);
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    box-shadow: 0 0 10px 1px rgba(124, 58, 237, 0.5);
-    pointer-events: none;
-  }
-
-  /* Show all borders on hover */
-  .neon-container:hover > .neon-top,
-  .neon-container:hover > .neon-right,
-  .neon-container:hover > .neon-bottom,
-  .neon-container:hover > .neon-left {
-    opacity: 1;
-  }
-
-  /* Always-on neon effect that doesn't require hover */
-  .neon-always-on > .neon-top,
-  .neon-always-on > .neon-right,
-  .neon-always-on > .neon-bottom,
-  .neon-always-on > .neon-left {
-    opacity: 1;
-  }
-
-  /* Explicitly hover-only for elements that should never have always-on effects */
-  .neon-hover-only::after,
-  .neon-hover-only > .neon-right,
-  .neon-hover-only > .neon-bottom,
-  .neon-hover-only > .neon-left {
-    opacity: 0;
-  }
-
-  .neon-hover-only:hover::after,
-  .neon-hover-only:hover > .neon-right,
-  .neon-hover-only:hover > .neon-bottom,
-  .neon-hover-only:hover > .neon-left {
-    opacity: 1;
-  }
-
-  /* Button Neon Effects */
-  .neon-button {
-    position: relative;
-    overflow: visible;
-  }
-
-  /* Top border */
-  .neon-button::before {
-    content: "";
-    position: absolute;
-    top: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      rgba(6, 182, 212, 0) 0%,
-      rgba(6, 182, 212, 0.8) 20%,
-      rgba(124, 58, 237, 0.8) 50%,
-      rgba(6, 182, 212, 0.8) 80%,
-      rgba(6, 182, 212, 0) 100%
-    );
-    border-radius: inherit;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    box-shadow: 0 0 8px 1px rgba(6, 182, 212, 0.5);
-  }
-
-  /* Right border */
-  .neon-button::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: -2px;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-      180deg,
-      rgba(124, 58, 237, 0) 0%,
-      rgba(124, 58, 237, 0.8) 20%,
-      rgba(6, 182, 212, 0.8) 50%,
-      rgba(124, 58, 237, 0.8) 80%,
-      rgba(124, 58, 237, 0) 100%
-    );
-    border-radius: inherit;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    box-shadow: 0 0 8px 1px rgba(124, 58, 237, 0.5);
-  }
-
-  /* Bottom border */
-  .neon-button > .neon-bottom {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      rgba(6, 182, 212, 0) 0%,
-      rgba(6, 182, 212, 0.8) 20%,
-      rgba(124, 58, 237, 0.8) 50%,
-      rgba(6, 182, 212, 0.8) 80%,
-      rgba(6, 182, 212, 0) 100%
-    );
-    border-radius: inherit;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    box-shadow: 0 0 8px 1px rgba(6, 182, 212, 0.5);
-  }
-
-  /* Left border */
-  .neon-button > .neon-left {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -2px;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-      180deg,
-      rgba(124, 58, 237, 0) 0%,
-      rgba(124, 58, 237, 0.8) 20%,
-      rgba(6, 182, 212, 0.8) 50%,
-      rgba(124, 58, 237, 0.8) 80%,
-      rgba(124, 58, 237, 0) 100%
-    );
-    border-radius: inherit;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    box-shadow: 0 0 8px 1px rgba(124, 58, 237, 0.5);
-  }
-
-  /* Show all borders on hover */
-  .neon-button:hover::before,
-  .neon-button:hover::after,
-  .neon-button:hover > .neon-bottom,
-  .neon-button:hover > .neon-left {
-    opacity: 1;
-  }
-
-  /* Red button variant */
-  .neon-button-red::before,
-  .neon-button-red::after,
-  .neon-button-red > .neon-bottom,
-  .neon-button-red > .neon-left {
-    background: linear-gradient(
-      90deg,
-      rgba(239, 68, 68, 0) 0%,
-      rgba(239, 68, 68, 0.8) 20%,
-      rgba(236, 72, 153, 0.8) 50%,
-      rgba(239, 68, 68, 0.8) 80%,
-      rgba(239, 68, 68, 0) 100%
-    );
-    box-shadow: 0 0 8px 1px rgba(239, 68, 68, 0.5);
-  }
-
-  /* Subtle button variant */
-  .neon-button-subtle::before,
-  .neon-button-subtle::after,
-  .neon-button-subtle > .neon-bottom,
-  .neon-button-subtle > .neon-left {
-    background: linear-gradient(
-      90deg,
-      rgba(124, 58, 237, 0) 0%,
-      rgba(124, 58, 237, 0.5) 20%,
-      rgba(6, 182, 212, 0.5) 50%,
-      rgba(124, 58, 237, 0.5) 80%,
-      rgba(124, 58, 237, 0) 100%
-    );
-    box-shadow: 0 0 6px 1px rgba(124, 58, 237, 0.3);
-  }
-
-  /* Header Neon Effect */
-  .neon-header {
-    position: relative;
-    overflow: visible;
-  }
-
-  .neon-header::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(6, 182, 212, 0.7) 20%,
-      rgba(124, 58, 237, 0.7) 50%,
-      rgba(6, 182, 212, 0.7) 80%,
-      transparent 100%
-    );
-    filter: blur(1px);
-    box-shadow: 0 0 8px 1px rgba(6, 182, 212, 0.5);
-    animation: neon-header-pulse 4s infinite alternate, neon-header-move 15s linear infinite;
-  }
-
-  @keyframes neon-header-pulse {
-    0% {
-      opacity: 0.5;
+    .neon-hover-only:hover::after,
+    .neon-hover-only:hover > .neon-right,
+    .neon-hover-only:hover > .neon-bottom,
+    .neon-hover-only:hover > .neon-left {
+        opacity: 1;
     }
-    100% {
-      opacity: 1;
-    }
-  }
 
-  @keyframes neon-header-move {
-    0% {
-      background-position: 0% 50%;
+    /* Button Neon Effects */
+    .neon-button {
+        position: relative;
+        overflow: visible;
     }
-    100% {
-      background-position: 200% 50%;
-    }
-  }
 
-  @keyframes pulse-ring {
-    0% {
-      transform: scale(0.8);
-      opacity: 0.8;
+    /* Top border */
+    .neon-button::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+            90deg,
+            rgba(6, 182, 212, 0) 0%,
+            rgba(6, 182, 212, 0.8) 20%,
+            rgba(124, 58, 237, 0.8) 50%,
+            rgba(6, 182, 212, 0.8) 80%,
+            rgba(6, 182, 212, 0) 100%
+        );
+        border-radius: inherit;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        box-shadow: 0 0 8px 1px rgba(6, 182, 212, 0.5);
     }
-    50% {
-      transform: scale(1.1);
-      opacity: 0.4;
-    }
-    100% {
-      transform: scale(0.8);
-      opacity: 0.8;
-    }
-  }
 
-  .animate-pulse-ring {
-    animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
-  }
-
-  @keyframes bounce-subtle {
-    0%,
-    100% {
-      transform: translateY(0);
+    /* Right border */
+    .neon-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: -2px;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+            180deg,
+            rgba(124, 58, 237, 0) 0%,
+            rgba(124, 58, 237, 0.8) 20%,
+            rgba(6, 182, 212, 0.8) 50%,
+            rgba(124, 58, 237, 0.8) 80%,
+            rgba(124, 58, 237, 0) 100%
+        );
+        border-radius: inherit;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        box-shadow: 0 0 8px 1px rgba(124, 58, 237, 0.5);
     }
-    50% {
-      transform: translateY(-3px);
-    }
-  }
 
-  .animate-bounce-subtle {
-    animation: bounce-subtle 2s ease infinite;
-  }
+    /* Bottom border */
+    .neon-button > .neon-bottom {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+            90deg,
+            rgba(6, 182, 212, 0) 0%,
+            rgba(6, 182, 212, 0.8) 20%,
+            rgba(124, 58, 237, 0.8) 50%,
+            rgba(6, 182, 212, 0.8) 80%,
+            rgba(6, 182, 212, 0) 100%
+        );
+        border-radius: inherit;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        box-shadow: 0 0 8px 1px rgba(6, 182, 212, 0.5);
+    }
+
+    /* Left border */
+    .neon-button > .neon-left {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -2px;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+            180deg,
+            rgba(124, 58, 237, 0) 0%,
+            rgba(124, 58, 237, 0.8) 20%,
+            rgba(6, 182, 212, 0.8) 50%,
+            rgba(124, 58, 237, 0.8) 80%,
+            rgba(124, 58, 237, 0) 100%
+        );
+        border-radius: inherit;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        box-shadow: 0 0 8px 1px rgba(124, 58, 237, 0.5);
+    }
+
+    /* Show all borders on hover */
+    .neon-button:hover::before,
+    .neon-button:hover::after,
+    .neon-button:hover > .neon-bottom,
+    .neon-button:hover > .neon-left {
+        opacity: 1;
+    }
+
+    /* Red button variant */
+    .neon-button-red::before,
+    .neon-button-red::after,
+    .neon-button-red > .neon-bottom,
+    .neon-button-red > .neon-left {
+        background: linear-gradient(
+            90deg,
+            rgba(239, 68, 68, 0) 0%,
+            rgba(239, 68, 68, 0.8) 20%,
+            rgba(236, 72, 153, 0.8) 50%,
+            rgba(239, 68, 68, 0.8) 80%,
+            rgba(239, 68, 68, 0) 100%
+        );
+        box-shadow: 0 0 8px 1px rgba(239, 68, 68, 0.5);
+    }
+
+    /* Subtle button variant */
+    .neon-button-subtle::before,
+    .neon-button-subtle::after,
+    .neon-button-subtle > .neon-bottom,
+    .neon-button-subtle > .neon-left {
+        background: linear-gradient(
+            90deg,
+            rgba(124, 58, 237, 0) 0%,
+            rgba(124, 58, 237, 0.5) 20%,
+            rgba(6, 182, 212, 0.5) 50%,
+            rgba(124, 58, 237, 0.5) 80%,
+            rgba(124, 58, 237, 0) 100%
+        );
+        box-shadow: 0 0 6px 1px rgba(124, 58, 237, 0.3);
+    }
+
+    /* Header Neon Effect */
+    .neon-header {
+        position: relative;
+        overflow: visible;
+    }
+
+    .neon-header::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(6, 182, 212, 0.7) 20%,
+            rgba(124, 58, 237, 0.7) 50%,
+            rgba(6, 182, 212, 0.7) 80%,
+            transparent 100%
+        );
+        filter: blur(1px);
+        box-shadow: 0 0 8px 1px rgba(6, 182, 212, 0.5);
+        animation:
+            neon-header-pulse 4s infinite alternate,
+            neon-header-move 15s linear infinite;
+    }
+
+    @keyframes neon-header-pulse {
+        0% {
+            opacity: 0.5;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes neon-header-move {
+        0% {
+            background-position: 0% 50%;
+        }
+        100% {
+            background-position: 200% 50%;
+        }
+    }
+
+    @keyframes pulse-ring {
+        0% {
+            transform: scale(0.8);
+            opacity: 0.8;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 0.4;
+        }
+        100% {
+            transform: scale(0.8);
+            opacity: 0.8;
+        }
+    }
+
+    .animate-pulse-ring {
+        animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+    }
+
+    @keyframes bounce-subtle {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-3px);
+        }
+    }
+
+    .animate-bounce-subtle {
+        animation: bounce-subtle 2s ease infinite;
+    }
+
+    @keyframes spin-slow {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .animate-spin-slow {
+        animation: spin-slow 3s linear infinite;
+    }
 }

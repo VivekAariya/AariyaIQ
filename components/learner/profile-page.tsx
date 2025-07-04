@@ -1,6 +1,6 @@
 "use client";
 
-import { updateProfile } from "@/app/actions/learner-actions";
+import { updateLearnerProfileImage, updateProfile } from "@/app/actions/learner-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,8 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
-import { Mail, MapPin, Shield, User } from "lucide-react";
+import { Camera, Mail, MapPin, Shield, Upload, User, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -22,7 +21,9 @@ export default function ProfilePage({ profile }: { profile: any }) {
     const [isPending, startTransition] = useTransition();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+    const [imagePreview, setImagePreview] = useState<string | null>(profile?.profile_image || null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [isImageUploading, setIsImageUploading] = useState(false);
 
     const handleSubmit = async (formData: FormData) => {
         startTransition(async () => {
@@ -45,25 +46,96 @@ export default function ProfilePage({ profile }: { profile: any }) {
         });
     };
 
-    const handleChangePassword = async (formData: FormData) => {
-        startTransition(async () => {
-            const result = await updateProfile(formData);
-
-            if (!result?.success) {
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            // Validate file type
+            if (!file.type.startsWith("image/")) {
                 toast({
-                    title: "Error",
-                    description: result?.message || "An unexpected error occurred",
+                    title: "Invalid file type",
+                    description: "Please select an image file",
                     variant: "destructive",
                 });
-            } else {
-                toast({
-                    title: "Success",
-                    description: result.message || "Profile updated successfully!",
-                });
-                setIsEditing(false);
-                router.refresh();
+                return;
             }
-        });
+
+            // Validate file size (2MB limit)
+            if (file.size > 2 * 1024 * 1024) {
+                toast({
+                    title: "File too large",
+                    description: "Please select an image smaller than 2MB",
+                    variant: "destructive",
+                });
+                return;
+            }
+
+            setImageFile(file);
+
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setImagePreview(e.target?.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleImageSave = async () => {
+        if (!imageFile) {
+            toast({
+                title: "No image selected",
+                description: "Please select an image first",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        setIsImageUploading(true);
+
+        try {
+            // Convert to base64
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64 = e.target?.result as string;
+
+                // Create FormData
+                const formData = new FormData();
+                formData.append("id", profile?.id);
+                formData.append("imageBase64", base64);
+
+                // Call the update function
+                const result = await updateLearnerProfileImage(formData);
+
+                if (result.success) {
+                    toast({
+                        title: "Success",
+                        description: result.message,
+                    });
+                    setImageFile(null);
+                    router.refresh();
+                } else {
+                    toast({
+                        title: "Error",
+                        description: result.message,
+                        variant: "destructive",
+                    });
+                }
+            };
+            reader.readAsDataURL(imageFile);
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to upload image",
+                variant: "destructive",
+            });
+        } finally {
+            setIsImageUploading(false);
+        }
+    };
+
+    const handleImageRemove = () => {
+        setImageFile(null);
+        setImagePreview(profile?.profile_image || null);
     };
 
     return (
@@ -95,16 +167,82 @@ export default function ProfilePage({ profile }: { profile: any }) {
                             {/* Profile Picture */}
                             <div className="relative group">
                                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 p-1">
-                                    <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center">
-                                        <Avatar>
-                                            <AvatarFallback className="text-4xl">
-                                                {profile?.first_name.charAt(0).toUpperCase()}
-                                            </AvatarFallback>
-                                        </Avatar>
+                                    <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
+                                        {imagePreview ? (
+                                            <img
+                                                src={imagePreview}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover rounded-full"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full rounded-full bg-slate-700 flex items-center justify-center">
+                                                <span className="text-2xl font-bold text-white">
+                                                    {profile?.first_name?.charAt(0)?.toUpperCase() || "U"}
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
-                            </div>
 
+                                {/* Upload overlay */}
+                                <div className="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                    <label htmlFor="profileImageInput" className="cursor-pointer p-6">
+                                        <Camera className="w-6 h-6 text-white" />
+                                    </label>
+                                    <input
+                                        id="profileImageInput"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                    />
+                                </div>
+
+                                {/* Upload indicator */}
+                                {isImageUploading && (
+                                    <div className="absolute inset-0 rounded-full bg-black/80 flex items-center justify-center">
+                                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                                    </div>
+                                )}
+                            </div>
+                            {imageFile && (
+                                <div className="flex flex-col gap-3 bg-slate-700/30 rounded-lg p-4 border border-white/10">
+                                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                                        <Upload className="w-4 h-4" />
+                                        New image selected: {imageFile.name}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            onClick={handleImageSave}
+                                            disabled={isImageUploading}
+                                            size="sm"
+                                            className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                                        >
+                                            {isImageUploading ? (
+                                                <>
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                                    Saving...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Upload className="w-4 h-4 mr-2" />
+                                                    Save Image
+                                                </>
+                                            )}
+                                        </Button>
+                                        <Button
+                                            onClick={handleImageRemove}
+                                            disabled={isImageUploading}
+                                            size="sm"
+                                            variant="outline"
+                                            className="border-white/20 text-gray-300 hover:bg-slate-700/50"
+                                        >
+                                            <X className="w-4 h-4 mr-2" />
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
                             {/* Profile Info */}
                             <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-2">

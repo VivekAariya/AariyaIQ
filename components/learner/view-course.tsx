@@ -7,6 +7,7 @@ import { ArrowLeft, BookOpen, Brain, Calendar, CheckCircle, Clock, Info, Star, U
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface CourseDetailsProps {
     course: any;
@@ -282,13 +283,14 @@ export default function ViewCourse({ course, instructor }: CourseDetailsProps) {
                                 <CardContent>
                                     <div className="flex items-start gap-4">
                                         <div className="relative">
-                                            <Image
-                                                src={instructor.profile_image || "/placeholder.svg"}
-                                                alt={instructor.first_name}
-                                                width={60}
-                                                height={60}
-                                                className="rounded-full border-2 border-cyan-500/30"
-                                            />
+                                            <Avatar>
+                                                <AvatarImage src={instructor?.profile_image} />
+                                                <AvatarFallback>
+                                                    {instructor?.first_name
+                                                        ? instructor.first_name.charAt(0).toUpperCase()
+                                                        : instructor?.email?.charAt(0).toUpperCase()}
+                                                </AvatarFallback>
+                                            </Avatar>
                                         </div>
                                         <div className="flex-1">
                                             <h4 className="font-semibold text-white mb-1">
@@ -362,11 +364,12 @@ export default function ViewCourse({ course, instructor }: CourseDetailsProps) {
                                         assignments, diagrams, and other course materials. This ensures high-quality,
                                         up-to-date, and engaging content for your learning journey.
                                     </p>
-                                    <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold shadow-lg hover:from-cyan-400 hover:to-purple-400 transition-all duration-200">
-                                        <Link href={`/learner/dashboard/courses/${course.id}/materials`}>
+
+                                    <Link href={`/learner/dashboard/courses/${course.id}/materials`}>
+                                        <Button className="w-full mt-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold shadow-lg hover:from-cyan-400 hover:to-purple-400 transition-all duration-200">
                                             View Materials
-                                        </Link>
-                                    </Button>
+                                        </Button>
+                                    </Link>
                                     <div className="text-xs text-slate-400 mt-2">
                                         Materials were created or enhanced using AI via the uploaded course materials.
                                     </div>

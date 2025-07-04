@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
-import { AlertTriangle, CheckCircle, Clock, Search, User, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Clock, Search, User, Wand2, XCircle } from "lucide-react";
 import Link from "next/link";
 
 export default async function CoursesPage({ searchParams }: { searchParams?: { search?: string } }) {
@@ -144,6 +144,19 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
                             </div>
 
                             <div className="flex flex-wrap gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    asChild
+                                    className="text-xs rounded-full bg-white/10 px-3 py-1 hover:bg-white/20 transition-colors"
+                                >
+                                    <Link href={`/instructor/dashboard/courses/${course.id}/materials`}>
+                                        <div className="flex items-center gap-1">
+                                            <Wand2 className="h-4 w-4" />
+                                            AI Tools
+                                        </div>
+                                    </Link>
+                                </Button>
                                 <Button variant="outline" size="sm" asChild className="text-xs">
                                     <Link href={`/instructor/dashboard/courses/${course.id}`}>Edit</Link>
                                 </Button>

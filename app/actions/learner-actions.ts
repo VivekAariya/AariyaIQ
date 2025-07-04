@@ -55,6 +55,28 @@ export async function updateProfile(formData: FormData) {
     }
 }
 
+export async function updateLearnerProfileImage(formData: FormData) {
+    try {
+        const id = formData.get("id") as string;
+        const imageBase64 = formData.get("imageBase64") as string;
+
+        const { error } = await supabaseServiceRoleClient
+            .from("users")
+            .update({ profile_image: imageBase64 })
+            .eq("id", id);
+
+        if (error) {
+            console.error("Error updating profile image:", error);
+            return { success: false, message: "Failed to update profile image" };
+        }
+
+        return { success: true, message: "Profile image updated successfully!" };
+    } catch (error) {
+        console.error("Error updating profile image:", error);
+        return { success: false, message: "Failed to update profile image" };
+    }
+}
+
 export async function support(formData: FormData) {
     try {
         const id = formData.get("id");

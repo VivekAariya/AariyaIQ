@@ -33,7 +33,7 @@ export default async function ViewCoursePage({ params, searchParams }: CoursePro
     // Fetch instructors
     const { data: instructor, error: instructorError } = await supabaseServiceRoleClient
         .from("users")
-        .select("id, first_name, last_name, email, phone_number, area_of_expertise, years_of_experience")
+        .select("id, first_name, last_name, email, phone_number, area_of_expertise, years_of_experience, profile_image")
         .eq("id", course?.instructor)
         .single();
 

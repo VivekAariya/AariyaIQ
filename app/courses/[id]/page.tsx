@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
 import { ArrowLeft, BookOpen, Calendar, CheckCircle, Clock, Download, Users } from "lucide-react";
 import Image from "next/image";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 
 interface CourseDetailsPageProps {
@@ -320,13 +321,14 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
                             <CardContent>
                                 <div className="flex items-start gap-4">
                                     <div className="relative">
-                                        <Image
-                                            src={"/placeholder.svg"}
-                                            alt={instructor.first_name}
-                                            width={60}
-                                            height={60}
-                                            className="rounded-full border-2 border-cyan-500/30"
-                                        />
+                                        <Avatar>
+                                            <AvatarImage src={instructor?.profile_image} />
+                                            <AvatarFallback>
+                                                {instructor?.first_name
+                                                    ? instructor.first_name.charAt(0).toUpperCase()
+                                                    : instructor?.email?.charAt(0).toUpperCase()}
+                                            </AvatarFallback>
+                                        </Avatar>
                                     </div>
                                     <div className="flex-1">
                                         <h4 className="font-semibold text-white mb-1">

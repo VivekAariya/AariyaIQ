@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -132,6 +132,7 @@ export function MainNav() {
                             <DropdownMenuTrigger asChild>
                                 <div className="cursor-pointer">
                                     <Avatar>
+                                        <AvatarImage src={userData?.user_metadata?.profile_image} />
                                         <AvatarFallback>
                                             {userData.user_metadata?.first_name
                                                 ? userData.user_metadata.first_name.charAt(0).toUpperCase()
@@ -216,6 +217,7 @@ export function MainNav() {
                                     <DropdownMenuTrigger asChild>
                                         <div className="cursor-pointer">
                                             <Avatar>
+                                                <AvatarImage src={userData?.user_metadata?.profile_image} />
                                                 <AvatarFallback>
                                                     {userData.user_metadata?.first_name
                                                         ? userData.user_metadata.first_name.charAt(0).toUpperCase()

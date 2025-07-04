@@ -1,3 +1,4 @@
+import { FloatingAIBtn } from "@/components/floating-ai-btn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import logger from "@/utils/logger";
@@ -79,6 +80,8 @@ export default async function InstructorDashboardPage() {
 
     return (
         <div className="space-y-8">
+            <FloatingAIBtn delay={500} />
+
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Instructor Dashboard</h1>
                 <p className="text-muted-foreground">Manage your courses and learners</p>
