@@ -31,53 +31,53 @@ export default async function SuperAdminDashboardPage() {
     const recentLearners = learners.slice(0, 4);
 
     return (
-        <div className="space-y-8">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Super Admin Dashboard</h1>
-                <p className="text-muted-foreground">Manage your entire learning platform</p>
+        <div className="space-y-8 px-2 sm:px-4 md:px-8">
+            <div className="mt-6 md:mt-10">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Super Admin Dashboard</h1>
+                <p className="text-muted-foreground text-sm sm:text-base">Manage your entire learning platform</p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
+                        <CardTitle className="text-xs sm:text-sm font-medium">Total Courses</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{totalCourses}</div>
+                        <div className="text-xl sm:text-2xl font-bold">{totalCourses}</div>
                     </CardContent>
                 </Card>
                 <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Learners</CardTitle>
+                        <CardTitle className="text-xs sm:text-sm font-medium">Total Learners</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{learners.length}</div>
+                        <div className="text-xl sm:text-2xl font-bold">{learners.length}</div>
                     </CardContent>
                 </Card>
                 <Card className="bg-black/80 backdrop-blur-[2px] border-white/20">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Instructors</CardTitle>
+                        <CardTitle className="text-xs sm:text-sm font-medium">Instructors</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{instructors.length}</div>
+                        <div className="text-xl sm:text-2xl font-bold">{instructors.length}</div>
                     </CardContent>
                 </Card>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="grid gap-8 grid-cols-1 md:grid-cols-2">
                 <div>
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold tracking-tight">Instructors</h2>
                     </div>
-                    <div className="mt-4 rounded-md border">
-                        <div className="grid grid-cols-12 gap-2 p-4 font-medium">
+                    <div className="mt-4 rounded-md border overflow-x-auto">
+                        <div className="min-w-[500px] grid grid-cols-12 gap-2 p-4 font-medium text-xs sm:text-sm">
                             <div className="col-span-3">Name</div>
                             <div className="col-span-4">Email</div>
                             <div className="col-span-3">Status</div>
                             <div className="col-span-2">Actions</div>
                         </div>
                         {instructors.map((instructor) => (
-                            <div key={instructor.id} className="grid grid-cols-12 gap-2 border-t p-4 items-center">
+                            <div key={instructor.id} className="min-w-[500px] grid grid-cols-12 gap-2 border-t p-4 items-center text-xs sm:text-sm">
                                 <div className="col-span-3 truncate">
                                     {instructor.first_name + " " + instructor.last_name}
                                 </div>
@@ -109,14 +109,14 @@ export default async function SuperAdminDashboardPage() {
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold tracking-tight">Recent Learners</h2>
                     </div>
-                    <div className="mt-4 rounded-md border">
-                        <div className="grid grid-cols-12 gap-2 p-4 font-medium">
+                    <div className="mt-4 rounded-md border overflow-x-auto">
+                        <div className="min-w-[400px] grid grid-cols-12 gap-2 p-4 font-medium text-xs sm:text-sm">
                             <div className="col-span-4">Name</div>
                             <div className="col-span-4">Joined</div>
                             <div className="col-span-4">Actions</div>
                         </div>
                         {recentLearners.map((learner) => (
-                            <div key={learner.id} className="grid grid-cols-12 gap-2 border-t p-4 items-center">
+                            <div key={learner.id} className="min-w-[400px] grid grid-cols-12 gap-2 border-t p-4 items-center text-xs sm:text-sm">
                                 <div className="col-span-4 truncate">
                                     {learner.first_name + " " + learner.last_name}
                                 </div>

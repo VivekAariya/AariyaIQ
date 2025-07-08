@@ -41,7 +41,7 @@ export default async function LearnersPage({ searchParams }: { searchParams?: { 
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="max-md:mt-10 flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Manage Learners</h1>
             </div>
 

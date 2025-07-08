@@ -24,12 +24,16 @@ export function SuperAdminSidebar() {
         }
     };
 
+    const handleLinkClick = () => {
+        if (isOpen) setIsOpen(false);
+    };
+
     return (
         <>
             <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-4 top-4 z-50 md:hidden"
+                className={`absolute left-4 top-4 z-50 md:hidden ${isOpen ? "bg-black" : "bg-white/10"}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -40,9 +44,9 @@ export function SuperAdminSidebar() {
                 }`}
             >
                 <div className="flex h-full flex-col">
-                    <div className="mb-8 flex items-center justify-between">
+                    <div className="max-md:mt-10 mb-8 flex items-center justify-between">
                         <Link href="/" className="flex items-center space-x-2">
-                            <span className="text-xl font-bold">AariyaIQ Super Admin</span>
+                            <span className="text-xl font-bold">Super Admin</span>
                         </Link>
                     </div>
                     <nav className="flex-1 space-y-1">
@@ -51,6 +55,7 @@ export function SuperAdminSidebar() {
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname === "/super-admin/dashboard" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <Home className="mr-2 h-4 w-4" />
                             Dashboard
@@ -62,6 +67,7 @@ export function SuperAdminSidebar() {
                                     ? "bg-indigo-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <BookOpen className="mr-2 h-4 w-4" />
                             Manage Courses
@@ -73,6 +79,7 @@ export function SuperAdminSidebar() {
                                     ? "bg-indigo-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <Users className="mr-2 h-4 w-4" />
                             Manage Learners
@@ -84,6 +91,7 @@ export function SuperAdminSidebar() {
                                     ? "bg-indigo-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <Shield className="mr-2 h-4 w-4" />
                             Manage Instructors
@@ -95,6 +103,7 @@ export function SuperAdminSidebar() {
                                     ? "bg-indigo-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <Shield className="mr-2 h-4 w-4" />
                             Approvals
@@ -106,20 +115,10 @@ export function SuperAdminSidebar() {
                                     ? "bg-indigo-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <Shield className="mr-2 h-4 w-4" />
                             Promo Codes
-                        </Link>
-                        <Link
-                            href="/super-admin/dashboard/settings"
-                            className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-                                pathname === "/super-admin/dashboard/settings"
-                                    ? "bg-white/20 text-white"
-                                    : "hover:bg-white/10"
-                            }`}
-                        >
-                            <Settings className="mr-2 h-4 w-4" />
-                            System Settings
                         </Link>
                     </nav>
                     <div className="pt-4">

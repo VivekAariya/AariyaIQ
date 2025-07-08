@@ -201,7 +201,7 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
     }, []);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        <div className="max-md:mt-10 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
             {/* Quantum Background Effects */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -209,10 +209,10 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/5 rounded-full blur-2xl"></div>
             </div>
 
-            <div className="relative z-10 p-8 space-y-8">
-                <div className="flex items-center justify-between">
+            <div className="relative z-10 p-4 sm:p-6 md:p-8 space-y-8 max-w-[100vw]">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                             Edit Course
                         </h1>
                         <p className="text-gray-400 mt-2">
@@ -233,11 +233,11 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                 </div>
                 <form action={handleSubmit}>
                     <input type="hidden" name="course_id" value={course.id} />
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                         <div className="lg:col-span-2 space-y-8">
                             <Card className="bg-slate-800/50 border-slate-700 text-white backdrop-blur-sm hover:bg-slate-800/60 transition-all duration-300">
                                 <CardHeader>
-                                    <CardTitle className="text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent flex items-center">
+                                    <CardTitle className="text-lg sm:text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent flex items-center">
                                         <BookOpen className="h-5 w-5 mr-2 text-cyan-400" />
                                         Core Information
                                     </CardTitle>
@@ -289,7 +289,7 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
 
                             <Card className="bg-slate-800/50 border-slate-700 text-white backdrop-blur-sm hover:bg-slate-800/60 transition-all duration-300">
                                 <CardHeader>
-                                    <CardTitle className="text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent flex items-center">
+                                    <CardTitle className="text-lg sm:text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent flex items-center">
                                         <FileText className="h-5 w-5 mr-2 text-purple-400" />
                                         Curriculum Details
                                     </CardTitle>
@@ -344,7 +344,7 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                         <div className="space-y-8">
                             <Card className="bg-slate-800/50 border-slate-700 text-white backdrop-blur-sm hover:bg-slate-800/60 transition-all duration-300">
                                 <CardHeader>
-                                    <CardTitle className="text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                                    <CardTitle className="text-lg sm:text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                                         Course Image
                                     </CardTitle>
                                 </CardHeader>
@@ -358,7 +358,7 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                                             alt={course.course_title}
                                             width={400}
                                             height={225}
-                                            className="rounded-lg object-cover w-full hover:scale-105 transition-transform duration-300"
+                                            className="rounded-lg object-cover w-full hover:scale-105 transition-transform duration-300 max-h-56 sm:max-h-none"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
                                     </div>
@@ -379,7 +379,7 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
 
                             <Card className="bg-slate-800/50 border-slate-700 text-white backdrop-blur-sm hover:bg-slate-800/60 transition-all duration-300">
                                 <CardHeader>
-                                    <CardTitle className="text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                                    <CardTitle className="text-lg sm:text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                                         Metadata & Settings
                                     </CardTitle>
                                 </CardHeader>
@@ -536,11 +536,11 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                         </div>
                     </div>
 
-                    <div className="mt-8 flex justify-end">
+                    <div className="mt-8 flex flex-col sm:flex-row sm:justify-end gap-4">
                         <Button
                             type="submit"
                             disabled={isPending}
-                            className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-cyan-500/25 transition-all duration-300"
+                            className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 w-full sm:w-auto"
                         >
                             <Save className="h-5 w-5 mr-2" />
                             {isPending ? "Saving..." : "Save Changes"}
@@ -550,7 +550,7 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                 {/* Materials Section */}
                 <div className="mt-12">
                     <div className="border-t border-slate-700/50 my-8"></div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6">
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6">
                         Course Materials
                     </h2>
                     <div className="mt-8 space-y-8">
@@ -565,13 +565,13 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                         )}
 
                         <div>
-                            <h2 className="text-xl font-semibold mb-4">Your File</h2>
+                            <h2 className="text-lg sm:text-xl font-semibold mb-4">Your File</h2>
                             {loading || isPending ? (
                                 <Loader2 className="animate-spin" />
                             ) : (
                                 <div className="space-y-2">
                                     {file ? (
-                                        <div className="flex items-center justify-between p-3 border rounded-lg">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 border rounded-lg gap-2">
                                             <div className="flex-1 min-w-0">
                                                 <div className="text-sm font-medium truncate">
                                                     {file?.pathname?.split("/")?.pop()}
@@ -585,14 +585,14 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                                                     })}
                                                 </div>
                                             </div>
-                                            <div className="flex space-x-2">
-                                                <Link href={file?.url} target="_blank" rel="noopener noreferrer">
-                                                    <Button variant={"outline"}>View</Button>
+                                            <div className="flex flex-row space-x-2 w-full sm:w-auto">
+                                                <Link href={file?.url} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                                                    <Button variant={"outline"} className="w-full sm:w-auto">View</Button>
                                                 </Link>
 
                                                 <Button
                                                     variant={"outline"}
-                                                    className="text-red-600 hover:text-red-700 text-sm"
+                                                    className="text-red-600 hover:text-red-700 text-sm w-full sm:w-auto"
                                                     onClick={() => handleDelete(file?.url)}
                                                 >
                                                     Delete
@@ -611,22 +611,22 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                 {/* AI Generated Content Section */}
                 <div className="mt-12">
                     <div className="border-t border-slate-700/50 my-8"></div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6 flex items-center">
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6 flex items-center">
                         <Brain className="h-8 w-8 mr-2 text-cyan-400" />
                         AI Generated Content
                     </h2>
 
                     {aiContent && aiContent.length > 0 ? (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                             {aiContent.map((content: any) => (
                                 <Card
                                     key={content.id}
                                     className="bg-slate-800/50 border-slate-700 text-white backdrop-blur-sm hover:bg-slate-800/70 transition-all duration-300 group hover:border-cyan-500/30"
                                 >
                                     <CardHeader className="pb-3">
-                                        <div className="flex items-start justify-between">
+                                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                             <div className="flex-1">
-                                                <CardTitle className="text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent flex items-center">
+                                                <CardTitle className="text-base sm:text-lg bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent flex items-center">
                                                     {content.gen_type === "image" ? (
                                                         <LucideImage className="h-5 w-5 mr-2 text-purple-400" />
                                                     ) : (
@@ -664,7 +664,7 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                                                         <img
                                                             src={`data:image/png;base64,${content.content}`}
                                                             alt="Generated AI Visual"
-                                                            className="max-w-full max-h-[500px] rounded shadow-lg border border-slate-600"
+                                                            className="max-w-full max-h-[300px] sm:max-h-[500px] rounded shadow-lg border border-slate-600"
                                                         />
                                                     ) : (
                                                         <div className="text-center text-gray-400">
@@ -678,21 +678,21 @@ export function CourseEditClient({ course, materials, instructor, aiContent }: C
                                             <Textarea
                                                 value={content.content}
                                                 readOnly
-                                                rows={15}
-                                                className="bg-slate-900/50 rounded-lg p-4 border border-slate-600"
+                                                rows={10}
+                                                className="bg-slate-900/50 rounded-lg p-4 border border-slate-600 text-xs sm:text-sm"
                                             />
                                         )}
 
                                         {/* Action Buttons */}
-                                        <div className="flex items-center justify-between pt-2">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-2 gap-2">
                                             <div className="text-xs text-gray-500">
                                                 Updated: {new Date(content.updated_at).toLocaleDateString("en-GB")}
                                             </div>
-                                            <div className="flex space-x-2">
+                                            <div className="flex flex-row space-x-2 w-full sm:w-auto">
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="bg-slate-700/50 border-slate-600 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-xs"
+                                                    className="bg-slate-700/50 border-slate-600 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-xs w-full sm:w-auto"
                                                     onClick={() => {
                                                         if (content.gen_type === "image") {
                                                             handleDownloadImage(content.content);

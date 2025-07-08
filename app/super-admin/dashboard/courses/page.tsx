@@ -79,7 +79,7 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="max-md:mt-10 flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Manage Courses</h1>
             </div>
 

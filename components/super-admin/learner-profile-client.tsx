@@ -55,46 +55,48 @@ export function LearnerProfileClient({ learner, enrollments }: LearnerProfileCli
                 />
             </div>
 
-            <div className="relative z-10 space-y-6 p-6">
-                <div className="flex items-center space-x-4 mb-6">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                        className="bg-black/50 border-white/20 hover:bg-white/10"
-                    >
-                        <Link href="/super-admin/dashboard/learners">
-                            <ArrowLeft className="h-4 w-4" />
-                        </Link>
-                    </Button>
+            <div className="relative z-10 space-y-6 p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0 mb-6">
+                    <div className="flex-shrink-0">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="bg-black/50 border-white/20 hover:bg-white/10"
+                        >
+                            <Link href="/super-admin/dashboard/learners">
+                                <ArrowLeft className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </div>
                     <div>
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                             Learner Profile
                         </h1>
-                        <p className="text-gray-400">Manage learner details and enrollments</p>
+                        <p className="text-gray-400 text-sm sm:text-base">Manage learner details and enrollments</p>
                     </div>
                 </div>
 
                 <Card className="bg-black/40 border-white/20 backdrop-blur-sm hover:bg-black/50 transition-all duration-300">
-                    <CardContent className="p-6">
-                        <div className="flex items-start space-x-6">
-                            <Avatar>
+                    <CardContent className="p-4 sm:p-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:space-x-6 space-y-4 sm:space-y-0">
+                            <Avatar className="w-20 h-20 mx-auto sm:mx-0">
                                 <AvatarImage
                                     src={learner.profile_image}
                                     alt={learner.first_name + " " + learner.last_name}
                                 />
                                 <AvatarFallback>{learner.first_name?.charAt(0).toUpperCase()}</AvatarFallback>
                             </Avatar>
-                            <div className="flex-1">
-                                <div className="flex items-center space-x-3 mb-2">
-                                    <h2 className="text-2xl font-bold text-white">
+                            <div className="flex-1 w-full">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-white">
                                         {learner.first_name} {learner.last_name}
                                     </h2>
                                 </div>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                     <div className="flex items-center space-x-2 text-gray-300">
                                         <Mail className="h-4 w-4 text-cyan-400" />
-                                        <span>{learner.email}</span>
+                                        <span className="break-all">{learner.email}</span>
                                     </div>
                                     <div className="flex items-center space-x-2 text-gray-300">
                                         <Calendar className="h-4 w-4 text-cyan-400" />
@@ -146,7 +148,7 @@ export function LearnerProfileClient({ learner, enrollments }: LearnerProfileCli
                             <form action={handleSubmit}>
                                 <input type="hidden" name="learnerId" value={learner.id} />
                                 <CardContent className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label htmlFor="firstName" className="text-gray-300">
                                                 First Name
@@ -186,7 +188,7 @@ export function LearnerProfileClient({ learner, enrollments }: LearnerProfileCli
                                     </div>
 
                                     <div className="mt-4">
-                                        <Button variant={"outline"} className="p-5" type="submit" disabled={isPending}>
+                                        <Button variant={"outline"} className="p-5 w-full sm:w-auto" type="submit" disabled={isPending}>
                                             <Save className="h-4 w-4 mr-2" />
                                             {isPending ? "Saving..." : "Save Changes"}
                                         </Button>
@@ -197,26 +199,26 @@ export function LearnerProfileClient({ learner, enrollments }: LearnerProfileCli
                     </TabsContent>
 
                     <TabsContent value="courses" className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {enrollments && enrollments.length > 0 ? (
                                 enrollments.map((enrollment: any) => (
                                     <Card
                                         key={enrollment.id}
-                                        className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-500/30 backdrop-blur-sm hover:scale-105 transition-transform duration-200 shadow-lg"
+                                        className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-500/30 backdrop-blur-sm hover:scale-[1.02] transition-transform duration-200 shadow-lg"
                                     >
-                                        <CardContent className="p-6 flex flex-col h-full justify-between">
+                                        <CardContent className="p-4 sm:p-6 flex flex-col h-full justify-between">
                                             <div>
-                                                <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
+                                                <h3 className="text-lg sm:text-xl font-bold text-white mb-2 line-clamp-1">
                                                     {enrollment.course_title}
                                                 </h3>
-                                                <p className="text-cyan-300 text-sm mb-2 line-clamp-2">
+                                                <p className="text-cyan-300 text-xs sm:text-sm mb-2 line-clamp-2">
                                                     {enrollment.short_description}
                                                 </p>
-                                                <div className="flex items-center space-x-2 mb-2">
-                                                    <span className="text-xs text-gray-300 bg-cyan-700/30 px-2 py-1 rounded">
+                                                <div className="flex flex-wrap items-center space-x-2 mb-2">
+                                                    <span className="text-xs text-gray-300 bg-cyan-700/30 px-2 py-1 rounded mb-1">
                                                         {enrollment.category || "General"}
                                                     </span>
-                                                    <span className="text-xs text-gray-400">
+                                                    <span className="text-xs text-gray-400 mb-1">
                                                         {enrollment.level || "All Levels"}
                                                     </span>
                                                 </div>
@@ -230,7 +232,7 @@ export function LearnerProfileClient({ learner, enrollments }: LearnerProfileCli
                                                     <Button
                                                         asChild
                                                         variant="outline"
-                                                        className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10"
+                                                        className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 w-full sm:w-auto"
                                                     >
                                                         <a>View Course</a>
                                                     </Button>
@@ -240,7 +242,7 @@ export function LearnerProfileClient({ learner, enrollments }: LearnerProfileCli
                                     </Card>
                                 ))
                             ) : (
-                                <Card className="col-span-3 bg-black/40 border-white/20 backdrop-blur-sm">
+                                <Card className="col-span-1 sm:col-span-2 lg:col-span-3 bg-black/40 border-white/20 backdrop-blur-sm">
                                     <CardContent className="p-6 text-center text-gray-400">
                                         No enrolled courses found for this learner.
                                     </CardContent>

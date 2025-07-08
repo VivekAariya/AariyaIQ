@@ -32,7 +32,7 @@ export function InstructorSidebar() {
             <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-4 top-4 z-50 md:hidden"
+                className={`absolute left-4 top-4 z-50 md:hidden ${isOpen ? "bg-black" : "bg-white/10"}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}

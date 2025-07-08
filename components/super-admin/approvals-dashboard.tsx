@@ -379,7 +379,7 @@ export default function ApprovalsDashboard({
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="max-md:mt-10  flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Approval Dashboard</h1>
             </div>
 
@@ -391,8 +391,8 @@ export default function ApprovalsDashboard({
 
                 {/* Learner Registrations */}
                 <TabsContent value="learners" className="space-y-6 pt-6">
-                    <div className="flex items-center justify-between">
-                        <div className="relative w-64">
+                    <div className="flex items-center justify-between max-md:flex-col max-md:items-stretch max-md:gap-2">
+                        <div className="relative w-64 max-md:w-full">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                                 type="search"
@@ -404,7 +404,7 @@ export default function ApprovalsDashboard({
                         </div>
                     </div>
 
-                    <div className={`grid gap-6 ${selectedLearner ? "lg:grid-cols-2" : ""}`}>
+                    <div className={`grid gap-6 ${selectedLearner ? "lg:grid-cols-2" : ""} max-md:grid-cols-1`}>
                         <Card
                             className={`border border-white/20 dark:border-white/10 w-full ${selectedLearner ? "" : "col-span-2"}`}
                         >
@@ -413,8 +413,8 @@ export default function ApprovalsDashboard({
                                 <CardDescription>Manage course registration approvals</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="rounded-md border">
-                                    <div className="grid grid-cols-12 gap-2 p-4 font-medium">
+                                <div className="rounded-md border overflow-x-auto w-full">
+                                    <div className="grid grid-cols-12 gap-2 p-4 font-medium max-md:hidden">
                                         <div className="col-span-3">Name</div>
                                         <div className="col-span-3">Course</div>
                                         <div className="col-span-2">Date</div>
@@ -422,44 +422,57 @@ export default function ApprovalsDashboard({
                                         <div className="col-span-2">Actions</div>
                                     </div>
 
+                                    {/* Mobile Table Header */}
+                                    <div className="md:hidden grid grid-cols-4 gap-2 p-4 font-medium">
+                                        <div>Name</div>
+                                        <div>Course</div>
+                                        <div>Status</div>
+                                        <div>Actions</div>
+                                    </div>
+
                                     {filteredLearnerData.length > 0 ? (
-                                        filteredLearnerData.map((application) => (
-                                            <div
-                                                key={application.id}
-                                                className={`grid grid-cols-12 gap-2 border-t p-4 items-center ${
-                                                    selectedLearner === application.id ? "bg-gray-800/50" : ""
-                                                }`}
-                                                onClick={() => setSelectedLearner(application.id)}
-                                            >
-                                                <div className="col-span-3 truncate">{application.full_name}</div>
-                                                <div className="col-span-3 truncate">
-                                                    {application.course?.course_title}
+                                        <div className="min-w-[700px]">
+                                            {filteredLearnerData.map((application) => (
+                                                <div
+                                                    key={application.id}
+                                                    className={`grid grid-cols-12 gap-2 border-t p-4 items-center max-md:grid-cols-4 max-md:gap-1 ${
+                                                        selectedLearner === application.id ? "bg-gray-800/50" : ""
+                                                    }`}
+                                                    onClick={() => setSelectedLearner(application.id)}
+                                                >
+                                                    {/* Desktop */}
+                                                    <div className="col-span-3 truncate max-md:col-span-1 max-md:text-xs">
+                                                        {application.full_name}
+                                                    </div>
+                                                    <div className="col-span-3 truncate max-md:col-span-1 max-md:text-xs">
+                                                        {application.course?.course_title}
+                                                    </div>
+                                                    <div className="col-span-2 truncate max-md:hidden">
+                                                        {new Date(application.created_at).toLocaleDateString("en-UK", {
+                                                            day: "numeric",
+                                                            month: "short",
+                                                            year: "numeric",
+                                                        })}
+                                                    </div>
+                                                    <div className="col-span-2 max-md:col-span-1 max-md:text-xs">
+                                                        {getLearnerStatusBadge(application.application_status)}
+                                                    </div>
+                                                    <div className="col-span-2 flex space-x-2 max-md:col-span-1 max-md:space-x-1">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="h-8 w-8 p-0"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSelectedLearner(application.id);
+                                                            }}
+                                                        >
+                                                            <FileText className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
                                                 </div>
-                                                <div className="col-span-2 truncate">
-                                                    {new Date(application.created_at).toLocaleDateString("en-UK", {
-                                                        day: "numeric",
-                                                        month: "short",
-                                                        year: "numeric",
-                                                    })}
-                                                </div>
-                                                <div className="col-span-2">
-                                                    {getLearnerStatusBadge(application.application_status)}
-                                                </div>
-                                                <div className="col-span-2 flex space-x-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="h-8 w-8 p-0"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSelectedLearner(application.id);
-                                                        }}
-                                                    >
-                                                        <FileText className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ))
+                                            ))}
+                                        </div>
                                     ) : (
                                         <div className="p-8 text-center text-gray-400">
                                             <p>No learner registrations found</p>
@@ -470,7 +483,7 @@ export default function ApprovalsDashboard({
                         </Card>
 
                         {selectedLearner && (
-                            <Card className="border border-white/20 dark:border-white/10 w-full">
+                            <Card className="border border-white/20 dark:border-white/10 w-full max-md:mt-4">
                                 <CardHeader>
                                     <CardTitle>Registration Details</CardTitle>
                                 </CardHeader>
@@ -658,8 +671,8 @@ export default function ApprovalsDashboard({
 
                 {/* INSTRUCTORS Registrations*/}
                 <TabsContent value="instructors" className="space-y-6 pt-6">
-                    <div className="flex items-center justify-between">
-                        <div className="relative w-64">
+                    <div className="flex items-center justify-between max-md:flex-col max-md:items-stretch max-md:gap-2">
+                        <div className="relative w-64 max-md:w-full">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                                 type="search"
@@ -671,15 +684,15 @@ export default function ApprovalsDashboard({
                         </div>
                     </div>
 
-                    <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
+                    <div className="grid gap-6 lg:grid-cols-[1fr_400px] max-md:grid-cols-1">
                         <Card className="border border-white/20 dark:border-white/10">
                             <CardHeader>
                                 <CardTitle>Instructor Applications</CardTitle>
                                 <CardDescription>Manage instructor application approvals</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="rounded-md border">
-                                    <div className="grid grid-cols-12 gap-2 p-4 font-medium">
+                                <div className="rounded-md border overflow-x-auto w-full">
+                                    <div className="grid grid-cols-12 gap-2 p-4 font-medium max-md:hidden">
                                         <div className="col-span-3">Name</div>
                                         <div className="col-span-3">Expertise</div>
                                         <div className="col-span-2">Date</div>
@@ -687,74 +700,57 @@ export default function ApprovalsDashboard({
                                         <div className="col-span-2">Actions</div>
                                     </div>
 
+                                    {/* Mobile Table Header */}
+                                    <div className="md:hidden grid grid-cols-4 gap-2 p-4 font-medium">
+                                        <div>Name</div>
+                                        <div>Expertise</div>
+                                        <div>Status</div>
+                                        <div>Actions</div>
+                                    </div>
+
                                     {filteredInstructorData.length > 0 ? (
-                                        filteredInstructorData.map((instructor) => (
-                                            <div
-                                                key={instructor.id}
-                                                className={`grid grid-cols-12 gap-2 border-t p-4 items-center ${
-                                                    selectedInstructor === instructor.id ? "bg-gray-800/50" : ""
-                                                }`}
-                                                onClick={() => setSelectedInstructor(instructor.id)}
-                                            >
-                                                <div className="col-span-3 truncate">
-                                                    {instructor.first_name} {instructor.last_name}
-                                                </div>
-                                                <div className="col-span-3 truncate">
-                                                    {instructor.area_of_expertise}
-                                                </div>
-                                                <div className="col-span-2 truncate">
-                                                    {new Date(instructor.created_at).toLocaleDateString("en-GB", {
-                                                        day: "2-digit",
-                                                        month: "2-digit",
-                                                        year: "numeric",
-                                                    })}
-                                                </div>
-                                                <div className="col-span-2">
-                                                    {getInstructorStatusBadge(instructor.profile_status)}
-                                                </div>
-                                                <div className="col-span-2 flex space-x-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="h-8 w-8 p-0"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSelectedInstructor(instructor.id);
-                                                        }}
-                                                    >
-                                                        <FileText className="h-4 w-4" />
-                                                    </Button>
-
-                                                    {/* {instructor.profile_status === "pending" && (
+                                        <div className="min-w-[700px]">
+                                            {filteredInstructorData.map((instructor) => (
+                                                <div
+                                                    key={instructor.id}
+                                                    className={`grid grid-cols-12 gap-2 border-t p-4 items-center max-md:grid-cols-4 max-md:gap-1 ${
+                                                        selectedInstructor === instructor.id ? "bg-gray-800/50" : ""
+                                                    }`}
+                                                    onClick={() => setSelectedInstructor(instructor.id)}
+                                                >
+                                                    {/* Desktop */}
+                                                    <div className="col-span-3 truncate max-md:col-span-1 max-md:text-xs">
+                                                        {instructor.first_name} {instructor.last_name}
+                                                    </div>
+                                                    <div className="col-span-3 truncate max-md:col-span-1 max-md:text-xs">
+                                                        {instructor.area_of_expertise}
+                                                    </div>
+                                                    <div className="col-span-2 truncate max-md:hidden">
+                                                        {new Date(instructor.created_at).toLocaleDateString("en-GB", {
+                                                            day: "2-digit",
+                                                            month: "2-digit",
+                                                            year: "numeric",
+                                                        })}
+                                                    </div>
+                                                    <div className="col-span-2 max-md:col-span-1 max-md:text-xs">
+                                                        {getInstructorStatusBadge(instructor.profile_status)}
+                                                    </div>
+                                                    <div className="col-span-2 flex space-x-2 max-md:col-span-1 max-md:space-x-1">
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="h-8 w-8 p-0 text-green-500"
+                                                            className="h-8 w-8 p-0"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                handleApproveInitial("instructor", instructor.id);
+                                                                setSelectedInstructor(instructor.id);
                                                             }}
                                                         >
-                                                            <CheckCircle className="h-4 w-4" />
+                                                            <FileText className="h-4 w-4" />
                                                         </Button>
-                                                    )} */}
-
-                                                    {/* {instructor.profile_status === "pending_final" && (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="h-8 w-8 p-0 text-green-500"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleApproveFinal("instructor", instructor.id);
-                                                            }}
-                                                        >
-                                                            <CheckCircle className="h-4 w-4" />
-                                                        </Button>
-                                                    )} */}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))
+                                            ))}
+                                        </div>
                                     ) : (
                                         <div className="p-8 text-center text-gray-400">
                                             <p>No instructor applications found</p>
@@ -765,7 +761,7 @@ export default function ApprovalsDashboard({
                         </Card>
 
                         {selectedInstructor && (
-                            <Card className="border border-white/20 dark:border-white/10">
+                            <Card className="border border-white/20 dark:border-white/10 max-md:mt-4">
                                 <CardHeader>
                                     <CardTitle>Application Details</CardTitle>
                                     {/* <CardDescription>
