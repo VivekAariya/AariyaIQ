@@ -68,7 +68,7 @@ export function HeroSection() {
                         {/* Content with improved spacing */}
                         <div className="space-y-4 sm:space-y-6 md:space-y-8">
                             <div className="space-y-2 sm:space-y-3">
-                                <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none whitespace-nowrap">
+                                <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter xl:text-6xl/none whitespace-nowrap">
                                     <span className="bg-gradient-to-r from-purple-500 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
                                         Aariya
                                     </span>
@@ -76,7 +76,7 @@ export function HeroSection() {
                                         IQ
                                     </span>
                                 </h1>
-                                <p className="text-lg sm:text-xl font-medium tracking-tight sm:text-2xl xl:text-3xl/none whitespace-nowrap text-gray-200">
+                                <p className="text-lg sm:text-xl font-medium tracking-tight xl:text-3xl/none whitespace-nowrap text-gray-200">
                                     Learning Intelligence. Leading with AI
                                 </p>
                             </div>

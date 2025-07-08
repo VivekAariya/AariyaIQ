@@ -453,7 +453,7 @@ function MouseInteractiveGame() {
 
   // Create particles at position
   const createParticles = (x: number, y: number, color: string) => {
-    const newParticles = []
+    const newParticles: any = []
     for (let i = 0; i < 10; i++) {
       const angle = Math.random() * Math.PI * 2
       const speed = Math.random() * 3 + 1
