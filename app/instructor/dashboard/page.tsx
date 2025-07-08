@@ -80,7 +80,7 @@ export default async function InstructorDashboardPage() {
 
     return (
         <div className="space-y-8">
-            <FloatingAIBtn delay={500} />
+            <FloatingAIBtn delay={500} user={userData?.user} />
 
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Instructor Dashboard</h1>

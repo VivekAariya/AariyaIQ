@@ -1,12 +1,9 @@
+import CheckoutFormClient from "@/components/checkout-form";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import logger from "@/utils/logger";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
 import { Clock } from "lucide-react";
-import dynamic from "next/dynamic";
-
-// Dynamically import the client component
-const CheckoutForm = dynamic(() => import("@/components/checkout-form"), { ssr: false });
 
 export default async function CheckoutPage({
     searchParams,
@@ -88,7 +85,7 @@ export default async function CheckoutPage({
                     </div>
 
                     <div className="lg:col-span-2">
-                        <CheckoutForm courseData={courseData} />
+                        <CheckoutFormClient courseData={courseData} />
                     </div>
                 </div>
             </div>

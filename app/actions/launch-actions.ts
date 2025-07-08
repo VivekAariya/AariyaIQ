@@ -2,6 +2,7 @@
 
 import { sendEmail } from "@/lib/email-service";
 import logger from "@/utils/logger";
+import { sendAdminLaunchPageNotification, sendLaunchPageNotification } from "./email-actions";
 
 export async function submitLaunchInterest(prevState: any, formData: FormData) {
     try {
@@ -25,51 +26,19 @@ export async function submitLaunchInterest(prevState: any, formData: FormData) {
             };
         }
 
-        // Check if email service is configured
-        if (!process.env.RESEND_API_KEY) {
-            logger.error("Email service not configured - RESEND_API_KEY missing");
-            return {
-                success: false,
-                error: "Email service is temporarily unavailable. Please try again later.",
-            };
-        }
-
-        logger.log(`Submitting launch interest for ${name} (${email}) with message: ${message}`);
-
-        // Send confirmation email to user
-        const userEmailResult = await sendEmail("launch-page-notification", {
+        // Send notification email
+        await sendLaunchPageNotification({
             recipientName: name,
             recipientEmail: email,
-            courseName: "AariyaIQ Launch",
-            applicationDate: new Date().toLocaleDateString(),
-            nextSteps: [
-                "Watch for our launch announcement",
-                "Prepare to explore our cutting-edge courses",
-                "Share with colleagues who might be interested",
-            ],
         });
 
-        if (!userEmailResult.success) {
-            logger.error("Failed to send user email:", userEmailResult.error);
-            return {
-                success: false,
-                error: "Failed to send confirmation email. Please try again.",
-            };
-        }
-
         // Send notification email to admin
-        const adminEmailResult = await sendEmail("admin-launch-notification", {
-            recipientName: "Admin",
+        await sendAdminLaunchPageNotification({
             recipientEmail: "hello@aariyatech.co.uk",
-            courseName: "Launch Page Interest",
+            recipientName: "Admin",
             applicationDate: new Date().toLocaleDateString(),
             expertise: `Name: ${name}, Email: ${email}${message ? `, Message: ${message}` : ""}`,
         });
-
-        if (!adminEmailResult.success) {
-            logger.error("Failed to send admin email:", adminEmailResult.error);
-            // Still return success to user since their email was sent
-        }
 
         return {
             success: true,

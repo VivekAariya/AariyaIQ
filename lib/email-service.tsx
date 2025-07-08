@@ -12,23 +12,17 @@ const emailConfig = {
 
 // Email types
 export type EmailType =
-    | "learner-registration-received"
-    | "learner-initial-approval"
-    | "learner-payment-required"
-    | "learner-compliance-check"
-    | "learner-final-approval"
     | "instructor-application-received"
-    | "instructor-initial-approval"
-    | "instructor-payment-required"
-    | "instructor-compliance-check"
     | "instructor-final-approval"
     | "instructor-rejection"
     | "instructor-ban"
     | "instructor-suspend"
-    | "password-reset"
+    | "learner-course-application"
+    | "learner-initial-approval"
+    | "learner-rejection"
+    | "learner-final-approval"
     | "launch-page-notification"
-    | "admin-launch-notification"
-    | "email-verification";
+    | "admin-launch-notification";
 
 export interface EmailData {
     recipientName: string;
@@ -54,24 +48,8 @@ interface EmailTemplateProps {
 
 export async function EmailTemplate({ type, data }: EmailTemplateProps) {
     switch (type) {
-        case "learner-registration-received":
-            return <LearnerRegistrationReceivedTemplate data={data} />;
-        case "learner-initial-approval":
-            return <LearnerInitialApprovalTemplate data={data} />;
-        case "learner-payment-required":
-            return <LearnerPaymentRequiredTemplate data={data} />;
-        case "learner-compliance-check":
-            return <LearnerComplianceCheckTemplate data={data} />;
-        case "learner-final-approval":
-            return <LearnerFinalApprovalTemplate data={data} />;
         case "instructor-application-received":
             return <InstructorApplicationReceivedTemplate data={data} />;
-        // case "instructor-initial-approval":
-        //     return <InstructorInitialApprovalTemplate data={data} />;
-        // case "instructor-payment-required":
-        //     return <InstructorPaymentRequiredTemplate data={data} />;
-        // case "instructor-compliance-check":
-        //     return <InstructorComplianceCheckTemplate data={data} />;
         case "instructor-final-approval":
             return <InstructorFinalApprovalTemplate data={data} />;
         case "instructor-rejection":
@@ -80,8 +58,17 @@ export async function EmailTemplate({ type, data }: EmailTemplateProps) {
             return <InstructorBanTemplate data={data} />;
         case "instructor-suspend":
             return <InstructorSuspendTemplate data={data} />;
-        // case "password-reset":
-        //     return <PasswordResetTemplate data={data} />;
+
+        case "learner-course-application":
+            return <LearnerCourseApplicationTemplate data={data} />;
+
+        case "learner-initial-approval":
+            return <LearnerInitialApprovalTemplate data={data} />;
+        case "learner-rejection":
+            return <LearnerRejectionTemplate data={data} />;
+        case "learner-final-approval":
+            return <LearnerFinalApprovalTemplate data={data} />;
+
         case "launch-page-notification":
             return <LaunchPageNotificationTemplate data={data} />;
         case "admin-launch-notification":
@@ -89,6 +76,201 @@ export async function EmailTemplate({ type, data }: EmailTemplateProps) {
         default:
             return <DefaultTemplate data={data} />;
     }
+}
+
+function InstructorApplicationReceivedTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Instructor Application Received">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>Thank you for your interest in becoming an instructor with AariyaIQ Learning Hub!</p>
+            <p>We have received your application and it is currently under review.</p>
+            <p>
+                <strong>Application Date:</strong> {data.applicationDate || new Date().toLocaleDateString()}
+                <br />
+                <strong>Expertise:</strong> {data.expertise || "Please contact us for details"}
+            </p>
+            <p>Our team will review your application and get back to you shortly with the next steps.</p>
+            <p>
+                If you have any questions, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function InstructorFinalApprovalTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Final Approval">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Congratulations! Your instructor application for AariyaIQ Learning Hub has been finalized and approved.
+            </p>
+            <p>
+                You can now start creating and managing courses. If you have any questions, please contact our support
+                team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function InstructorRejectionTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Instructor Application Update">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Thank you for your interest in becoming an instructor with AariyaIQ Learning Hub. After careful review,
+                we regret to inform you that your application has not been successful at this time.
+            </p>
+            <p>
+                We appreciate the time and effort you put into your application. While we are unable to move forward
+                with your application currently, we encourage you to stay connected and consider applying again in the
+                future.
+            </p>
+
+            <p>
+                If you have any questions or would like feedback on your application, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+            <p>We wish you all the best in your future endeavors.</p>
+        </BaseTemplate>
+    );
+}
+
+function InstructorBanTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Instructor Account Banned">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                We regret to inform you that your instructor account with AariyaIQ Learning Hub has been{" "}
+                <strong>banned</strong> due to a serious violation of our terms of service or code of conduct.
+            </p>
+            <p>
+                If you believe this was a mistake or would like to appeal, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+            <p>Thank you for your understanding.</p>
+        </BaseTemplate>
+    );
+}
+
+function InstructorSuspendTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Instructor Account Suspended">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Your instructor account with AariyaIQ Learning Hub has been <strong>suspended</strong>. This action was
+                taken due to a violation of our policies or pending investigation.
+            </p>
+            <p>
+                If you have questions or wish to resolve this matter, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+            <p>We appreciate your cooperation.</p>
+        </BaseTemplate>
+    );
+}
+
+function LearnerCourseApplicationTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Application Received">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Thank you for applying for <strong>{data.courseName || "our course"}</strong> at AariyaIQ Learning Hub.
+                We have received your application and it is currently under review.
+            </p>
+            <p>
+                <strong>Application Date:</strong> {data.applicationDate || new Date().toLocaleDateString()}
+                <br />
+                <strong>Course Start Date:</strong> {data.courseStartDate || "To be announced"}
+            </p>
+            <p>Our team will review your application and get back to you shortly with the next steps.</p>
+            {data.loginLink && (
+                <p>
+                    You can check the status of your application by logging into your dashboard:
+                    <br />
+                    <a href={data.loginLink} className="button">
+                        View Application Status
+                    </a>
+                </p>
+            )}
+            <p>
+                If you have any questions, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function LearnerInitialApprovalTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Initial Approval">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Great news! Your application for <strong>{data.courseName || "our course"}</strong> has been initially
+                approved. To secure your spot, please complete the payment process.
+            </p>
+            <p>
+                <strong>Course:</strong> {data.courseName || "Our course"}
+                <br />
+                <strong>Start Date:</strong> {data.courseStartDate || "To be announced"}
+                <br />
+                <strong>Payment Amount:</strong> You will receive an email with the payment details shortly.
+            </p>
+
+            <p>
+                After your payment is processed, your application will move to the compliance check stage. You can track
+                your application status anytime by logging into your dashboard.
+            </p>
+            <p>
+                If you have any questions, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function LearnerRejectionTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Application Update">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Thank you for your interest in <strong>{data.courseName || "our course"}</strong> at AariyaIQ Learning
+                Hub. After careful review, we regret to inform you that your application has not been successful at this
+                time.
+            </p>
+            <p>
+                We appreciate the time and effort you put into your application. While we are unable to move forward
+                with your application currently, we encourage you to stay connected and consider applying again in the
+                future.
+            </p>
+            <p>
+                If you have any questions or would like feedback on your application, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+            <p>We wish you all the best in your learning journey.</p>
+        </BaseTemplate>
+    );
+}
+
+function LearnerFinalApprovalTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Final Approval">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Congratulations! Your application for <strong>{data.courseName || "our course"}</strong> at AariyaIQ
+                Learning Hub has been finalized and approved.
+            </p>
+            <p>
+                <strong>Course:</strong> {data.courseName || "Our course"}
+                <br />
+                <strong>Start Date:</strong> {data.courseStartDate || "To be announced"}
+            </p>
+            <p>
+                You can now access your course materials and start learning. If you have any questions, please contact
+                our support team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+        </BaseTemplate>
+    );
 }
 
 function LaunchPageNotificationTemplate({ data }: { data: EmailData }) {
@@ -289,364 +471,6 @@ function DefaultTemplate({ data }: { data: EmailData }) {
     );
 }
 
-function LearnerRegistrationReceivedTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Registration Received">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Thank you for registering for <strong>{data.courseName || "our course"}</strong> at AariyaIQ Learning
-                Hub. We have received your application and it is currently under review.
-            </p>
-            <p>
-                <strong>Application Date:</strong> {data.applicationDate || new Date().toLocaleDateString()}
-                <br />
-                <strong>Course Start Date:</strong> {data.courseStartDate || "To be announced"}
-            </p>
-            <p>Our team will review your application and get back to you shortly with the next steps.</p>
-            {data.loginLink && (
-                <p>
-                    You can check the status of your application by logging into your dashboard:
-                    <br />
-                    <a href={data.loginLink} className="button">
-                        View Application Status
-                    </a>
-                </p>
-            )}
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function LearnerInitialApprovalTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Initial Approval">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Great news! Your application for <strong>{data.courseName || "our course"}</strong> has been initially
-                approved. To secure your spot, please complete the payment process.
-            </p>
-            <p>
-                <strong>Course:</strong> {data.courseName || "Our course"}
-                <br />
-                <strong>Start Date:</strong> {data.courseStartDate || "To be announced"}
-                <br />
-                <strong>Payment Amount:</strong> {data.paymentAmount || "Please contact us for details"}
-            </p>
-            {data.paymentLink && (
-                <p>
-                    Please click the button below to complete your payment:
-                    <br />
-                    <a href={data.paymentLink} className="button">
-                        Complete Payment
-                    </a>
-                </p>
-            )}
-            <p>
-                After your payment is processed, your application will move to the compliance check stage. You can track
-                your application status anytime by logging into your dashboard.
-            </p>
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function PasswordResetTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Reset Your Password">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>We received a request to reset your password for your AariyaIQ Learning Hub account.</p>
-            {data.resetLink && (
-                <p>
-                    To reset your password, please click the button below:
-                    <br />
-                    <a href={data.resetLink} className="button">
-                        Reset Password
-                    </a>
-                </p>
-            )}
-            <div className="alert">
-                <h4 className="alert-title">Important</h4>
-                <p className="alert-content">
-                    This link will expire in {data.resetExpiry || "24 hours"}. If you did not request a password reset,
-                    please ignore this email or contact us if you have concerns.
-                </p>
-            </div>
-            {data.resetLink && (
-                <p>
-                    If the button above doesn't work, copy and paste the following link into your browser:
-                    <br />
-                    <a href={data.resetLink}>{data.resetLink}</a>
-                </p>
-            )}
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function LearnerPaymentRequiredTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Payment Required">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Thank you for your interest in <strong>{data.courseName || "our course"}</strong> at AariyaIQ Learning
-                Hub.
-            </p>
-            <p>
-                <strong>Course:</strong> {data.courseName || "Our course"}
-                <br />
-                <strong>Start Date:</strong> {data.courseStartDate || "To be announced"}
-                <br />
-                <strong>Payment Amount:</strong> {data.paymentAmount || "Please contact us for details"}
-            </p>
-            {data.paymentLink && (
-                <p>
-                    Please click the button below to complete your payment:
-                    <br />
-                    <a href={data.paymentLink} className="button">
-                        Complete Payment
-                    </a>
-                </p>
-            )}
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function LearnerComplianceCheckTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Compliance Check">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Your application for <strong>{data.courseName || "our course"}</strong> at AariyaIQ Learning Hub is
-                currently undergoing a compliance check.
-            </p>
-            <p>
-                <strong>Course:</strong> {data.courseName || "Our course"}
-                <br />
-                <strong>Start Date:</strong> {data.courseStartDate || "To be announced"}
-            </p>
-            <p>
-                We will notify you once your application has been reviewed. You can track your application status
-                anytime by logging into your dashboard.
-            </p>
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function LearnerFinalApprovalTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Final Approval">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Congratulations! Your application for <strong>{data.courseName || "our course"}</strong> at AariyaIQ
-                Learning Hub has been finalized and approved.
-            </p>
-            <p>
-                <strong>Course:</strong> {data.courseName || "Our course"}
-                <br />
-                <strong>Start Date:</strong> {data.courseStartDate || "To be announced"}
-            </p>
-            <p>
-                You can now access your course materials and start learning. If you have any questions, please contact
-                our support team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function InstructorApplicationReceivedTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Instructor Application Received">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>Thank you for your interest in becoming an instructor with AariyaIQ Learning Hub!</p>
-            <p>We have received your application and it is currently under review.</p>
-            <p>
-                <strong>Application Date:</strong> {data.applicationDate || new Date().toLocaleDateString()}
-                <br />
-                <strong>Expertise:</strong> {data.expertise || "Please contact us for details"}
-            </p>
-            <p>Our team will review your application and get back to you shortly with the next steps.</p>
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function InstructorInitialApprovalTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Initial Approval">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Great news! Your instructor application for AariyaIQ Learning Hub has been initially approved. To secure
-                your position, please complete the payment process.
-            </p>
-            <p>
-                <strong>Payment Amount:</strong> {data.paymentAmount || "Please contact us for details"}
-            </p>
-            {data.paymentLink && (
-                <p>
-                    Please click the button below to complete your payment:
-                    <br />
-                    <a href={data.paymentLink} className="button">
-                        Complete Payment
-                    </a>
-                </p>
-            )}
-            <p>
-                After your payment is processed, your application will move to the compliance check stage. You can track
-                your application status anytime by logging into your dashboard.
-            </p>
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function InstructorPaymentRequiredTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Payment Required">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>Thank you for your interest in becoming an instructor with AariyaIQ Learning Hub.</p>
-            <p>
-                <strong>Payment Amount:</strong> {data.paymentAmount || "Please contact us for details"}
-            </p>
-            {data.paymentLink && (
-                <p>
-                    Please click the button below to complete your payment:
-                    <br />
-                    <a href={data.paymentLink} className="button">
-                        Complete Payment
-                    </a>
-                </p>
-            )}
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function InstructorComplianceCheckTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Compliance Check">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>Your instructor application for AariyaIQ Learning Hub is currently undergoing a compliance check.</p>
-            <p>
-                We will notify you once your application has been reviewed. You can track your application status
-                anytime by logging into your dashboard.
-            </p>
-            <p>
-                If you have any questions, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function InstructorFinalApprovalTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Final Approval">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Congratulations! Your instructor application for AariyaIQ Learning Hub has been finalized and approved.
-            </p>
-            <p>
-                You can now start creating and managing courses. If you have any questions, please contact our support
-                team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-        </BaseTemplate>
-    );
-}
-
-function InstructorRejectionTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Instructor Application Update">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Thank you for your interest in becoming an instructor with AariyaIQ Learning Hub. After careful review,
-                we regret to inform you that your application has not been successful at this time.
-            </p>
-            <p>
-                We appreciate the time and effort you put into your application. While we are unable to move forward
-                with your application currently, we encourage you to stay connected and consider applying again in the
-                future.
-            </p>
-            {data.nextSteps && data.nextSteps.length > 0 && (
-                <>
-                    <p>
-                        <strong>Next Steps:</strong>
-                    </p>
-                    <ul className="steps">
-                        {data.nextSteps.map((step, index) => (
-                            <li key={index}>{step}</li>
-                        ))}
-                    </ul>
-                </>
-            )}
-            <p>
-                If you have any questions or would like feedback on your application, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-            <p>We wish you all the best in your future endeavors.</p>
-        </BaseTemplate>
-    );
-}
-
-function InstructorBanTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Instructor Account Banned">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                We regret to inform you that your instructor account with AariyaIQ Learning Hub has been{" "}
-                <strong>banned</strong> due to a serious violation of our terms of service or code of conduct.
-            </p>
-            <p>
-                If you believe this was a mistake or would like to appeal, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-            <p>Thank you for your understanding.</p>
-        </BaseTemplate>
-    );
-}
-
-function InstructorSuspendTemplate({ data }: { data: EmailData }) {
-    return (
-        <BaseTemplate title="Instructor Account Suspended">
-            <h2>Hello {data.recipientName || "there"},</h2>
-            <p>
-                Your instructor account with AariyaIQ Learning Hub has been <strong>suspended</strong>. This action was
-                taken due to a violation of our policies or pending investigation.
-            </p>
-            <p>
-                If you have questions or wish to resolve this matter, please contact our support team at{" "}
-                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
-            </p>
-            <p>We appreciate your cooperation.</p>
-        </BaseTemplate>
-    );
-}
-
 function SupportTemplate({
     data,
 }: {
@@ -756,17 +580,60 @@ function FeedbackTemplate({
         </BaseTemplate>
     );
 }
-// Initialize Resend with API key and error handling
-// function initializeResend() {
-//     const apiKey = process.env.RESEND_API_KEY;
 
-//     if (!apiKey) {
-//         logger.error("RESEND_API_KEY environment variable is not set");
-//         throw new Error("Email service is not configured. Please set RESEND_API_KEY environment variable.");
-//     }
-
-//     return new Resend(apiKey);
-// }
+function ContactUsTemplate({
+    data,
+}: {
+    data: {
+        firstName: string | null;
+        lastName: string | null;
+        email: string | null;
+        phone: string | null;
+        subject: string | null;
+        message: string | null;
+    };
+}) {
+    return (
+        <BaseTemplate title={`New Contact Us Submission`}>
+            <h2 style={{ color: "#0ea5e9" }}>Contact Us Submission</h2>
+            <div
+                style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f0f9ff",
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                }}
+            >
+                <p>
+                    <strong>Name:</strong> {data.firstName} {data.lastName}
+                </p>
+                <p>
+                    <strong>Email:</strong> {data.email}
+                </p>
+                <p>
+                    <strong>Phone:</strong> {data.phone}
+                </p>
+                <p>
+                    <strong>Subject:</strong> {data.subject}
+                </p>
+            </div>
+            <div
+                style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#fff7ed",
+                    borderRadius: "8px",
+                    border: "1px solid #f59e0b",
+                }}
+            >
+                <h4 style={{ margin: 0, color: "#ca8a04" }}>Message</h4>
+                <p style={{ margin: 0 }}>{data.message}</p>
+            </div>
+            <p style={{ fontSize: "14px", color: "#6b7280" }}>This email was sent from the AariyaIQ Contact Us form.</p>
+        </BaseTemplate>
+    );
+}
 
 /**
  * Send an email notification using React template
@@ -779,7 +646,7 @@ export async function sendEmail(type: EmailType, data: EmailData) {
         logger.log(`[EMAIL SERVICE] Starting email send process for type: ${type}`);
         logger.log(`[EMAIL SERVICE] Recipient: ${data.recipientEmail}`);
 
-        const apiKey = process.env.RESEND_API_KEYe;
+        const apiKey = process.env.RESEND_API_KEY;
 
         if (!apiKey) {
             logger.error("[EMAIL SERVICE] RESEND_API_KEY not found in environment variables");
@@ -895,64 +762,23 @@ export async function sendEmail(type: EmailType, data: EmailData) {
  */
 function getEmailSubject(type: EmailType, data: EmailData): string {
     const subjects: Record<EmailType, string> = {
-        "learner-registration-received": `Your AariyaIQ Registration: ${data.courseName || "Course"} - Received`,
-        "learner-initial-approval": `Your AariyaIQ Registration: ${data.courseName || "Course"} - Initially Approved`,
-        "learner-payment-required": `Action Required: Payment for ${data.courseName || "Course"} Registration`,
-        "learner-compliance-check": `Your AariyaIQ Registration: Compliance Check in Progress`,
-        "learner-final-approval": `Congratulations! Your AariyaIQ Course Registration is Approved`,
         "instructor-application-received": "Your AariyaIQ Instructor Application - Received",
-        "instructor-initial-approval": "Your AariyaIQ Instructor Application - Initially Approved",
-        "instructor-payment-required": "Action Required: Payment for Instructor Registration",
-        "instructor-compliance-check": "Your AariyaIQ Instructor Application: Compliance Check in Progress",
         "instructor-final-approval": "Congratulations! Your AariyaIQ Instructor Application is Approved",
         "instructor-rejection": "Update on Your AariyaIQ Instructor Application",
         "instructor-ban": "Your AariyaIQ Instructor Account Has Been Banned",
         "instructor-suspend": "Your AariyaIQ Instructor Account Has Been Suspended",
-        "password-reset": "Reset Your AariyaIQ Password",
+
+        "learner-course-application": `Your AariyaIQ Course Application: ${data.courseName || "Course"} - Received`,
+        "learner-initial-approval": `Your AariyaIQ Registration: ${data.courseName || "Course"} - Initially Approved`,
+        "learner-rejection": `Update on Your AariyaIQ Course Application`,
+        "learner-final-approval": `Congratulations! Your AariyaIQ Course Application is Approved`,
+
         "launch-page-notification": "Thank you for your interest in AariyaIQ!",
-        "admin-launch-notification": "New Launch Page Interest - AariyaIQ",
-        "email-verification": "Verify Your AariyaIQ Account - Welcome to the Future!",
+        "admin-launch-notification": "Someone has shown interest - AariyaIQ",
     };
 
     return subjects[type];
 }
-
-// /**
-//  * Send a password reset email
-//  * @param recipientEmail Email address to send to
-//  * @param recipientName Name of the recipient
-//  * @param resetLink Password reset link
-//  * @param resetExpiry Expiry time for the reset link
-//  * @returns Promise with send result
-//  */
-// export async function sendPasswordResetEmail(
-//     recipientEmail: string,
-//     recipientName: string,
-//     resetLink: string,
-//     resetExpiry?: string
-// ) {
-//     return await sendEmail("password-reset", {
-//         recipientName,
-//         recipientEmail,
-//         resetLink,
-//         resetExpiry: resetExpiry || "24 hours",
-//     });
-// }
-
-// /**
-//  * Send an email verification email
-//  * @param recipientEmail Email address to send to
-//  * @param recipientName Name of the recipient
-//  * @param verificationLink Email verification link
-//  * @returns Promise with send result
-//  */
-// export async function sendEmailVerification(recipientEmail: string, recipientName: string, verificationLink: string) {
-//     return await sendEmail("email-verification", {
-//         recipientName,
-//         recipientEmail,
-//         verificationLink,
-//     });
-// }
 
 /**
  * Test email service configuration
@@ -1222,6 +1048,100 @@ export async function sendFeedbackEmail({
         return {
             success: false,
             error: "Failed to send support/feedback email. Please try again later.",
+            debug: { step: "send_error", error: error instanceof Error ? error.message : String(error) },
+        };
+    }
+}
+
+export async function sendContactUsEmail({
+    firstName,
+    lastName,
+    email,
+    phone,
+    subject,
+    message,
+}: {
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+    phone: string | null;
+    subject: string | null;
+    message: string | null;
+}) {
+    try {
+        logger.log(`[CONTACT US EMAIL] From: ${email}, Name: ${firstName} ${lastName}`);
+
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            logger.error("[CONTACT US EMAIL] RESEND_API_KEY not found");
+            return {
+                success: false,
+                error: "Email service not configured. Please contact administrator.",
+                debug: { step: "api_key_check", hasKey: false },
+            };
+        }
+
+        let resend;
+        try {
+            resend = new Resend(apiKey);
+        } catch (initError) {
+            logger.error("[CONTACT US EMAIL] Failed to initialize Resend:", initError);
+            return {
+                success: false,
+                error: "Failed to initialize email service",
+                debug: { step: "resend_init", error: String(initError) },
+            };
+        }
+
+        // Compose the email HTML using a React template
+        let emailHtml: string;
+        try {
+            emailHtml = await render(
+                <ContactUsTemplate data={{ firstName, lastName, email, phone, subject, message }} />
+            );
+        } catch (renderError) {
+            logger.error("[CONTACT US EMAIL] Failed to render template:", renderError);
+            return {
+                success: false,
+                error: "Failed to generate email content",
+                debug: { step: "html_generation", error: String(renderError) },
+            };
+        }
+
+        const emailData: CreateEmailOptions = {
+            from: `AariyaIQ Contact <${emailConfig.sender}>`,
+            to: emailConfig.sender,
+            subject: `[Contact Us] ${subject || "No Subject"}`,
+            html: emailHtml,
+        };
+
+        const result = await resend.emails.send(emailData);
+        logger.log("[CONTACT US EMAIL] Email sent result:", result);
+
+        if (result.error) {
+            logger.error("[CONTACT US EMAIL] Error sending email:", result.error);
+            throw new Error(result.error.message);
+        }
+
+        const messageId = (result as any).id || (result as any).data?.id || null;
+
+        logger.log(`[CONTACT US EMAIL] Email sent! Message ID: ${messageId}`);
+
+        return {
+            success: true,
+            messageId,
+            debug: {
+                step: "send_success",
+                type: "contact-us",
+                from: email,
+                subject,
+            },
+        };
+    } catch (error) {
+        logger.error("[CONTACT US EMAIL] Error sending email:", error);
+        return {
+            success: false,
+            error: "Failed to send contact email. Please try again later.",
             debug: { step: "send_error", error: error instanceof Error ? error.message : String(error) },
         };
     }

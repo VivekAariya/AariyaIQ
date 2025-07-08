@@ -203,7 +203,7 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
-                                    {course.course_contents.split("\n\n").map((module: any, index: any) => {
+                                    {course.course_contents.trim().split("\n\n").map((module: any, index: any) => {
                                         const lines = module.split("\n");
                                         const title = lines[0];
                                         const items = lines.slice(1);

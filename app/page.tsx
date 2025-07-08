@@ -7,18 +7,21 @@ import HeroSectionCourses from "@/components/hero-section-courses";
 import { LaunchPage } from "@/components/launch-page";
 import { MainNav } from "@/components/main-nav";
 import { Button } from "@/components/ui/button";
+import logger from "@/utils/logger";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-
-
-
+import { useEffect, useState } from "react";
 
 export default function HomeContent() {
+    const searchParams = useSearchParams();
+
+    const [supabase] = useState(() => createClient());
     const [showLaunchPage, setShowLaunchPage] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const searchParams = useSearchParams();
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         try {
@@ -54,6 +57,27 @@ export default function HomeContent() {
             setIsLoading(false);
         }
     }, [searchParams]);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const { data, error } = await supabase.auth.getUser();
+
+                if (error) {
+                    logger.error("Error fetching user data:", error);
+                    throw new Error("Error fetching user data");
+                }
+
+                if (data?.user) {
+                    setUser(data?.user);
+                }
+            } catch (error: any) {
+                logger.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUser();
+    }, []);
 
     // Error state
     if (error) {
@@ -141,7 +165,7 @@ export default function HomeContent() {
             </main>
             <Footer />
 
-            <FloatingAIBtn delay={1000} />
+            <FloatingAIBtn delay={1000} user={user} />
         </div>
     );
 }

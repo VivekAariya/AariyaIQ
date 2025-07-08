@@ -379,6 +379,23 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                         )}
                     </CardContent>
                 </Card>
+
+                {/* More AI features coming soon card */}
+                <div className="mt-6">
+                    <Card className="bg-gradient-to-r from-purple-900/70 to-cyan-900/70 border-2 border-dashed border-purple-500/40 shadow-lg">
+                        <CardHeader>
+                            <CardTitle className="text-xl text-purple-300 flex items-center gap-2">
+                                <Sparkles className="h-6 w-6 animate-pulse text-purple-400" />
+                                More AI Features Coming Soon
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-slate-300">
+                                Stay tuned for more powerful AI tools and features to enhance your learning experience!
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );

@@ -1,4 +1,3 @@
-import { sendInstructorFinalApprovalEmail, sendInstructorRejectionEmail } from "@/app/actions/email-actions";
 import logger from "@/utils/logger";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
 import { NextRequest, NextResponse } from "next/server";

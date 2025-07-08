@@ -1,12 +1,5 @@
 "use client";
 
-import {
-    sendInstructorComplianceEmail,
-    sendInstructorPaymentEmail,
-    sendLearnerComplianceEmail,
-    sendLearnerFinalApprovalEmail,
-    sendLearnerPaymentEmail,
-} from "@/app/actions/email-actions";
 import { RegistrationStatusIndicator } from "@/components/super-admin/registration-status-indicator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import logger from "@/utils/logger";
-import { CheckCircle, Clock, DollarSign, FileText, Mail, Search, XCircle } from "lucide-react";
+import { CheckCircle, Clock, DollarSign, FileText, Search, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -171,18 +164,6 @@ export default function ApprovalsDashboard({
             if (learner) {
                 setLearnerData((prev) => prev.map((item) => (item.id === id ? { ...item, status: "approved" } : item)));
                 try {
-                    await sendLearnerFinalApprovalEmail({
-                        learnerName: learner.name,
-                        learnerEmail: learner.email,
-                        courseName: learner.course,
-                        courseStartDate: "2023-06-15",
-                        loginLink: "https://aariyatech.co.uk/dashboard/courses",
-                        nextSteps: [
-                            "Log in to your dashboard to access course materials",
-                            "Complete your profile information",
-                            "Join the course orientation session",
-                        ],
-                    });
                     toast({
                         title: "Final Approval Granted",
                         description: "The applicant has been notified of their approval.",
@@ -243,107 +224,6 @@ export default function ApprovalsDashboard({
                         });
                     }
                 });
-            }
-        }
-    };
-
-    const sendPaymentReminder = async (type: "learner" | "instructor", id: string) => {
-        if (type === "learner") {
-            const learner = learnerData.find((item) => item.id === id);
-            if (learner) {
-                try {
-                    await sendLearnerPaymentEmail({
-                        learnerName: learner.name,
-                        learnerEmail: learner.email,
-                        courseName: learner.course,
-                        courseStartDate: "2023-06-15",
-                        paymentAmount: "$499",
-                        paymentLink: "https://aariyatech.co.uk/payment/learner/" + id,
-                    });
-                    toast({
-                        title: "Payment Reminder Sent",
-                        description: "A payment reminder email has been sent to the applicant.",
-                    });
-                } catch (error) {
-                    logger.error("Email error:", error);
-                    toast({
-                        title: "Email Error",
-                        description: "There was an error sending the payment reminder email.",
-                        variant: "destructive",
-                    });
-                }
-            }
-        } else {
-            const instructor = instructorData.find((item) => item.id === id);
-            if (instructor) {
-                try {
-                    await sendInstructorPaymentEmail({
-                        instructorName: instructor.name,
-                        instructorEmail: instructor.email,
-                        paymentAmount: "$299",
-                        paymentLink: "https://aariyatech.co.uk/payment/instructor/" + id,
-                    });
-                    toast({
-                        title: "Payment Reminder Sent",
-                        description: "A payment reminder email has been sent to the applicant.",
-                    });
-                } catch (error) {
-                    logger.error("Email error:", error);
-                    toast({
-                        title: "Email Error",
-                        description: "There was an error sending the payment reminder email.",
-                        variant: "destructive",
-                    });
-                }
-            }
-        }
-    };
-
-    const sendComplianceNotification = async (type: "learner" | "instructor", id: string) => {
-        if (type === "learner") {
-            const learner = learnerData.find((item) => item.id === id);
-            if (learner) {
-                try {
-                    await sendLearnerComplianceEmail({
-                        learnerName: learner.name,
-                        learnerEmail: learner.email,
-                        courseName: learner.course,
-                        loginLink: "https://aariyatech.co.uk/dashboard/registrations/" + id,
-                    });
-                    toast({
-                        title: "Compliance Notification Sent",
-                        description: "A compliance check notification email has been sent to the applicant.",
-                    });
-                } catch (error) {
-                    logger.error("Email error:", error);
-                    toast({
-                        title: "Email Error",
-                        description: "There was an error sending the compliance notification email.",
-                        variant: "destructive",
-                    });
-                }
-            }
-        } else {
-            const instructor = instructorData.find((item) => item.id === id);
-            if (instructor) {
-                try {
-                    await sendInstructorComplianceEmail({
-                        instructorName: instructor.name,
-                        instructorEmail: instructor.email,
-                        loginLink: "https://aariyatech.co.uk/dashboard/instructor-application",
-                    });
-                    toast({
-                        title: "Compliance Notification Sent",
-                        description: "A compliance check notification email has been sent to the applicant.",
-                    });
-                } catch (error) {
-                    logger.error("Email error:", error);
-                    toast({
-                        title: "Email Error",
-                        description: "There was an error sending the compliance notification email.",
-                        variant: "destructive",
-                    });
-                }
             }
         }
     };
@@ -1104,15 +984,7 @@ export default function ApprovalsDashboard({
                                                         }
                                                     </span>
                                                 </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-sm text-gray-400">Professional Bio:</span>
-                                                    <span className="text-sm text-gray-400 font-medium max-w-xs text-right truncate">
-                                                        {
-                                                            instructorData.find((r) => r.id === selectedInstructor)
-                                                                ?.professional_bio
-                                                        }
-                                                    </span>
-                                                </div>
+
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-gray-400">LinkedIn Profile:</span>
                                                     <span className="text-sm text-gray-400 font-medium max-w-xs text-right truncate">
@@ -1151,17 +1023,29 @@ export default function ApprovalsDashboard({
                                                         </a>
                                                     </span>
                                                 </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-sm text-gray-400">
-                                                        Proposed Course Ideas:
-                                                    </span>
-                                                    <span className="text-sm text-gray-400 font-medium max-w-xs text-right truncate">
-                                                        {
-                                                            instructorData.find((r) => r.id === selectedInstructor)
-                                                                ?.proposed_course_ideas
-                                                        }
-                                                    </span>
-                                                </div>
+                                            </div>
+
+                                            <div className="mt-4">
+                                                <span className="block text-sm font-normal text-gray-300">
+                                                    Professional Bio:
+                                                </span>
+                                                <span className="block text-sm text-gray-400 font-medium">
+                                                    {
+                                                        instructorData.find((r) => r.id === selectedInstructor)
+                                                            ?.professional_bio
+                                                    }
+                                                </span>
+                                            </div>
+                                            <div className="mt-4">
+                                                <span className="block text-sm font-normal text-gray-300">
+                                                    Proposed Course Ideas:
+                                                </span>
+                                                <span className="block text-sm text-gray-400 font-medium">
+                                                    {
+                                                        instructorData.find((r) => r.id === selectedInstructor)
+                                                            ?.proposed_course_ideas
+                                                    }
+                                                </span>
                                             </div>
                                         </div>
 

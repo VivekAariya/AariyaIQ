@@ -3,6 +3,7 @@
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
+import { sendInstructorApplicationEmail } from "./email-actions";
 
 export async function registerLearner(
     prevState: any,
@@ -83,8 +84,6 @@ export async function registerLearner(
             },
         });
 
-        logger.log("Registration data:", data);
-
         if (error) {
             logger.error("Error during registration:", error);
             return {
@@ -161,8 +160,6 @@ export async function registerInstructor(
             role,
         };
 
-        logger.log("Instructor registration form data:", userFormData);
-
         // Basic validation
         if (
             !first_name ||
@@ -175,7 +172,9 @@ export async function registerInstructor(
             !expertise ||
             !experience ||
             !bio ||
-            !courseIdeas
+            !courseIdeas ||
+            !linkedin ||
+            !portfolio
         ) {
             return {
                 error: "All fields are required.",
@@ -240,8 +239,6 @@ export async function registerInstructor(
             },
         });
 
-        logger.log("Instructor registration data:", data);
-
         if (error) {
             logger.error("Error during instructor registration:", error);
             return {
@@ -267,6 +264,16 @@ export async function registerInstructor(
                 };
             }
         }
+
+        setTimeout(async () => {
+            await sendInstructorApplicationEmail({
+                instructorName: first_name,
+                instructorEmail: email,
+                expertise,
+                applicationDate: new Date().toISOString(),
+                loginLink: `${process.env.NEXT_PUBLIC_APP_URL}/instructor/login`,
+            });
+        }, 10000);
 
         return {
             success: true,
@@ -304,7 +311,7 @@ export async function login(
         .from("users")
         .select("role")
         .eq("email", email)
-        .single();
+        .maybeSingle();
 
     if (userError) {
         logger.error("Error checking user role:", userError);

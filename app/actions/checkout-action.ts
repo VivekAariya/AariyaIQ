@@ -2,11 +2,14 @@
 
 import logger from "@/utils/logger";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
+import { sendLearnerRegistrationEmail } from "./email-actions";
 
 export async function submitApplication(formData: FormData) {
     try {
         const learner_id = formData.get("learner_id")?.toString().trim();
         const course_id = formData.get("course_id")?.toString().trim();
+        const course_name = formData.get("course_name")?.toString().trim();
+        const start_date = formData.get("start_date")?.toString().trim();
         const full_name = formData.get("full_name")?.toString().trim();
         const email_address = formData.get("email_address")?.toString().trim();
         const phone_number = formData.get("phone_number")?.toString().trim();
@@ -53,6 +56,19 @@ export async function submitApplication(formData: FormData) {
             logger.error("Error submitting learner application:", error);
             return { success: false, message: error.message || "Error submitting application." };
         }
+
+        if (!full_name || !email_address || !course_name || !start_date) {
+            return { success: false, message: "Some fields are missing." };
+        }
+
+        await sendLearnerRegistrationEmail({
+            learnerName: full_name,
+            learnerEmail: email_address,
+            courseName: course_name,
+            courseStartDate: start_date,
+            applicationDate: new Date().toLocaleDateString(),
+            loginLink: `${process.env.NEXT_PUBLIC_APP_URL}/learner/dashboard/learner-application`,
+        });
 
         return { success: true, message: "Application submitted successfully!" };
     } catch (error: any) {

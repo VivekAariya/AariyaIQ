@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Bot, Sparkles, X, ArrowRight } from "lucide-react";
-import Link from "next/link";
-import { User } from "@supabase/supabase-js";
-import { createClient } from "@/utils/supabase/client";
 import logger from "@/utils/logger";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
+import { ArrowRight, Bot, Sparkles, X } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface FloatingAIAssistantProps {
     delay?: number;
     showOnPages?: string[];
+    user: User | null;
 }
 
-export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"] }: FloatingAIAssistantProps) {
-    const [supabase] = useState(createClient());
-    const [user, setUser] = useState<User | null>(null);
+export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"], user }: FloatingAIAssistantProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
@@ -45,26 +44,7 @@ export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"] }: FloatingAIA
         return () => clearTimeout(timer);
     }, [delay]);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const { data, error } = await supabase.auth.getUser();
-
-                if (error || !data.user) {
-                    logger.error("Error fetching user data:", error);
-                    throw new Error("Error fetching user data");
-                }
-
-                setUser(data?.user);
-            } catch (error: any) {
-                logger.error("Error fetching user data:", error);
-            }
-        };
-
-        fetchUser();
-    }, []);
-
-    if (isDismissed || !isVisible || !user) return null;
+    if (isDismissed || !isVisible) return null;
 
     return (
         <div className={`fixed bottom-6 right-6 z-50`}>
@@ -145,7 +125,10 @@ export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"] }: FloatingAIA
 
                             {/* CTA Buttons */}
                             <div className="flex flex-col gap-2 pt-2">
-                                <Link href={`/${user?.user_metadata?.role}/dashboard/courses`} className="w-full">
+                                <Link
+                                    href={`/${user?.user_metadata?.role || "learner"}/dashboard/courses`}
+                                    className="w-full"
+                                >
                                     <Button className="w-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-medium transition-all duration-300 hover:scale-105">
                                         <Sparkles className="w-4 h-4 mr-2" />
                                         Explore AI Tools

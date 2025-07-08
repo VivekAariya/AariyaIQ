@@ -211,6 +211,8 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                 <form action={handleSubmit} className="space-y-8">
                     <input type="hidden" name="learner_id" value={user?.id} />
                     <input type="hidden" name="course_id" value={courseData.id} />
+                    <input type="hidden" name="course_name" value={courseData.course_title} />
+                    <input type="hidden" name="start_date" value={courseData.start_date} />
 
                     {/* Personal Information */}
                     <div className="space-y-6">

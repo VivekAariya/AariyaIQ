@@ -73,37 +73,41 @@ export default function InstructorRegistrationPage() {
                                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                                 <div className="space-y-2">
                                                     <Label htmlFor="firstName">First Name</Label>
-                                                    <Input id="firstName" name="firstName" required />
+                                                    <Input id="firstName" required name="firstName" />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <Label htmlFor="lastName">Last Name</Label>
-                                                    <Input id="lastName" name="lastName" required />
+                                                    <Input id="lastName" required name="lastName" />
                                                 </div>
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="email">Email</Label>
-                                                <Input id="email" name="email" type="email" required />
+                                                <Input id="email" required name="email" type="email" />
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="phone">Phone Number</Label>
-                                                <Input id="phone" name="phone" type="tel" required />
+                                                <Input id="phone" required name="phone" type="tel" />
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="location">Location</Label>
                                                 <Input
                                                     id="location"
+                                                    required
                                                     name="location"
                                                     placeholder="City, Country"
-                                                    required
                                                 />
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="expertise">Areas of Expertise</Label>
-                                                <Select defaultValue="Artificial Intelligence" name="expertise">
+                                                <Select
+                                                    defaultValue="Artificial Intelligence"
+                                                    required
+                                                    name="expertise"
+                                                >
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select primary expertise" />
                                                     </SelectTrigger>
@@ -119,13 +123,16 @@ export default function InstructorRegistrationPage() {
                                                             Mobile Development
                                                         </SelectItem>
                                                         <SelectItem value="UX/UI Design">UX/UI Design</SelectItem>
+                                                        <SelectItem value="Human Resources">Human Resources</SelectItem>
+                                                        <SelectItem value="Management">Management</SelectItem>
+                                                        <SelectItem value="Other">Other</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="experience">Years of Experience</Label>
-                                                <Select defaultValue="3-5" name="experience">
+                                                <Select defaultValue="3-5" required name="experience">
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select years of experience" />
                                                     </SelectTrigger>
@@ -142,10 +149,10 @@ export default function InstructorRegistrationPage() {
                                                 <Label htmlFor="bio">Professional Bio</Label>
                                                 <Textarea
                                                     id="bio"
+                                                    required
                                                     name="bio"
                                                     placeholder="Tell us about your professional background and teaching experience"
                                                     rows={5}
-                                                    required
                                                 />
                                             </div>
 
@@ -153,6 +160,7 @@ export default function InstructorRegistrationPage() {
                                                 <Label htmlFor="linkedin">LinkedIn Profile</Label>
                                                 <Input
                                                     id="linkedin"
+                                                    required
                                                     name="linkedin"
                                                     type="url"
                                                     placeholder="https://linkedin.com/in/yourprofile"
@@ -163,6 +171,7 @@ export default function InstructorRegistrationPage() {
                                                 <Label htmlFor="portfolio">Portfolio/Website</Label>
                                                 <Input
                                                     id="portfolio"
+                                                    required
                                                     name="portfolio"
                                                     type="url"
                                                     placeholder="https://yourwebsite.com"
@@ -173,10 +182,10 @@ export default function InstructorRegistrationPage() {
                                                 <Label htmlFor="courseIdeas">Proposed Course Ideas</Label>
                                                 <Textarea
                                                     id="courseIdeas"
+                                                    required
                                                     name="courseIdeas"
                                                     placeholder="Describe the courses you would like to teach"
                                                     rows={3}
-                                                    required
                                                 />
                                             </div>
 
@@ -185,9 +194,9 @@ export default function InstructorRegistrationPage() {
                                                 <div className="relative">
                                                     <Input
                                                         id="password"
+                                                        required
                                                         name="password"
                                                         type={showPassword ? "text" : "password"}
-                                                        required
                                                         className="pr-10"
                                                     />
                                                     <button
@@ -207,9 +216,9 @@ export default function InstructorRegistrationPage() {
                                                 <div className="relative">
                                                     <Input
                                                         id="confirmPassword"
+                                                        required
                                                         name="confirmPassword"
                                                         type={showConfirmPassword ? "text" : "password"}
-                                                        required
                                                         className="pr-10"
                                                     />
                                                     <button
@@ -232,8 +241,7 @@ export default function InstructorRegistrationPage() {
                                                     htmlFor="terms"
                                                     className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                                 >
-                                                    I agree to the terms and conditions and understand that my
-                                                    application is subject to approval
+                                                    I agree to the terms and conditions
                                                 </Label>
                                             </div>
                                         </div>
@@ -276,23 +284,6 @@ export default function InstructorRegistrationPage() {
                                         <div className="h-2 w-2 rounded-full bg-cyan-500"></div>
                                         <p className="text-sm">Access to cutting-edge teaching tools</p>
                                     </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card className="border border-white/20 bg-black/20 backdrop-blur-sm dark:border-white/10">
-                                <CardHeader>
-                                    <CardTitle>Application Process</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <RegistrationStatusIndicator
-                                        steps={[
-                                            { id: 1, name: "Submit Application", status: "upcoming" },
-                                            { id: 2, name: "Initial Review", status: "upcoming" },
-                                            { id: 3, name: "Payment", status: "upcoming" },
-                                            { id: 4, name: "Compliance Check", status: "upcoming" },
-                                            { id: 5, name: "Final Approval", status: "upcoming" },
-                                        ]}
-                                    />
                                 </CardContent>
                             </Card>
                         </div>

@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
-import { Search, Wand2 } from "lucide-react";
+import { Wand2 } from "lucide-react";
 import Link from "next/link";
 
 export default async function CoursesPage({ searchParams }: { searchParams?: { search?: string } }) {
@@ -29,6 +28,7 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
             );
         }
 
+        // Fetch enrollments
         let query = supabaseServiceRoleClient
             .from("enrollments")
             .select("id, course_id, instructor_id, enrollment_date, course:courses(id, course_title, category)")
@@ -54,7 +54,28 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
                 </div>
             );
         } else {
-            enrollments = data || [];
+            // Fetch approved applications for this learner
+            const { data: approvedApps, error: appError } = await supabaseServiceRoleClient
+                .from("learners_applications")
+                .select("course_id, application_status")
+                .eq("learner_id", userData?.user?.id)
+                .eq("application_status", "approved");
+
+            if (appError) {
+                logger.error("Error fetching applications:", appError);
+                errorMsg = appError.message || "Unknown error";
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                        <div className="text-center">
+                            <h1 className="text-2xl font-bold mb-4">Error fetching applications</h1>
+                            <p className="text-gray-400">{errorMsg}</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            const approvedCourseIds = (approvedApps || []).map((app: any) => app.course_id);
+            enrollments = (data || []).filter((enrollment: any) => approvedCourseIds.includes(enrollment.course_id));
         }
     } catch (error: any) {
         logger.error("Error fetching courses:", error);
