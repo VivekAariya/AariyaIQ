@@ -51,13 +51,17 @@ export default async function LearnerApplication({
 
     return (
         <div className="flex min-h-screen flex-col">
-            <div className="container px-4 md:px-6">
-                <div className="grid gap-6 lg:grid-cols-[1fr_350px] lg:gap-12">
+            <div className="container px-2 sm:px-4 md:px-6">
+                <div className="grid gap-6 lg:grid-cols-[1fr_350px] lg:gap-12 grid-cols-1">
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <h1 className="text-3xl font-bold tracking-tight">Learner Application Status</h1>
-                                <p className="text-muted-foreground">Track your application progress</p>
+                            <div className="max-md:mt-10">
+                                <h1 className="text-xl md:text-3xl font-bold tracking-tight">
+                                    Learner Application Status
+                                </h1>
+                                <p className="max-md:text-base text-muted-foreground">
+                                    Track your application progress
+                                </p>
                             </div>
                             <Button variant="outline" size="sm" asChild className="text-xs">
                                 <Link href={`/learner/dashboard/learner-application/`}>Back</Link>
@@ -77,13 +81,17 @@ export default async function LearnerApplication({
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
+                                {/* Only TabsList is horizontally scrollable on mobile */}
                                 <Tabs defaultValue="status">
-                                    <TabsList className="grid w-full grid-cols-3">
-                                        <TabsTrigger value="status">Status</TabsTrigger>
-                                        <TabsTrigger value="application_details">Application Details</TabsTrigger>
-                                        <TabsTrigger value="messages">Messages</TabsTrigger>
-                                    </TabsList>
-
+                                    {/* Only TabsList is horizontally scrollable on mobile */}
+                                    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900 -mx-2 sm:mx-0">
+                                        <TabsList className="grid w-[600px] min-w-full grid-cols-3 sm:w-full">
+                                            <TabsTrigger value="status">Status</TabsTrigger>
+                                            <TabsTrigger value="application_details">Application Details</TabsTrigger>
+                                            <TabsTrigger value="messages">Messages</TabsTrigger>
+                                        </TabsList>
+                                    </div>
+                                    {/* The rest of TabsContent remains unchanged */}
                                     <TabsContent value="status" className="space-y-4 pt-4">
                                         <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 border border-white/10">
                                             <h3 className="text-lg font-semibold mb-4">Application Progress</h3>
@@ -187,119 +195,6 @@ export default async function LearnerApplication({
                                                         {application?.current_profession || "-"}
                                                     </span>
                                                 </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-sm text-gray-400">Experience:</span>
-                                                    <span className="text-sm text-gray-400 font-medium">
-                                                        {application?.years_experience || "-"}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Course Motivation */}
-                                        <div>
-                                            <h3 className="text-sm font-normal underline text-gray-400">
-                                                Course Motivation
-                                            </h3>
-                                            <div className="mt-1 space-y-4">
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        Why do you want to take this course?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.course_motivation || "-"}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        What are your specific learning goals?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.learning_goals || "-"}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        What do you expect from this course?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.course_expectations || "-"}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        What's your preferred learning timeline?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.preferred_timeline || "-"}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Technical Background */}
-                                        <div>
-                                            <h3 className="text-sm font-normal underline text-gray-400">
-                                                Technical Background
-                                            </h3>
-                                            <div className="mt-1 space-y-4">
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        What are your current technical skills?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.current_technical_skills || "-"}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        What challenges are you currently facing?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.current_challenges || "-"}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        Do you have any specific projects in mind?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.specific_projects || "-"}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Learning Preferences */}
-                                        <div>
-                                            <h3 className="text-sm font-normal underline text-gray-400">
-                                                Learning Preferences
-                                            </h3>
-                                            <div className="mt-1 space-y-4">
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        What's your preferred learning style?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.preferred_learning_style || "-"}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        How much time can you dedicate per week?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.weekly_time_commitment || "-"}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        Have you taken similar courses before?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.previous_courses_details || "-"}
-                                                    </span>
-                                                </div>
                                             </div>
                                         </div>
 
@@ -315,14 +210,6 @@ export default async function LearnerApplication({
                                                     </span>
                                                     <span className="block text-sm text-gray-400 font-medium">
                                                         {application?.excited_topics || "-"}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="block text-sm font-normal text-gray-300">
-                                                        How will you measure success in this course?
-                                                    </span>
-                                                    <span className="block text-sm text-gray-400 font-medium">
-                                                        {application?.success_metrics || "-"}
                                                     </span>
                                                 </div>
                                             </div>
@@ -342,77 +229,6 @@ export default async function LearnerApplication({
                                     </TabsContent>
 
                                     <TabsContent value="messages" className="space-y-4 pt-4">
-                                        {/* <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 border border-white/10">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h3 className="text-lg font-semibold">Messages</h3>
-                                                <Button variant="outline" size="sm">
-                                                    Refresh
-                                                </Button>
-                                            </div>
-
-                                            {currentStatus === "review" && (
-                                                <div className="text-center py-8">
-                                                    <MessageSquare className="h-12 w-12 text-gray-500 mx-auto mb-3" />
-                                                    <p className="text-gray-400">No messages yet</p>
-                                                    <p className="text-sm text-gray-500 mt-1">
-                                                        Messages related to your application will appear here
-                                                    </p>
-                                                </div>
-                                            )}
-
-                                            {currentStatus !== "review" && (
-                                                <div className="space-y-4">
-                                                    <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 border border-white/10">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <span className="text-sm font-medium">AariyaIQ Admin</span>
-                                                            <span className="text-xs text-gray-500">
-                                                                {new Date().toLocaleDateString()}
-                                                            </span>
-                                                        </div>
-                                                        <p className="text-sm text-gray-300">
-                                                            Your learner application has been initially approved. Please
-                                                            check your email for payment instructions.
-                                                        </p>
-                                                    </div>
-
-                                                    {currentStatus === "compliance" && (
-                                                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 border border-white/10">
-                                                            <div className="flex items-center justify-between mb-2">
-                                                                <span className="text-sm font-medium">
-                                                                    AariyaIQ Admin
-                                                                </span>
-                                                                <span className="text-xs text-gray-500">
-                                                                    {new Date().toLocaleDateString()}
-                                                                </span>
-                                                            </div>
-                                                            <p className="text-sm text-gray-300">
-                                                                Thank you for your payment. Your application is now
-                                                                undergoing a compliance check. We'll notify you once
-                                                                this process is complete.
-                                                            </p>
-                                                        </div>
-                                                    )}
-
-                                                    {currentStatus === "approved" && (
-                                                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 border border-white/10">
-                                                            <div className="flex items-center justify-between mb-2">
-                                                                <span className="text-sm font-medium">
-                                                                    AariyaIQ Admin
-                                                                </span>
-                                                                <span className="text-xs text-gray-500">
-                                                                    {new Date().toLocaleDateString()}
-                                                                </span>
-                                                            </div>
-                                                            <p className="text-sm text-gray-300">
-                                                                Congratulations! Your learner application has been fully
-                                                                approved. You can now access the learner dashboard and
-                                                                start your learning journey.
-                                                            </p>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div> */}
                                         <div className="flex items-center justify-center bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-white/10">
                                             <div className="text-center">
                                                 <h3 className="text-lg font-semibold text-gray-300 mb-2">
@@ -462,52 +278,46 @@ export default async function LearnerApplication({
                                             desc: "Begin exploring courses and learning materials",
                                         },
                                     ];
-                                    return (
-                                        <div className="space-y-4">
-                                            {steps.map((step, idx) => {
-                                                let circleClass = "bg-gray-800 text-gray-500";
-                                                let icon: any = idx + 1;
-                                                let textClass = "text-gray-400";
+                                    return steps.map((step, idx) => {
+                                        let circleClass = "bg-gray-800 text-gray-500";
+                                        let icon: any = idx + 1;
+                                        let textClass = "text-gray-400";
 
-                                                if (idx === 0) {
-                                                    circleClass = "bg-green-500/20 text-green-500";
-                                                    icon = <CheckCircle />;
-                                                    textClass = "text-green-500";
-                                                } else if (idx < currentIdx) {
-                                                    circleClass = "bg-green-500/20 text-green-500";
-                                                    icon = <CheckCircle />;
-                                                    textClass = "text-green-500";
-                                                } else if (idx === currentIdx) {
-                                                    // Current step
-                                                    circleClass = "bg-yellow-500/20 text-yellow-500 animate-pulse";
-                                                    icon = idx + 1;
-                                                    textClass = "text-yellow-500";
-                                                }
-                                                return (
-                                                    <div className="flex items-start gap-3" key={step.label}>
-                                                        <div
-                                                            className={`h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0 ${circleClass}`}
-                                                        >
-                                                            <span className="text-sm">{icon}</span>
-                                                        </div>
-                                                        <div>
-                                                            <p className={`text-sm font-medium ${textClass}`}>
-                                                                {step.label}
-                                                            </p>
-                                                            <p className="text-xs text-gray-500 mt-0.5">{step.desc}</p>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    );
+                                        if (idx === 0) {
+                                            circleClass = "bg-green-500/20 text-green-500";
+                                            icon = <CheckCircle />;
+                                            textClass = "text-green-500";
+                                        } else if (idx < currentIdx) {
+                                            circleClass = "bg-green-500/20 text-green-500";
+                                            icon = <CheckCircle />;
+                                            textClass = "text-green-500";
+                                        } else if (idx === currentIdx) {
+                                            // Current step
+                                            circleClass = "bg-yellow-500/20 text-yellow-500 animate-pulse";
+                                            icon = idx + 1;
+                                            textClass = "text-yellow-500";
+                                        }
+                                        return (
+                                            <div className="flex items-start gap-3 min-w-[220px]" key={step.label}>
+                                                <div
+                                                    className={`h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0 ${circleClass}`}
+                                                >
+                                                    <span className="text-sm">{icon}</span>
+                                                </div>
+                                                <div>
+                                                    <p className={`text-sm font-medium ${textClass}`}>{step.label}</p>
+                                                    <p className="text-xs text-gray-500 mt-0.5">{step.desc}</p>
+                                                </div>
+                                            </div>
+                                        );
+                                    });
                                 })()}
                             </CardContent>
                         </Card>
                     </div>
 
                     {/* Sidebar */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 mt-8 lg:mt-0">
                         <Card className="border border-white/20 dark:border-white/10">
                             <CardHeader>
                                 <CardTitle>Application Timeline</CardTitle>

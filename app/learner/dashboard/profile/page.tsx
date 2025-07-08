@@ -13,14 +13,18 @@ export default async function MyProfilePage() {
     if (userDataError || !userData?.user) {
         logger.error("Error fetching user data:", userDataError);
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">Error fetching logged in user</h1>
-                    <p className="text-gray-400">{userDataError?.message}</p>
-                    <Button variant="outline" className="mt-4" asChild>
-                        <Link href="/instructor/dashboard">
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4 sm:px-0">
+                <div className="text-center w-full max-w-md p-6 rounded-lg bg-gray-800 shadow-lg">
+                    <h1 className="text-xl sm:text-2xl font-bold mb-4">Error fetching logged in user</h1>
+                    <p className="text-gray-400 break-words">{userDataError?.message}</p>
+                    <Button
+                        variant="outline"
+                        className="mt-4 w-full sm:w-auto flex justify-center items-center"
+                        asChild
+                    >
+                        <Link href="/instructor/dashboard" className="flex items-center justify-center">
                             <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back to Dashboard
+                            <span>Back to Dashboard</span>
                         </Link>
                     </Button>
                 </div>
@@ -37,14 +41,18 @@ export default async function MyProfilePage() {
     if (profileError || !profile) {
         logger.error("Error fetching profile data:", profileError);
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">Error fetching user profile</h1>
-                    <p className="text-gray-400">{profileError?.message}</p>
-                    <Button variant="outline" className="mt-4" asChild>
-                        <Link href="/instructor/dashboard">
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4 sm:px-0">
+                <div className="text-center w-full max-w-md p-6 rounded-lg bg-gray-800 shadow-lg">
+                    <h1 className="text-xl sm:text-2xl font-bold mb-4">Error fetching user profile</h1>
+                    <p className="text-gray-400 break-words">{profileError?.message}</p>
+                    <Button
+                        variant="outline"
+                        className="mt-4 w-full sm:w-auto flex justify-center items-center"
+                        asChild
+                    >
+                        <Link href="/instructor/dashboard" className="flex items-center justify-center">
                             <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back to Dashboard
+                            <span>Back to Dashboard</span>
                         </Link>
                     </Button>
                 </div>

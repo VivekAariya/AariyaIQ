@@ -79,29 +79,41 @@ export default async function InstructorDashboardPage() {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 px-2 sm:px-4 md:px-8">
             <FloatingAIBtn delay={500} user={userData?.user} />
-
+        
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Instructor Dashboard</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Instructor Dashboard</h1>
                 <p className="text-muted-foreground">Manage your courses and learners</p>
             </div>
 
             {/* Quick Actions */}
-            <div className="grid gap-4 md:grid-cols-3">
-                <Button variant="outline" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+                <Button
+                    variant="outline"
+                    className="h-auto py-4 flex-col items-center justify-center gap-2 w-full"
+                    asChild
+                >
                     <Link href="/instructor/dashboard/courses/add-new">
                         <PlusCircle className="h-6 w-6" />
                         <span>Create New Course</span>
                     </Link>
                 </Button>
-                <Button variant="outline" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
+                <Button
+                    variant="outline"
+                    className="h-auto py-4 flex-col items-center justify-center gap-2 w-full"
+                    asChild
+                >
                     <Link href="/instructor/dashboard/learners">
                         <Users className="h-6 w-6" />
                         <span>Manage Learners</span>
                     </Link>
                 </Button>
-                <Button variant="outline" className="h-auto py-4 flex-col items-center justify-center gap-2" asChild>
+                <Button
+                    variant="outline"
+                    className="h-auto py-4 flex-col items-center justify-center gap-2 w-full"
+                    asChild
+                >
                     <Link href="/instructor/dashboard/courses">
                         <BookOpen className="h-6 w-6" />
                         <span>View All Courses</span>
@@ -109,7 +121,7 @@ export default async function InstructorDashboardPage() {
                 </Button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
@@ -138,7 +150,7 @@ export default async function InstructorDashboardPage() {
                 </Card>
             </div>
 
-            <div className="relative rounded-xl overflow-hidden border border-white/20 bg-gradient-to-br from-indigo-900/10 via-purple-800/10 to-cyan-900/10 backdrop-blur-md p-6 shadow-lg">
+            <div className="relative rounded-xl overflow-hidden border border-white/20 bg-gradient-to-br from-indigo-900/10 via-purple-800/10 to-cyan-900/10 backdrop-blur-md p-4 sm:p-6 shadow-lg">
                 {/* Neon border elements */}
                 <div className="absolute inset-0 pointer-events-none">
                     <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
@@ -148,26 +160,29 @@ export default async function InstructorDashboardPage() {
                 </div>
 
                 <div className="relative z-10">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                        <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                             Recent Courses
                         </h2>
-                        <Button variant="outline" asChild>
+                        <Button variant="outline" asChild className="w-full sm:w-auto">
                             <Link href="/instructor/dashboard/courses/add-new">Add New Course</Link>
                         </Button>
                     </div>
-                    <div className="mt-4 rounded-md border border-white/10 bg-black/40 backdrop-blur-sm">
-                        <div className="grid grid-cols-4 gap-4 p-4 font-medium">
+                    <div className="mt-4 rounded-md border border-white/10 bg-black/40 backdrop-blur-sm overflow-x-auto">
+                        <div className="min-w-[500px] grid grid-cols-4 gap-4 p-4 font-medium text-xs sm:text-base">
                             <div>Title</div>
                             <div>Level</div>
                             <div>Start Date</div>
                             <div>Actions</div>
                         </div>
                         {courseData.slice(0, 5).map((course) => (
-                            <div key={course.id} className="grid grid-cols-4 gap-4 border-t p-4">
-                                <div>{course.course_title}</div>
-                                <div>{course.level}</div>
-                                <div>
+                            <div
+                                key={course.id}
+                                className="min-w-[500px] grid grid-cols-4 gap-4 border-t p-4 text-xs sm:text-base"
+                            >
+                                <div className="truncate max-w-[120px]">{course.course_title}</div>
+                                <div className="truncate max-w-[80px]">{course.level}</div>
+                                <div className="truncate max-w-[120px]">
                                     {new Date(course.start_date).toLocaleDateString("en-UK", {
                                         day: "numeric",
                                         month: "short",
@@ -183,7 +198,7 @@ export default async function InstructorDashboardPage() {
                         ))}
                     </div>
                     <div className="mt-4 flex justify-center">
-                        <Button variant="outline" asChild>
+                        <Button variant="outline" asChild className="w-full sm:w-auto">
                             <Link href="/instructor/dashboard/courses">View All Courses</Link>
                         </Button>
                     </div>

@@ -83,13 +83,14 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="space-y-6 px-2 sm:px-0">
+            <div className="max-md:mt-10 flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">View Courses</h1>
             </div>
 
             <div className="rounded-md border border-white/20 bg-black/90 backdrop-blur-none overflow-hidden">
-                <div className="grid grid-cols-5 gap-4 p-4 font-medium">
+                {/* Table header - hidden on mobile, shown on sm+ */}
+                <div className="hidden sm:grid grid-cols-5 gap-4 p-4 font-medium">
                     <div>Name</div>
                     <div>Category</div>
                     <div>Enrolled At</div>
@@ -102,38 +103,50 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
                     <div className="p-4 text-center text-gray-400">No courses found.</div>
                 ) : (
                     enrollments.map((enrollment: any) => (
-                        <div key={enrollment?.id} className="grid grid-cols-5 gap-4 border-t p-4">
-                            <div className="truncate">{enrollment?.course?.course_title}</div>
-                            <div className="truncate">{enrollment?.course?.category}</div>
-                            <div className="truncate"></div>
+                        <div
+                            key={enrollment?.id}
+                            className="grid grid-cols-1 sm:grid-cols-5 gap-4 border-t p-4 text-sm sm:text-base"
+                        >
+                            {/* Mobile layout: show label before value */}
                             <div className="truncate">
-                                {new Date(enrollment?.enrollment_date).toLocaleDateString("en-GB", {
+                                <span className="sm:hidden font-semibold text-gray-400">Name: </span>
+                                {enrollment?.course?.course_title}
+                            </div>
+                            <div className="truncate">
+                                <span className="sm:hidden font-semibold text-gray-400">Category: </span>
+                                {enrollment?.course?.category}
+                            </div>
+                            <div className="truncate">
+                                <span className="sm:hidden font-semibold text-gray-400">Enrolled At: </span>
+                                {enrollment?.enrollment_date ? new Date(enrollment?.enrollment_date).toLocaleDateString("en-GB", {
                                     day: "2-digit",
                                     month: "2-digit",
                                     year: "numeric",
-                                })}
+                                }) : "-"}
                             </div>
+                            <div className="truncate sm:col-span-1 col-span-full">
+                                <span className="sm:hidden font-semibold text-gray-400">Actions: </span>
+                                <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        asChild
+                                        className="text-xs rounded-full bg-white/10 px-3 py-1 hover:bg-white/20 transition-colors"
+                                    >
+                                        <Link href={`/learner/dashboard/courses/${enrollment?.course?.id}/materials`}>
+                                            <div className="flex items-center gap-1">
+                                                <Wand2 className="h-4 w-4" />
+                                                AI Tools
+                                            </div>
+                                        </Link>
+                                    </Button>
 
-                            <div className="flex flex-wrap gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    asChild
-                                    className="text-xs rounded-full bg-white/10 px-3 py-1 hover:bg-white/20 transition-colors"
-                                >
-                                    <Link href={`/learner/dashboard/courses/${enrollment?.course?.id}/materials`}>
-                                        <div className="flex items-center gap-1">
-                                            <Wand2 className="h-4 w-4" />
-                                            AI Tools
-                                        </div>
-                                    </Link>
-                                </Button>
-
-                                <Button variant="outline" size="sm" asChild className="text-xs">
-                                    <Link href={`/learner/dashboard/courses/${enrollment?.course?.id}`}>
-                                        View Course
-                                    </Link>
-                                </Button>
+                                    <Button variant="outline" size="sm" asChild className="text-xs">
+                                        <Link href={`/learner/dashboard/courses/${enrollment?.course?.id}`}>
+                                            View Course
+                                        </Link>
+                                    </Button>
+                                </div>
                             </div>
                         </div>
                     ))

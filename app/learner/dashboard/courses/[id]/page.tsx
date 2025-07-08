@@ -21,10 +21,10 @@ export default async function ViewCoursePage({ params, searchParams }: CoursePro
     if (error || !course) {
         logger.error("Error fetching course:", error);
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">{error?.message || "Something went wrong"}</h1>
-                    <p className="text-gray-400">Unknown error</p>
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4 sm:px-6 md:px-8">
+                <div className="text-center w-full max-w-md mx-auto">
+                    <h1 className="text-xl sm:text-2xl font-bold mb-4 break-words">{error?.message || "Something went wrong"}</h1>
+                    <p className="text-gray-400 text-sm sm:text-base">Unknown error</p>
                 </div>
             </div>
         );
@@ -40,10 +40,10 @@ export default async function ViewCoursePage({ params, searchParams }: CoursePro
     if (instructorError) {
         logger.error("Error fetching instructor:", instructorError);
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">Error Fetching Instructor</h1>
-                    <p className="text-gray-400">{instructorError.message}</p>
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4 sm:px-6 md:px-8">
+                <div className="text-center w-full max-w-md mx-auto">
+                    <h1 className="text-xl sm:text-2xl font-bold mb-4 break-words">Error Fetching Instructor</h1>
+                    <p className="text-gray-400 text-sm sm:text-base">{instructorError.message}</p>
                 </div>
             </div>
         );

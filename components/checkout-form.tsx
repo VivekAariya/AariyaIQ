@@ -12,18 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
-import {
-    AlertCircle,
-    BookOpen,
-    CheckCircle,
-    Code,
-    GraduationCap,
-    Heart,
-    Loader2,
-    Percent,
-    Target,
-    User,
-} from "lucide-react";
+import { AlertCircle, CheckCircle, GraduationCap, Heart, Loader2, Percent, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
@@ -156,7 +145,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-4">
                             Application Submitted Successfully!
                         </h1>
-                        <p className="text-gray-300 text-lg mb-6">
+                        <p className="text-gray-300 text-size mb-6">
                             Thank you for your detailed application. Our team will review your submission and get back
                             to you within 24-48 hours.
                         </p>
@@ -280,187 +269,6 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                                 </Select>
                             </div>
                         </div>
-                        <div>
-                            <Label htmlFor="years_experience" className="text-gray-300">
-                                Programming Experience
-                            </Label>
-                            <Select name="years_experience" required>
-                                <SelectTrigger className="mt-1">
-                                    <SelectValue placeholder="Select your experience level" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="beginner">Beginner (0-1 years)</SelectItem>
-                                    <SelectItem value="intermediate">Intermediate (1-3 years)</SelectItem>
-                                    <SelectItem value="advanced">Advanced (3-5 years)</SelectItem>
-                                    <SelectItem value="expert">Expert (5+ years)</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-
-                    {/* Course Motivation */}
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <Target className="w-6 h-6 text-purple-400" />
-                            <h3 className="text-xl font-semibold text-white">Course Motivation</h3>
-                        </div>
-                        <div>
-                            <Label htmlFor="course_motivation" className="text-gray-300">
-                                Why do you want to take this course? *
-                            </Label>
-                            <Textarea
-                                id="course_motivation"
-                                name="course_motivation"
-                                required
-                                className="mt-1 min-h-[100px]"
-                                placeholder="Tell us what motivated you to choose this course and how it aligns with your career goals..."
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="learning_goals" className="text-gray-300">
-                                What are your specific learning goals? *
-                            </Label>
-                            <Textarea
-                                id="learning_goals"
-                                name="learning_goals"
-                                required
-                                className="mt-1 min-h-[100px]"
-                                placeholder="Describe what you want to achieve by the end of this course..."
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="course_expectations" className="text-gray-300">
-                                What do you expect from this course? *
-                            </Label>
-                            <Textarea
-                                id="course_expectations"
-                                name="course_expectations"
-                                required
-                                className="mt-1 min-h-[100px]"
-                                placeholder="Share your expectations about the course content, teaching style, and outcomes..."
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="preferred_timeline" className="text-gray-300">
-                                What's your preferred learning timeline?
-                            </Label>
-                            <Select name="preferred_timeline" required>
-                                <SelectTrigger className="mt-1">
-                                    <SelectValue placeholder="Select your preferred timeline" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="intensive 6-8 weeks">
-                                        Intensive (Complete in 6-8 weeks)
-                                    </SelectItem>
-                                    <SelectItem value="standard 10-12 weeks">
-                                        Standard (Complete in 10-12 weeks)
-                                    </SelectItem>
-                                    <SelectItem value="flexible complete at own pace">
-                                        Flexible (Complete at my own pace)
-                                    </SelectItem>
-                                    <SelectItem value="part-time 16-20 weeks">
-                                        Part-time (Complete in 16-20 weeks)
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-
-                    {/* Background & Context */}
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <Code className="w-6 h-6 text-cyan-400" />
-                            <h3 className="text-xl font-semibold text-white">Technical Background</h3>
-                        </div>
-                        <div>
-                            <Label htmlFor="current_technical_skills" className="text-gray-300">
-                                What are your current technical skills?
-                            </Label>
-                            <Textarea
-                                id="current_technical_skills"
-                                name="current_technical_skills"
-                                required
-                                className="mt-1 min-h-[80px]"
-                                placeholder="List your current programming languages, frameworks, tools, etc..."
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="current_challenges" className="text-gray-300">
-                                What challenges are you currently facing?
-                            </Label>
-                            <Textarea
-                                id="current_challenges"
-                                name="current_challenges"
-                                required
-                                className="mt-1 min-h-[80px]"
-                                placeholder="Describe any technical or career challenges you're hoping this course will help you overcome..."
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="specific_projects" className="text-gray-300">
-                                Do you have any specific projects in mind?
-                            </Label>
-                            <Textarea
-                                id="specific_projects"
-                                name="specific_projects"
-                                required
-                                className="mt-1 min-h-[80px]"
-                                placeholder="Tell us about any projects you're planning to work on using the skills from this course..."
-                            />
-                        </div>
-                    </div>
-
-                    {/* Learning Preferences */}
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <BookOpen className="w-6 h-6 text-purple-400" />
-                            <h3 className="text-xl font-semibold text-white">Learning Preferences</h3>
-                        </div>
-                        <div>
-                            <Label htmlFor="preferred_learning_style" className="text-gray-300">
-                                What's your preferred learning style?
-                            </Label>
-                            <Select name="preferred_learning_style" required>
-                                <SelectTrigger className="mt-1">
-                                    <SelectValue placeholder="Select your learning style" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="visual">Visual (diagrams, videos, demonstrations)</SelectItem>
-                                    <SelectItem value="hands-on">Hands-on (coding exercises, projects)</SelectItem>
-                                    <SelectItem value="reading">Reading (documentation, articles)</SelectItem>
-                                    <SelectItem value="interactive">Interactive (discussions, Q&A sessions)</SelectItem>
-                                    <SelectItem value="mixed">Mixed approach</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div>
-                            <Label htmlFor="weekly_time_commitment" className="text-gray-300">
-                                How much time can you dedicate per week?
-                            </Label>
-                            <Select name="weekly_time_commitment" required>
-                                <SelectTrigger className="mt-1">
-                                    <SelectValue placeholder="Select your weekly availability" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="5-10 hours per week">5-10 hours per week</SelectItem>
-                                    <SelectItem value="10-15 hours per week">10-15 hours per week</SelectItem>
-                                    <SelectItem value="15-20 hours per week">15-20 hours per week</SelectItem>
-                                    <SelectItem value="20+ hours per week">20+ hours per week</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div>
-                            <Label htmlFor="previous_courses_details" className="text-gray-300">
-                                Have you taken similar courses before?
-                            </Label>
-                            <Textarea
-                                id="previous_courses_details"
-                                name="previous_courses_details"
-                                required
-                                className="mt-1 min-h-[80px]"
-                                placeholder="Tell us about any related courses, bootcamps, or learning experiences you've had..."
-                            />
-                        </div>
                     </div>
 
                     {/* Additional Information */}
@@ -479,18 +287,6 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                                 required
                                 className="mt-1 min-h-[80px]"
                                 placeholder="Which parts of the curriculum are you most looking forward to learning?"
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="success_metrics" className="text-gray-300">
-                                How will you measure success in this course?
-                            </Label>
-                            <Textarea
-                                id="success_metrics"
-                                name="success_metrics"
-                                required
-                                className="mt-1 min-h-[80px]"
-                                placeholder="What would make this course a success for you? What outcomes are you hoping for?"
                             />
                         </div>
                     </div>

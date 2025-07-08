@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
-import { BookOpen, FileText, HelpCircle, Home, LogOut, Menu, Settings, User, X } from "lucide-react";
+import { BookOpen, FileText, HelpCircle, Home, LogOut, Menu, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -23,12 +23,16 @@ export function Sidebar() {
         }
     };
 
+    const handleLinkClick = () => {
+        if (isOpen) setIsOpen(false);
+    };
+
     return (
         <>
             <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-4 top-4 z-50 md:hidden"
+                className={`absolute left-4 top-4 z-50 md:hidden ${isOpen ? "bg-black" : "bg-white/10"}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -39,8 +43,8 @@ export function Sidebar() {
                 }`}
             >
                 <div className="flex h-full flex-col">
-                    <div className="mb-8 flex items-center justify-between">
-                        <Link href="/" className="flex items-center space-x-2">
+                    <div className="max-md:mt-12 mb-8 flex items-center justify-between">
+                        <Link href="/" className="flex items-center space-x-2" onClick={handleLinkClick}>
                             <span className="text-xl font-bold">AariyaIQ</span>
                         </Link>
                     </div>
@@ -50,6 +54,7 @@ export function Sidebar() {
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname === "/learner/dashboard" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <Home className="mr-2 h-4 w-4" />
                             Dashboard
@@ -61,6 +66,7 @@ export function Sidebar() {
                                     ? "bg-cyan-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <BookOpen className="mr-2 h-5 w-5" />
                             My Courses
@@ -72,6 +78,7 @@ export function Sidebar() {
                                     ? "bg-white/20 text-white"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <User className="mr-2 h-4 w-4" />
                             Profile
@@ -83,6 +90,7 @@ export function Sidebar() {
                                     ? "bg-white/20 text-white"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <FileText className="mr-2 h-4 w-4" />
                             Applications
@@ -92,6 +100,7 @@ export function Sidebar() {
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname === "/learner/dashboard/help" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <HelpCircle className="mr-2 h-4 w-4" />
                             Help

@@ -74,14 +74,18 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Manage Courses</h1>
+        <div className="space-y-6 px-2 sm:px-4">
+            <div className="max-md:mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Manage Courses</h1>
             </div>
 
-            <form className="flex items-center justify-between" action="" method="get">
-                <div className="flex items-center space-x-2">
-                    <div className="relative w-64">
+            <form
+                className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4"
+                action=""
+                method="get"
+            >
+                <div className="flex flex-1 items-center space-x-2">
+                    <div className="relative w-full max-w-xs">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="search"
@@ -97,78 +101,80 @@ export default async function CoursesPage({ searchParams }: { searchParams?: { s
                     </Button>
                 </div>
 
-                <div>
+                <div className="flex-shrink-0">
                     <Link
                         href={`/instructor/dashboard/courses/add-new`}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md block text-center"
                     >
                         Add New Course
                     </Link>
                 </div>
             </form>
 
-            <div className="rounded-md border border-white/20 bg-black/90 backdrop-blur-none overflow-hidden">
-                <div className="grid grid-cols-5 gap-4 p-4 font-medium">
-                    <div>Name</div>
-                    <div>Category</div>
-                    <div>Status</div>
-                    <div>Created At</div>
-                    <div>Actions</div>
+            <div className="rounded-md border border-white/20 bg-black/90 backdrop-blur-none overflow-x-auto">
+                <div className="min-w-[600px]">
+                    <div className="grid grid-cols-5 gap-4 p-4 font-medium">
+                        <div>Name</div>
+                        <div>Category</div>
+                        <div>Status</div>
+                        <div>Created At</div>
+                        <div>Actions</div>
+                    </div>
+
+                    {errorMsg ? (
+                        <div className="p-4 text-red-500">Error: {errorMsg}</div>
+                    ) : supabaseCourses.length === 0 ? (
+                        <div className="p-4 text-center text-gray-400">No courses found.</div>
+                    ) : (
+                        supabaseCourses.map((course) => (
+                            <div key={course.id} className="grid grid-cols-5 gap-4 border-t p-4">
+                                <div className="truncate">{course.course_title}</div>
+                                <div className="truncate">{course.category}</div>
+                                <div className="truncate">
+                                    <span
+                                        className={`inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-medium ${getStatusColor(
+                                            course.status
+                                        )}`}
+                                    >
+                                        {getStatusIcon(course.status)}
+                                        {course?.status?.charAt(0).toUpperCase() + course?.status?.slice(1)}
+                                    </span>
+                                </div>
+                                <div className="truncate">
+                                    {new Date(course.created_at).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                    })}
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        asChild
+                                        className="text-xs rounded-full bg-white/10 px-3 py-1 hover:bg-white/20 transition-colors"
+                                    >
+                                        <Link href={`/instructor/dashboard/courses/${course.id}/materials`}>
+                                            <div className="flex items-center gap-1">
+                                                <Wand2 className="h-4 w-4" />
+                                                AI Tools
+                                            </div>
+                                        </Link>
+                                    </Button>
+                                    <Button variant="outline" size="sm" asChild className="text-xs">
+                                        <Link href={`/instructor/dashboard/courses/${course.id}`}>Edit</Link>
+                                    </Button>
+                                    <Button variant="outline" size="sm" asChild className="text-xs">
+                                        <Link href={`/instructor/dashboard/courses/${course.id}/learners`}>
+                                            View Learners
+                                        </Link>
+                                    </Button>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
-
-                {errorMsg ? (
-                    <div className="p-4 text-red-500">Error: {errorMsg}</div>
-                ) : supabaseCourses.length === 0 ? (
-                    <div className="p-4 text-center text-gray-400">No courses found.</div>
-                ) : (
-                    supabaseCourses.map((course) => (
-                        <div key={course.id} className="grid grid-cols-5 gap-4 border-t p-4">
-                            <div className="truncate">{course.course_title}</div>
-                            <div className="truncate">{course.category}</div>
-                            <div className="truncate">
-                                <span
-                                    className={`inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-medium ${getStatusColor(
-                                        course.status
-                                    )}`}
-                                >
-                                    {getStatusIcon(course.status)}
-                                    {course?.status?.charAt(0).toUpperCase() + course?.status?.slice(1)}
-                                </span>
-                            </div>
-                            <div className="truncate">
-                                {new Date(course.created_at).toLocaleDateString("en-GB", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                })}
-                            </div>
-
-                            <div className="flex flex-wrap gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    asChild
-                                    className="text-xs rounded-full bg-white/10 px-3 py-1 hover:bg-white/20 transition-colors"
-                                >
-                                    <Link href={`/instructor/dashboard/courses/${course.id}/materials`}>
-                                        <div className="flex items-center gap-1">
-                                            <Wand2 className="h-4 w-4" />
-                                            AI Tools
-                                        </div>
-                                    </Link>
-                                </Button>
-                                <Button variant="outline" size="sm" asChild className="text-xs">
-                                    <Link href={`/instructor/dashboard/courses/${course.id}`}>Edit</Link>
-                                </Button>
-                                <Button variant="outline" size="sm" asChild className="text-xs">
-                                    <Link href={`/instructor/dashboard/courses/${course.id}/learners`}>
-                                        View Learners
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
-                    ))
-                )}
             </div>
         </div>
     );

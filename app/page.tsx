@@ -113,9 +113,9 @@ export default function HomeContent() {
 
     // Main site (original content)
     return (
-        <div className="flex min-h-screen flex-col relative z-10">
+        <div className="flex min-h-screen flex-col relative z-10 bg-gradient-to-br from-slate-950 to-slate-900">
             {/* Developer Mode Banner */}
-            <div className="bg-yellow-500 text-black text-center py-2 text-sm font-medium">
+            <div className="bg-yellow-500 text-black text-center py-2 text-xs sm:text-sm font-medium px-2">
                 🔧 Developer Mode Active - Launch Page Bypassed
                 <button
                     onClick={() => {
@@ -124,7 +124,7 @@ export default function HomeContent() {
                             window.location.href = "/";
                         }
                     }}
-                    className="ml-4 underline hover:no-underline"
+                    className="ml-2 sm:ml-4 underline hover:no-underline"
                 >
                     Exit Dev Mode
                 </button>
@@ -132,27 +132,27 @@ export default function HomeContent() {
 
             <MainNav />
 
-            <main className="flex-1">
+            <main className="flex-1 w-full">
                 <HeroSection />
-                <section className="container py-12 md:py-24 lg:py-32 relative z-10">
+                <section className="w-full px-4 sm:px-6 md:px-0 py-8 sm:py-12 md:py-24 lg:py-32 relative z-10">
                     <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center">
-                        <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl text-white">
+                        <h2 className="text-2xl xs:text-3xl sm:text-3xl md:text-5xl font-bold leading-tight text-white">
                             Elevate Your Skills with AariyaIQ
                         </h2>
-                        <p className="max-w-[85%] leading-normal text-gray-300 sm:text-lg sm:leading-7">
+                        <p className="max-w-full sm:max-w-[85%] leading-normal text-gray-300 text-base sm:text-lg sm:leading-7 px-1">
                             Discover industry-relevant courses designed to enhance your professional growth and career
                             advancement.
                         </p>
-                        <div className="flex flex-col gap-4 sm:flex-row">
-                            <Link href="/courses">
-                                <Button className="bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white">
+                        <div className="flex flex-col gap-3 sm:gap-4 w-full sm:w-auto sm:flex-row items-stretch sm:items-center">
+                            <Link href="/courses" className="w-full sm:w-auto">
+                                <Button className="w-full sm:w-auto bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white text-base sm:text-lg py-3 px-6">
                                     Explore Courses
                                 </Button>
                             </Link>
-                            <Link href="/learner/login">
+                            <Link href="/learner/login" className="w-full sm:w-auto">
                                 <Button
                                     variant="outline"
-                                    className="text-white border-white hover:bg-white hover:text-black"
+                                    className="w-full sm:w-auto text-white border-white hover:bg-white hover:text-black text-base sm:text-lg py-3 px-6"
                                 >
                                     Sign In
                                 </Button>

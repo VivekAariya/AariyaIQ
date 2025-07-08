@@ -1,9 +1,12 @@
 import CheckoutFormClient from "@/components/checkout-form";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import logger from "@/utils/logger";
+import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
-import { Clock } from "lucide-react";
+import { ArrowLeft, Clock } from "lucide-react";
+import Link from "next/link";
 
 export default async function CheckoutPage({
     searchParams,
@@ -11,6 +14,56 @@ export default async function CheckoutPage({
     searchParams: { [key: string]: string | string[] | undefined };
 }) {
     const courseId = searchParams.courseId;
+    const supabase = await createClient();
+
+    const { data: userData, error } = await supabase.auth.getUser();
+
+    if (error || !userData?.user) {
+        logger.error("User not found", error);
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">User not found</h1>
+                    <p className="text-gray-400">{error?.message || "Unknown error"}</p>
+                </div>
+            </div>
+        );
+    }
+
+    const { data: application, error: applicationsError } = await supabaseServiceRoleClient
+        .from("learners_applications")
+        .select("id, learner_id, course_id, application_status")
+        .eq("learner_id", userData.user.id)
+        .maybeSingle();
+
+    if (applicationsError) {
+        logger.error("Error fetching applications:", applicationsError);
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">Error Fetching applications</h1>
+                    <p className="text-gray-400">{applicationsError.message || "Unknown error"}</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (application) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">You have already applied for this course</h1>
+                    <p className="text-gray-400">Go to your dashboard to view your applications</p>
+                    <Link href="/learner/dashboard/learner-application">
+                        <Button variant="outline" className="mt-4">
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Go to Applications
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     const { data: courseData, error: courseError } = await supabaseServiceRoleClient
         .from("courses")

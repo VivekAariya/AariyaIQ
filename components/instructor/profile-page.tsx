@@ -188,26 +188,28 @@ export default function ProfilePage({ profile, courses }: any) {
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-indigo-500/5 via-transparent to-transparent rounded-full"></div>
             </div>
 
-            <div className="relative z-10 p-6 max-w-7xl mx-auto">
+            <div className="relative z-10 p-4 sm:p-6 max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div>
-                            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                                 My Profile
                             </h1>
-                            <p className="text-gray-400 mt-2">Manage your instructor profile and settings</p>
+                            <p className="text-gray-400 mt-2 text-sm sm:text-base">
+                                Manage your instructor profile and settings
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Profile Overview Card */}
                 <Card className="mb-8 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10 hover:border-cyan-500/30 transition-all duration-300">
-                    <CardContent className="p-6">
-                        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                    <CardContent className="p-4 sm:p-6">
+                        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 w-full">
                             {/* Profile Picture */}
-                            <div className="relative group">
-                                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 p-1">
+                            <div className="relative group self-center md:self-auto">
+                                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 p-1">
                                     <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
                                         {imagePreview ? (
                                             <img
@@ -248,12 +250,12 @@ export default function ProfilePage({ profile, courses }: any) {
                             </div>
 
                             {imageFile && (
-                                <div className="flex flex-col gap-3 bg-slate-700/30 rounded-lg p-4 border border-white/10">
+                                <div className="flex flex-col gap-3 bg-slate-700/30 rounded-lg p-4 border border-white/10 w-full md:w-auto">
                                     <div className="flex items-center gap-2 text-sm text-gray-300">
                                         <Upload className="w-4 h-4" />
                                         New image selected: {imageFile.name}
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 flex-wrap">
                                         <Button
                                             onClick={handleImageSave}
                                             disabled={isImageUploading}
@@ -287,9 +289,9 @@ export default function ProfilePage({ profile, courses }: any) {
                             )}
 
                             {/* Profile Info */}
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <h2 className="text-2xl font-bold text-white">
+                            <div className="flex-1 w-full min-w-0">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-2">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-white truncate">
                                         {profile?.first_name} {profile?.last_name}
                                     </h2>
 
@@ -300,8 +302,10 @@ export default function ProfilePage({ profile, courses }: any) {
                                         <span className="capitalize">{profile?.profile_status}</span>
                                     </Badge>
                                 </div>
-                                <p className="text-cyan-400 font-medium mb-2">{profile?.area_of_expertise}</p>
-                                <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+                                <p className="text-cyan-400 font-medium mb-2 text-sm sm:text-base truncate">
+                                    {profile?.area_of_expertise}
+                                </p>
+                                <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-gray-400">
                                     <div className="flex items-center gap-1">
                                         <Mail className="w-4 h-4" />
                                         {profile?.email}
@@ -318,9 +322,11 @@ export default function ProfilePage({ profile, courses }: any) {
                             </div>
 
                             {/* Quick Stats */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full md:w-auto">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 w-full md:w-auto mt-4 md:mt-0">
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-cyan-400">{courses.length || 0}</div>
+                                    <div className="text-xl sm:text-2xl font-bold text-cyan-400">
+                                        {courses.length || 0}
+                                    </div>
                                     <div className="text-xs text-gray-400">Courses</div>
                                 </div>
 

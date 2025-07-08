@@ -85,65 +85,75 @@ export default async function LearnerApplicationStatusPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="max-md:mt-10 flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Learner Application Status</h1>
             </div>
 
-            <div className="rounded-md border border-white/20 bg-black/90 backdrop-blur-none overflow-hidden">
-                <div className="grid grid-cols-5 gap-4 p-4 font-medium">
-                    <div>Name</div>
-                    <div>Category</div>
-                    <div>Application Status</div>
-                    <div>Applied Date</div>
-                    <div>Actions</div>
+            {/* Responsive wrapper for horizontal scroll on mobile */}
+            <div className="rounded-md border border-white/20 bg-black/90 backdrop-blur-none overflow-hidden w-full">
+                <div className="w-full overflow-x-auto">
+                    <div className="min-w-[600px] grid grid-cols-5 gap-4 p-4 font-medium text-sm md:text-base">
+                        <div>Name</div>
+                        <div>Category</div>
+                        <div>Application Status</div>
+                        <div>Applied Date</div>
+                        <div>Actions</div>
+                    </div>
+
+                    {errorMsg ? (
+                        <div className="p-4 text-red-500">Error: {errorMsg}</div>
+                    ) : applicationsData.length === 0 ? (
+                        <div className="p-4 text-center text-gray-400">No courses found.</div>
+                    ) : (
+                        applicationsData.map((application: any) => (
+                            <div
+                                key={application?.id}
+                                className="min-w-[600px] grid grid-cols-5 gap-4 border-t p-4 text-xs md:text-sm"
+                            >
+                                <div className="truncate max-w-[120px] md:max-w-none">
+                                    {application?.course?.course_title}
+                                </div>
+                                <div className="truncate max-w-[100px] md:max-w-none">
+                                    {application?.course?.category}
+                                </div>
+                                <div className="truncate">
+                                    <span
+                                        className={`inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-medium ${getStatusColor(
+                                            application.application_status
+                                        )}`}
+                                    >
+                                        {getStatusIcon(application.application_status)}
+                                        {application?.application_status?.charAt(0).toUpperCase() +
+                                            application?.application_status?.slice(1)}
+                                    </span>
+                                </div>
+                                <div className="truncate">
+                                    {new Date(application?.created_at).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                    })}
+                                </div>
+
+                                <div className="flex flex-wrap gap-2">
+                                    {application.application_status === "approved" ? (
+                                        <Button variant="outline" size="sm" asChild className="text-xs">
+                                            <Link href={`/learner/dashboard/courses/${application?.course?.id}`}>
+                                                View Course
+                                            </Link>
+                                        </Button>
+                                    ) : (
+                                        <Button variant="outline" size="sm" asChild className="text-xs">
+                                            <Link href={`/learner/dashboard/learner-application/${application?.id}`}>
+                                                View Application
+                                            </Link>
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
-
-                {errorMsg ? (
-                    <div className="p-4 text-red-500">Error: {errorMsg}</div>
-                ) : applicationsData.length === 0 ? (
-                    <div className="p-4 text-center text-gray-400">No courses found.</div>
-                ) : (
-                    applicationsData.map((application: any) => (
-                        <div key={application?.id} className="grid grid-cols-5 gap-4 border-t p-4">
-                            <div className="truncate">{application?.course?.course_title}</div>
-                            <div className="truncate">{application?.course?.category}</div>
-                            <div className="truncate">
-                                <span
-                                    className={`inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-medium ${getStatusColor(
-                                        application.application_status
-                                    )}`}
-                                >
-                                    {getStatusIcon(application.application_status)}
-                                    {application?.application_status?.charAt(0).toUpperCase() +
-                                        application?.application_status?.slice(1)}
-                                </span>
-                            </div>
-                            <div className="truncate">
-                                {new Date(application?.created_at).toLocaleDateString("en-GB", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                })}
-                            </div>
-
-                            <div className="flex flex-wrap gap-2">
-                                {application.application_status === "approved" ? (
-                                    <Button variant="outline" size="sm" asChild className="text-xs">
-                                        <Link href={`/learner/dashboard/courses/${application?.course?.id}`}>
-                                            View Course
-                                        </Link>
-                                    </Button>
-                                ) : (
-                                    <Button variant="outline" size="sm" asChild className="text-xs">
-                                        <Link href={`/learner/dashboard/learner-application/${application?.id}`}>
-                                            View Application
-                                        </Link>
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-                    ))
-                )}
             </div>
         </div>
     );

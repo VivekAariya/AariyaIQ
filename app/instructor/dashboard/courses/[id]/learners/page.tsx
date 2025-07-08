@@ -73,31 +73,33 @@ export default async function CourseLearners({ params }: { params: { id: string 
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="max-md:mt-10 flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Course Learners</h1>
             </div>
 
-            <div className="rounded-md border">
-                <div className="grid grid-cols-3 gap-4 p-4 font-medium">
-                    <div>Name</div>
-                    <div>Email</div>
-                    <div>Enrollment Date</div>
-                </div>
-                {learnersData.map((learner) => (
-                    <div key={learner.id} className="grid grid-cols-3 gap-4 border-t p-4">
-                        <div>
-                            {learner.first_name} {learner.last_name}
-                        </div>
-                        <div>{learner.email}</div>
-                        <div>
-                            {new Date(learner.enrollment_date).toLocaleString("en-GB", {
-                                year: "numeric",
-                                month: "2-digit",
-                                day: "2-digit",
-                            })}
-                        </div>
+            <div className="rounded-md border overflow-x-auto">
+                <div className="min-w-[500px]">
+                    <div className="grid grid-cols-3 gap-4 p-4 font-medium">
+                        <div>Name</div>
+                        <div>Email</div>
+                        <div>Enrollment Date</div>
                     </div>
-                ))}
+                    {learnersData.map((learner) => (
+                        <div key={learner.id} className="grid grid-cols-3 gap-4 border-t p-4 text-sm md:text-base">
+                            <div className="break-words max-w-[180px]">
+                                {learner.first_name} {learner.last_name}
+                            </div>
+                            <div className="break-all max-w-[220px]">{learner.email}</div>
+                            <div className="whitespace-nowrap">
+                                {new Date(learner.enrollment_date).toLocaleString("en-GB", {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                })}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

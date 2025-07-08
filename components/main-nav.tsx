@@ -70,11 +70,18 @@ export function MainNav() {
         };
 
         window.addEventListener("scroll", handleScroll);
+        // Prevent background scroll when mobile menu is open
+        if (isMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
         return () => {
             window.removeEventListener("scroll", handleScroll);
             document.body.style.paddingTop = "0";
+            document.body.style.overflow = "";
         };
-    }, [isScrolled]);
+    }, [isScrolled, isMenuOpen]);
 
     useEffect(() => {
         fetchUserData();
@@ -92,12 +99,20 @@ export function MainNav() {
                 transformOrigin: "top center",
             }}
         >
+            {/* Mobile menu overlay */}
+            {isMenuOpen && (
+                <div
+                    className="fixed inset-0 z-40 bg-black/60 md:hidden"
+                    onClick={() => setIsMenuOpen(false)}
+                    aria-label="Close mobile menu overlay"
+                />
+            )}
             <div
-                className={`container flex items-center justify-between transition-all duration-300 ${
+                className={`container flex items-center justify-between transition-all duration-300 px-2 sm:px-4 ${
                     isScrolled ? "h-14" : "h-16"
                 }`}
             >
-                <div className="flex gap-6 md:gap-10 items-center">
+                <div className="flex gap-4 md:gap-10 items-center">
                     <Link href="/" className="flex items-center space-x-2">
                         <span
                             className={`bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text font-bold text-transparent transition-all duration-300 ${
@@ -126,7 +141,7 @@ export function MainNav() {
                     </nav>
                 </div>
 
-                <div>
+                <div className="hidden gap-4 md:block">
                     {userData ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -165,7 +180,7 @@ export function MainNav() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="border-gray-700 text-gray-200 hover:text-white hover:border-gray-500"
+                                    className="border-gray-700 text-gray-200 hover:text-white hover:border-gray-500 min-w-[44px] min-h-[44px] px-3"
                                 >
                                     Learner Login
                                 </Button>
@@ -173,7 +188,7 @@ export function MainNav() {
                             <Link href="/instructor/login">
                                 <Button
                                     size="sm"
-                                    className="bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white backdrop-blur-md bg-opacity-80"
+                                    className="bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white backdrop-blur-md bg-opacity-80 min-w-[44px] min-h-[44px] px-3"
                                 >
                                     Instructor Login
                                 </Button>
@@ -182,40 +197,58 @@ export function MainNav() {
                     )}
                 </div>
 
-                <button className="block md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                    {isMenuOpen ? <X size={24} className="text-white" /> : <Menu size={24} className="text-white" />}
+                <button
+                    className="block md:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                >
+                    {isMenuOpen ? <X size={28} className="text-white" /> : <Menu size={28} className="text-white" />}
                 </button>
             </div>
+
+            {/* Mobile menu */}
             {isMenuOpen && (
-                <div className="container md:hidden backdrop-blur-md bg-black/80 border-b border-gray-800">
-                    <nav className="flex flex-col gap-4 pb-6">
+                <div className="fixed top-0 left-0 w-full h-full z-50 md:hidden flex flex-col bg-black backdrop-blur-lg border-b border-gray-800 animate-fade-in">
+                    <div className="flex items-center justify-between px-4 py-4 border-b border-gray-800">
+                        <span className="bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text font-bold text-xl text-transparent">
+                            AariyaIQ
+                        </span>
+                        <button
+                            className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                            onClick={() => setIsMenuOpen(false)}
+                            aria-label="Close menu"
+                        >
+                            <X size={28} className="text-white" />
+                        </button>
+                    </div>
+                    <nav className="flex flex-col gap-4 px-6 py-6 flex-1 bg-black">
                         <Link
                             href="/"
-                            className="flex items-center text-sm font-medium text-gray-300 hover:text-white"
+                            className="flex items-center text-base font-medium text-gray-300 hover:text-white py-2"
                             onClick={() => setIsMenuOpen(false)}
                         >
                             Home
                         </Link>
                         <Link
                             href="/courses"
-                            className="flex items-center text-sm font-medium text-gray-300 hover:text-white"
+                            className="flex items-center text-base font-medium text-gray-300 hover:text-white py-2"
                             onClick={() => setIsMenuOpen(false)}
                         >
                             Courses
                         </Link>
                         <Link
                             href="/about"
-                            className="flex items-center text-sm font-medium text-gray-300 hover:text-white"
+                            className="flex items-center text-base font-medium text-gray-300 hover:text-white py-2"
                             onClick={() => setIsMenuOpen(false)}
                         >
                             About
                         </Link>
 
-                        <div>
+                        <div className="mt-4">
                             {userData ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <div className="cursor-pointer">
+                                        <div className="cursor-pointer flex items-center gap-2">
                                             <Avatar>
                                                 <AvatarImage src={userData?.user_metadata?.profile_image} />
                                                 <AvatarFallback>
@@ -224,6 +257,9 @@ export function MainNav() {
                                                         : userData.email?.charAt(0).toUpperCase()}
                                                 </AvatarFallback>
                                             </Avatar>
+                                            <span className="text-gray-200 font-medium">
+                                                {userData.user_metadata?.first_name || userData.email}
+                                            </span>
                                         </div>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
@@ -249,13 +285,13 @@ export function MainNav() {
                                     <Link href="/learner/login" onClick={() => setIsMenuOpen(false)}>
                                         <Button
                                             variant="outline"
-                                            className="w-full border-gray-700 text-gray-200 hover:text-white hover:border-gray-500"
+                                            className="w-full border-gray-700 text-gray-200 hover:text-white hover:border-gray-500 min-h-[44px]"
                                         >
                                             Learner Login
                                         </Button>
                                     </Link>
                                     <Link href="/instructor/login" onClick={() => setIsMenuOpen(false)}>
-                                        <Button className="w-full bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white bg-opacity-80 backdrop-blur-md">
+                                        <Button className="w-full bg-gradient-to-r from-purple-600 via-indigo-700 to-cyan-500 text-white bg-opacity-80 backdrop-blur-md min-h-[44px]">
                                             Instructor Login
                                         </Button>
                                     </Link>

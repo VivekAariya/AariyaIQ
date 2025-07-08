@@ -90,9 +90,9 @@ export default function AddNewCoursePage() {
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl animate-ping" />
             </div>
 
-            <div className="relative z-10 p-6 space-y-6">
+            <div className="max-md:mt-10 relative z-10 p-2 sm:p-4 md:p-6 space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center space-x-4">
                         <Link href="/admin/dashboard/courses">
                             <Button
@@ -104,15 +104,17 @@ export default function AddNewCoursePage() {
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                                 Create New Course
                             </h1>
-                            <p className="text-gray-400 mt-1">Build and publish your next course</p>
+                            <p className="text-gray-400 mt-1 text-sm sm:text-base">
+                                Build and publish your next course
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <form action={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <form action={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
                     <input type="hidden" name="instructorId" value={user?.id} />
                     {/* Basic Information */}
                     <Card className="lg:col-span-2 bg-slate-800/50 border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/30 transition-all duration-300">
@@ -392,10 +394,10 @@ export default function AddNewCoursePage() {
                         </CardContent>
                     </Card>
 
-                    <div className="lg:col-span-3 flex justify-end mt-4">
+                    <div className="lg:col-span-3 flex flex-col sm:flex-row justify-end mt-4 gap-2">
                         <Button
                             type="submit"
-                            className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                            className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
                             disabled={isPending}
                         >
                             {isPending ? "Submitting..." : "Next"}

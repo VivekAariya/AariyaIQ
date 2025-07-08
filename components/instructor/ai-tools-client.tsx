@@ -286,24 +286,29 @@ export default function MaterialsAndAITools({ course, materials }: { course: any
     }, []);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-slate-100 p-4 sm:p-6 lg:p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-slate-100 p-2 sm:p-4 md:p-6 lg:p-8">
             <div className="max-w-5xl mx-auto space-y-8">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <Brain className="h-8 w-8 text-cyan-400" />
-                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 text-transparent bg-clip-text">
-                            AI Tools for: {course.course_title}
-                        </h1>
+                {/* Header Row */}
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 w-full">
+                        <div className="flex items-center gap-3 w-full">
+                            <Brain className="h-8 w-8 text-cyan-400 flex-shrink-0" />
+                            <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 text-transparent bg-clip-text break-words w-full">
+                                AI Tools for: {course.course_title}
+                            </h1>
+                        </div>
                     </div>
-                    <Button
-                        variant="outline"
-                        className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
-                        onClick={() => {
-                            router.back();
-                        }}
-                    >
-                        Back to Course Edit
-                    </Button>
+                    <div className="w-full sm:w-auto flex justify-end">
+                        <Button
+                            variant="outline"
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white w-full sm:w-auto"
+                            onClick={() => {
+                                router.back();
+                            }}
+                        >
+                            Back to Course Edit
+                        </Button>
+                    </div>
                 </div>
 
                 {/* AI Header */}
@@ -355,7 +360,7 @@ export default function MaterialsAndAITools({ course, materials }: { course: any
                                 ) : (
                                     <div className="space-y-2">
                                         {file ? (
-                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 border rounded-lg">
                                                 <div className="flex-1 min-w-0">
                                                     <div className="text-sm font-medium truncate">
                                                         {file?.pathname?.split("/")?.pop()}
@@ -406,13 +411,13 @@ export default function MaterialsAndAITools({ course, materials }: { course: any
                     </CardHeader>
 
                     <CardContent className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-4">
                             {aiTools.map((tool) => (
                                 <Button
                                     key={tool.name}
                                     variant="outline"
                                     size="lg"
-                                    className={`flex flex-col items-center justify-center h-auto p-6 space-y-2 text-center transition-all duration-150 ease-in-out
+                                    className={`flex flex-col items-center justify-center h-auto p-4 sm:p-6 space-y-2 text-center transition-all duration-150 ease-in-out
                               border-2 border-slate-700 bg-slate-800/70 hover:border-purple-500 hover:bg-purple-600/20 group
                               ${activeTool === tool.name ? "border-purple-500 bg-purple-600/30 ring-2 ring-purple-500" : ""}`}
                                     onClick={() => handleToolClick(tool.name, tool.id)}
@@ -507,7 +512,7 @@ export default function MaterialsAndAITools({ course, materials }: { course: any
                                                 return null;
                                             })()}
 
-                                            <div className="flex gap-3">
+                                            <div className="flex flex-col gap-3 sm:flex-row">
                                                 {previousContent && (
                                                     <Button
                                                         onClick={handleUsePrevious}
@@ -533,10 +538,12 @@ export default function MaterialsAndAITools({ course, materials }: { course: any
                         )}
 
                         {isAILoading && (
-                            <div className="flex flex-col items-center justify-center p-10 bg-slate-800/50 rounded-lg border border-slate-700">
+                            <div className="flex flex-col items-center justify-center p-6 sm:p-10 bg-slate-800/50 rounded-lg border border-slate-700">
                                 <Loader2 className="h-10 w-10 animate-spin text-purple-400 mb-4" />
-                                <p className="text-lg text-purple-300">AI is thinking... Generating {activeTool}...</p>
-                                <p className="text-sm text-slate-400">This might take a moment.</p>
+                                <p className="text-lg text-purple-300 text-center">
+                                    AI is thinking... Generating {activeTool}...
+                                </p>
+                                <p className="text-sm text-slate-400 text-center">This might take a moment.</p>
                             </div>
                         )}
 
@@ -553,9 +560,9 @@ export default function MaterialsAndAITools({ course, materials }: { course: any
                                             <img
                                                 src={`data:image/png;base64,${generatedContent}`}
                                                 alt="Generated AI Visual"
-                                                className="max-w-full max-h-[500px] rounded shadow-lg border border-slate-600"
+                                                className="max-w-full max-h-[300px] sm:max-h-[500px] rounded shadow-lg border border-slate-600"
                                             />
-                                            <div className="flex gap-2 mt-4">
+                                            <div className="flex flex-col gap-2 mt-4 sm:flex-row">
                                                 <Button
                                                     onClick={() => {
                                                         navigator.clipboard.writeText(generatedContent);
@@ -583,8 +590,8 @@ export default function MaterialsAndAITools({ course, materials }: { course: any
                                             <Textarea
                                                 value={generatedContent}
                                                 readOnly
-                                                rows={15}
-                                                className="bg-slate-900/70 border-slate-600 text-slate-200 focus:ring-green-500 focus:border-green-500 whitespace-pre-wrap"
+                                                rows={10}
+                                                className="bg-slate-900/70 border-slate-600 text-slate-200 focus:ring-green-500 focus:border-green-500 whitespace-pre-wrap text-xs sm:text-sm"
                                             />
                                             <CardFooter>
                                                 <Button

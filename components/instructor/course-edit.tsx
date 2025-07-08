@@ -93,32 +93,33 @@ export default function CourseEdit({ course }: { course: any }) {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-slate-100 p-4 sm:p-6 lg:p-8">
-            <div className="max-w-7xl mx-auto space-y-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-slate-100 p-2 sm:p-4 md:p-6 lg:p-8">
+            <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
                         {course.course_image && (
                             <Image
                                 src={course.course_image || "/placeholder.svg"}
                                 alt="Course"
                                 className="rounded-lg border-2 border-slate-700 shadow"
-                                width={64}
-                                height={64}
+                                width={48}
+                                height={48}
                                 style={{
                                     objectFit: "fill",
                                     aspectRatio: "1/1",
                                 }}
                             />
                         )}
-                        <Edit3 className="h-8 w-8 text-cyan-400" />
-                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 text-transparent bg-clip-text">
-                            Edit Course: {course.course_title}
+                        <Edit3 className="h-6 w-6 sm:h-8 sm:w-8 text-cyan-400 flex-shrink-0" />
+                        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 text-transparent bg-clip-text min-w-0">
+                            <span className="block sm:inline">Edit Course:</span>
+                            <span className="block sm:inline sm:ml-2 break-words">{course.course_title}</span>
                         </h1>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
                         <Button
                             variant="outline"
-                            className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white flex-1 sm:flex-none"
                             onClick={() => router.back()}
                         >
                             Cancel
@@ -127,21 +128,26 @@ export default function CourseEdit({ course }: { course: any }) {
                             type="submit"
                             form="courseEditForm"
                             disabled={isEditingDisabled || isPending}
-                            className="bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none"
                         >
-                            {isEditingDisabled ? "Editing Locked" : isPending ? "Saving..." : "Save Changes"}
+                            <span className="hidden sm:inline">
+                                {isEditingDisabled ? "Editing Locked" : isPending ? "Saving..." : "Save Changes"}
+                            </span>
+                            <span className="sm:hidden">
+                                {isEditingDisabled ? "Locked" : isPending ? "Saving..." : "Save"}
+                            </span>
                         </Button>
                     </div>
                 </div>
 
                 {isEditingDisabled && (
                     <Card className="bg-yellow-900/30 border-yellow-700 text-yellow-200">
-                        <CardHeader className="flex flex-row items-center gap-3">
-                            <AlertTriangle className="h-6 w-6 text-yellow-400" />
-                            <CardTitle className="text-yellow-300">Editing Locked</CardTitle>
+                        <CardHeader className="flex flex-row items-center gap-3 pb-3 sm:pb-6">
+                            <AlertTriangle className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400 flex-shrink-0" />
+                            <CardTitle className="text-yellow-300 text-lg sm:text-xl">Editing Locked</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <p>
+                        <CardContent className="pt-0">
+                            <p className="text-sm sm:text-base">
                                 The start date for this course has passed. Most course details can no longer be edited.
                                 You can still manage course materials and use AI tools.
                             </p>
@@ -149,18 +155,23 @@ export default function CourseEdit({ course }: { course: any }) {
                     </Card>
                 )}
 
-                <form id="courseEditForm" action={handleFormSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <form
+                    id="courseEditForm"
+                    action={handleFormSubmit}
+                    className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"
+                >
                     <input type="hidden" name="id" value={course.id} />
+
                     {/* Column 1: Core Info */}
-                    <div className="lg:col-span-2 space-y-6">
+                    <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                         <Card className="bg-slate-800/50 border-slate-700 shadow-xl backdrop-blur-md">
-                            <CardHeader>
-                                <CardTitle className="text-xl text-cyan-400 flex items-center gap-2">
-                                    <Info className="h-5 w-5" />
+                            <CardHeader className="pb-3 sm:pb-6">
+                                <CardTitle className="text-lg sm:text-xl text-cyan-400 flex items-center gap-2">
+                                    <Info className="h-4 w-4 sm:h-5 sm:w-5" />
                                     Core Information
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
+                            <CardContent className="space-y-3 sm:space-y-4">
                                 <div>
                                     <Label htmlFor="course_id" className={labelClassName}>
                                         Course ID
@@ -189,7 +200,8 @@ export default function CourseEdit({ course }: { course: any }) {
                                 </div>
                                 <div>
                                     <Label htmlFor="short_description" className={labelClassName}>
-                                        Short Description (Max 150 chars)
+                                        Short Description{" "}
+                                        <span className="text-xs text-slate-400">(Max 150 chars)</span>
                                     </Label>
                                     <Textarea
                                         id="short_description"
@@ -211,7 +223,7 @@ export default function CourseEdit({ course }: { course: any }) {
                                         name="full_description"
                                         required
                                         defaultValue={course.full_description}
-                                        rows={5}
+                                        rows={4}
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
                                     />
@@ -225,7 +237,7 @@ export default function CourseEdit({ course }: { course: any }) {
                                         name="course_contents"
                                         required
                                         defaultValue={course.course_contents}
-                                        rows={8}
+                                        rows={6}
                                         placeholder="e.g., Module 1: Topic A, Topic B..."
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
@@ -248,7 +260,7 @@ export default function CourseEdit({ course }: { course: any }) {
                                 </div>
                                 <div>
                                     <Label htmlFor="learning_outcomes" className={labelClassName}>
-                                        Learning Outcomes (One per line)
+                                        Learning Outcomes <span className="text-xs text-slate-400">(One per line)</span>
                                     </Label>
                                     <Textarea
                                         id="learning_outcomes"
@@ -256,7 +268,7 @@ export default function CourseEdit({ course }: { course: any }) {
                                         required
                                         defaultValue={course.learning_outcomes}
                                         rows={4}
-                                        placeholder="e.g., Students will be able to...\nUnderstand concepts of..."
+                                        placeholder="e.g., Students will be able to...&#10;Understand concepts of..."
                                         readOnly={isEditingDisabled}
                                         className={isEditingDisabled ? readOnlyInputClassName : inputClassName}
                                     />
@@ -266,27 +278,30 @@ export default function CourseEdit({ course }: { course: any }) {
                     </div>
 
                     {/* Column 2: Details & Settings */}
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                         <Card className="bg-slate-800/50 border-slate-700 shadow-xl backdrop-blur-md">
-                            <CardHeader>
-                                <CardTitle className="text-xl text-purple-400 flex items-center gap-2">
-                                    <ListChecks className="h-5 w-5" />
+                            <CardHeader className="pb-3 sm:pb-6">
+                                <CardTitle className="text-lg sm:text-xl text-purple-400 flex items-center gap-2">
+                                    <ListChecks className="h-4 w-4 sm:h-5 sm:w-5" />
                                     Details & Settings
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="flex items-center space-x-3 mb-2">
+                            <CardContent className="space-y-3 sm:space-y-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-2">
                                     <Label htmlFor="status" className={labelClassName}>
                                         Status
                                     </Label>
-                                    <Badge className={`${getStatusColor(course.status)} flex items-center space-x-1`}>
+                                    <Badge
+                                        className={`${getStatusColor(course.status)} flex items-center space-x-1 w-fit`}
+                                    >
                                         {getStatusIcon(course.status)}
-                                        <span className={"capitalize"}>{course.status}</span>
+                                        <span className="capitalize">{course.status}</span>
                                     </Badge>
                                 </div>
                                 <div>
                                     <Label htmlFor="duration" className={labelClassName}>
-                                        Duration (e.g., 8 Weeks, 40 Hours)
+                                        Duration{" "}
+                                        <span className="text-xs text-slate-400">(e.g., 8 Weeks, 40 Hours)</span>
                                     </Label>
                                     <Input
                                         id="duration"
@@ -376,7 +391,7 @@ export default function CourseEdit({ course }: { course: any }) {
                                         Price (INR ₹)
                                     </Label>
                                     <div className="relative">
-                                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
                                         <Input
                                             id="price"
                                             name="price"
@@ -385,22 +400,22 @@ export default function CourseEdit({ course }: { course: any }) {
                                             defaultValue={course.price}
                                             placeholder="e.g., 4999"
                                             readOnly={isEditingDisabled}
-                                            className={`${isEditingDisabled ? readOnlyInputClassName : inputClassName} pl-10`}
+                                            className={`${isEditingDisabled ? readOnlyInputClassName : inputClassName} pl-9 sm:pl-10`}
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="flex items-center justify-start mb-1">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-start mb-1 space-y-1 sm:space-y-0">
                                         <Label htmlFor="course_image" className={labelClassName}>
                                             Course Image URL
                                         </Label>
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger>
-                                                    <Info className="ml-2 h-4 w-4 text-slate-400" />
+                                                    <Info className="sm:ml-2 h-4 w-4 text-slate-400" />
                                                 </TooltipTrigger>
-                                                <TooltipContent className="bg-slate-800 border-2 border-slate-700 ">
-                                                    <p className="text-sm">
+                                                <TooltipContent className="bg-slate-800 border-2 border-slate-700 max-w-xs sm:max-w-sm">
+                                                    <p className="text-xs sm:text-sm">
                                                         You can use this website to upload your image and then paste the
                                                         link here
                                                         <br />
@@ -408,7 +423,7 @@ export default function CourseEdit({ course }: { course: any }) {
                                                             href="https://imgbb.com/upload"
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="underline"
+                                                            className="underline break-all"
                                                         >
                                                             https://imgbb.com/upload
                                                         </a>
@@ -477,13 +492,13 @@ export default function CourseEdit({ course }: { course: any }) {
 
                 <Button
                     size="lg"
-                    className="w-full bg-slate-900 text-pink-400 hover:bg-slate-800 font-semibold text-lg group mb-6"
+                    className="w-full bg-slate-900 text-pink-400 hover:bg-slate-800 font-semibold text-base sm:text-lg group mb-6"
                     onClick={() => {
                         router.push(`/instructor/dashboard/courses/${course.id}/materials`);
                     }}
                 >
-                    <FileText className="mr-2 h-5 w-5" />
-                    View Materials & AI Tools
+                    <FileText className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    <span>Materials & AI Tools</span>
                 </Button>
             </div>
         </div>

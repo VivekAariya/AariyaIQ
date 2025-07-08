@@ -1097,7 +1097,7 @@ export default function AboutPage() {
                         Explore Courses
                       </Button>
                     </Link>
-                    <Link href="/login">
+                    <Link href="/learner/login">
                       <Button variant="outline">Sign Up Today</Button>
                     </Link>
                   </div>

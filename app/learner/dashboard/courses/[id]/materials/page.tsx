@@ -175,7 +175,7 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
     }
 
     return (
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen">
             {/* Quantum Background Effects */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-3xl" />
@@ -183,15 +183,15 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl" />
             </div>
 
-            <div className="relative z-10 p-6 space-y-6">
+            <div className="relative z-10 p-3 sm:p-6 space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
                     <div className="flex items-center space-x-4">
                         <div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                            <h1 className="max-md:mt-8 text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                                 Upload Materials
                             </h1>
-                            <p className="text-gray-400 mt-1">
+                            <p className="text-gray-400 mt-1 text-sm sm:text-base">
                                 Upload materials for your course. Please only upload PDF file
                             </p>
                         </div>
@@ -208,9 +208,9 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                                 {files.map((file) => (
                                     <div
                                         key={file.url}
-                                        className="flex items-center justify-between p-3 border rounded-lg"
+                                        className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 border rounded-lg gap-2"
                                     >
-                                        <div className="flex-1 min-w-0">
+                                        <div className="flex-1 min-w-0 w-full">
                                             <div className="text-sm font-medium truncate">
                                                 <a
                                                     href={file.url}
@@ -230,7 +230,7 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                                                 })}
                                             </div>
                                         </div>
-                                        <div className="flex space-x-2">
+                                        <div className="flex space-x-2 w-full sm:w-auto">
                                             <a
                                                 href={file.url}
                                                 target="_blank"
@@ -250,7 +250,7 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                 {/* AI Generated Content */}
                 <Card className="bg-slate-800/50 border-slate-700 shadow-xl backdrop-blur-md mt-8">
                     <CardHeader>
-                        <CardTitle className="text-2xl text-cyan-400 flex items-center gap-3">
+                        <CardTitle className="text-xl sm:text-2xl text-cyan-400 flex items-center gap-3">
                             <Wand2 className="h-7 w-7" />
                             AI-Generated Learning Materials
                         </CardTitle>
@@ -261,7 +261,7 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                     </CardHeader>
 
                     <CardContent className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {aiTools.map((tool) => (
                                 <Button
                                     key={tool.name}
@@ -294,7 +294,7 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                         </div>
 
                         {isLoading && (
-                            <div className="flex flex-col items-center justify-center p-10 bg-slate-800/50 rounded-lg border border-slate-700">
+                            <div className="flex flex-col items-center justify-center p-6 sm:p-10 bg-slate-800/50 rounded-lg border border-slate-700">
                                 <Loader2 className="h-10 w-10 animate-spin text-purple-400 mb-4" />
                                 <p className="text-lg text-purple-300">Loading AI content...</p>
                                 <p className="text-sm text-slate-400">Please wait a moment.</p>
@@ -320,9 +320,9 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                                                 <img
                                                     src={`data:image/png;base64,${generatedContent}`}
                                                     alt="Generated AI Visual"
-                                                    className="max-w-full max-h-[500px] rounded shadow-lg border border-slate-600"
+                                                    className="max-w-full max-h-[300px] sm:max-h-[500px] rounded shadow-lg border border-slate-600"
                                                 />
-                                                <div className="flex gap-2 mt-4">
+                                                <div className="flex flex-col sm:flex-row gap-2 mt-4 w-full sm:w-auto justify-center">
                                                     <Button
                                                         onClick={() => {
                                                             navigator.clipboard.writeText(generatedContent);
@@ -350,8 +350,8 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                                                 <Textarea
                                                     value={generatedContent}
                                                     readOnly
-                                                    rows={15}
-                                                    className="bg-slate-900/70 border-slate-600 text-slate-200 focus:ring-green-500 focus:border-green-500 whitespace-pre-wrap"
+                                                    rows={10}
+                                                    className="bg-slate-900/70 border-slate-600 text-slate-200 focus:ring-green-500 focus:border-green-500 whitespace-pre-wrap text-xs sm:text-base"
                                                 />
                                                 <div className="mt-4">
                                                     <Button
@@ -384,13 +384,13 @@ export default function ViewCourseMaterailsAndAITools({ params }: { params: { id
                 <div className="mt-6">
                     <Card className="bg-gradient-to-r from-purple-900/70 to-cyan-900/70 border-2 border-dashed border-purple-500/40 shadow-lg">
                         <CardHeader>
-                            <CardTitle className="text-xl text-purple-300 flex items-center gap-2">
+                            <CardTitle className="text-lg sm:text-xl text-purple-300 flex items-center gap-2">
                                 <Sparkles className="h-6 w-6 animate-pulse text-purple-400" />
                                 More AI Features Coming Soon
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-slate-300">
+                            <p className="text-slate-300 text-sm sm:text-base">
                                 Stay tuned for more powerful AI tools and features to enhance your learning experience!
                             </p>
                         </CardContent>

@@ -147,26 +147,26 @@ export default function ProfilePage({ profile }: { profile: any }) {
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-indigo-500/5 via-transparent to-transparent rounded-full"></div>
             </div>
 
-            <div className="relative z-10 p-6 max-w-7xl mx-auto">
+            <div className="relative z-10 p-4 sm:p-6 max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div>
-                            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                                 My Profile
                             </h1>
-                            <p className="text-gray-400 mt-2">Manage your profile and settings</p>
+                            <p className="text-gray-400 mt-2 text-base sm:text-lg">Manage your profile and settings</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Profile Overview Card */}
                 <Card className="mb-8 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10 hover:border-cyan-500/30 transition-all duration-300">
-                    <CardContent className="p-6">
-                        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                    <CardContent className="p-4 sm:p-6">
+                        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 w-full">
                             {/* Profile Picture */}
-                            <div className="relative group">
-                                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 p-1">
+                            <div className="relative group mx-auto md:mx-0">
+                                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 p-1">
                                     <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
                                         {imagePreview ? (
                                             <img
@@ -206,17 +206,17 @@ export default function ProfilePage({ profile }: { profile: any }) {
                                 )}
                             </div>
                             {imageFile && (
-                                <div className="flex flex-col gap-3 bg-slate-700/30 rounded-lg p-4 border border-white/10">
-                                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                                <div className="flex flex-col gap-3 bg-slate-700/30 rounded-lg p-3 sm:p-4 border border-white/10 w-full max-w-xs mx-auto md:mx-0">
+                                    <div className="flex items-center gap-2 text-sm text-gray-300 flex-wrap break-all">
                                         <Upload className="w-4 h-4" />
-                                        New image selected: {imageFile.name}
+                                        <span className="truncate max-w-[120px] sm:max-w-[180px]">New image selected: {imageFile.name}</span>
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 flex-col sm:flex-row">
                                         <Button
                                             onClick={handleImageSave}
                                             disabled={isImageUploading}
                                             size="sm"
-                                            className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                                            className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white w-full sm:w-auto"
                                         >
                                             {isImageUploading ? (
                                                 <>
@@ -235,7 +235,7 @@ export default function ProfilePage({ profile }: { profile: any }) {
                                             disabled={isImageUploading}
                                             size="sm"
                                             variant="outline"
-                                            className="border-white/20 text-gray-300 hover:bg-slate-700/50"
+                                            className="border-white/20 text-gray-300 hover:bg-slate-700/50 w-full sm:w-auto"
                                         >
                                             <X className="w-4 h-4 mr-2" />
                                             Cancel
@@ -244,21 +244,21 @@ export default function ProfilePage({ profile }: { profile: any }) {
                                 </div>
                             )}
                             {/* Profile Info */}
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <h2 className="text-2xl font-bold text-white">
+                            <div className="flex-1 w-full mt-4 md:mt-0">
+                                <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-white break-words">
                                         {profile?.first_name} {profile?.last_name}
                                     </h2>
                                 </div>
-                                <p className="text-cyan-400 font-medium mb-2">{profile?.area_of_expertise}</p>
+                                <p className="text-cyan-400 font-medium mb-2 break-words">{profile?.area_of_expertise}</p>
                                 <div className="flex flex-wrap gap-4 text-sm text-gray-400">
                                     <div className="flex items-center gap-1">
                                         <Mail className="w-4 h-4" />
-                                        {profile?.email}
+                                        <span className="break-all">{profile?.email}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <MapPin className="w-4 h-4" />
-                                        {profile?.location || "Unknown"}
+                                        <span className="break-all">{profile?.location || "Unknown"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -267,8 +267,8 @@ export default function ProfilePage({ profile }: { profile: any }) {
                 </Card>
 
                 {/* Tabbed Content */}
-                <Tabs defaultValue="personal" className="space-y-6">
-                    <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-white/10">
+                <Tabs defaultValue="personal" className="space-y-6 w-full">
+                    <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border border-white/10 text-xs sm:text-base">
                         <TabsTrigger
                             value="personal"
                             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500/20 data-[state=active]:to-purple-500/20 data-[state=active]:text-white"
@@ -286,7 +286,7 @@ export default function ProfilePage({ profile }: { profile: any }) {
                     {/* Personal Info Tab (now includes Professional fields) */}
                     <TabsContent value="personal">
                         <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10">
-                            <CardHeader className="flex flex-row justify-between items-center">
+                            <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                                 <CardTitle className="text-white flex items-center gap-2">
                                     <User className="w-5 h-5 text-cyan-400" />
                                     Personal Information
@@ -294,16 +294,16 @@ export default function ProfilePage({ profile }: { profile: any }) {
                                 <CardTitle className="text-white">
                                     <Button
                                         onClick={() => setIsEditing((v) => !v)}
-                                        className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0"
+                                        className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 w-full sm:w-auto"
                                     >
                                         {isEditing ? "Cancel" : "Edit Profile"}
                                     </Button>
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-6">
+                            <CardContent className="space-y-6 p-4 sm:p-6">
                                 <form action={handleSubmit} className="space-y-6">
                                     <input type="hidden" name="id" value={profile?.id} />
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="firstName" className="text-gray-300">
                                                 First Name
@@ -331,7 +331,7 @@ export default function ProfilePage({ profile }: { profile: any }) {
                                             />
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="email" className="text-gray-300">
                                                 Email Address
@@ -385,7 +385,7 @@ export default function ProfilePage({ profile }: { profile: any }) {
                                             className="bg-slate-700/50 border-white/10 text-white disabled:opacity-60 resize-none"
                                         />
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="area_of_expertise">Areas of Expertise</Label>
                                             <Select
@@ -478,13 +478,13 @@ export default function ProfilePage({ profile }: { profile: any }) {
                                         Security Settings
                                     </CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-4">
+                                <CardContent className="space-y-4 p-4 sm:p-6">
                                     <div className="space-y-2">
                                         <Label className="text-gray-300">
                                             If you wish to change your password, please click the button below
                                         </Label>
                                     </div>
-                                    <Button className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600">
+                                    <Button className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 w-full sm:w-auto">
                                         <Link href="/forgot-password">Forgot Password</Link>
                                     </Button>
                                 </CardContent>

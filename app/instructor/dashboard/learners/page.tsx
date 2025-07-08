@@ -97,25 +97,37 @@ export default async function LearnersPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="max-md:mt-10 flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Manage Learners</h1>
             </div>
 
-            <div className="rounded-md border">
-                <div className="grid grid-cols-3 gap-4 p-4 font-medium">
-                    <div>Name</div>
-                    <div>Email</div>
-                    <div>Enrolled Courses</div>
-                </div>
-                {learnersData.map((learner) => (
-                    <div key={learner.id} className="grid grid-cols-3 gap-4 border-t p-4">
-                        <div>
-                            {learner.first_name} {learner.last_name}
-                        </div>
-                        <div>{learner.email}</div>
-                        <div className="line-clamp-3">{enrolledCoursesMap.get(learner.id)?.join(", ") || "-"}</div>
-                    </div>
-                ))}
+            <div className="rounded-md border overflow-x-auto">
+                <table className="min-w-[600px] w-full text-sm sm:text-base">
+                    <thead>
+                        <tr className="bg-gray-50/5 font-medium">
+                            <th className="text-left p-4">Name</th>
+                            <th className="text-left p-4">Email</th>
+                            <th className="text-left p-4">Enrolled Courses</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {learnersData.map((learner) => (
+                            <tr key={learner.id} className="border-t">
+                                <td className="p-4 min-w-[120px] max-w-xs truncate align-middle">
+                                    {learner.first_name} {learner.last_name}
+                                </td>
+                                <td className="p-4 min-w-[180px] max-w-xs truncate align-middle">
+                                    {learner.email}
+                                </td>
+                                <td className="p-4 min-w-[200px] max-w-md truncate align-middle">
+                                    <span className="line-clamp-3">
+                                        {enrolledCoursesMap.get(learner.id)?.join(", ") || "-"}
+                                    </span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

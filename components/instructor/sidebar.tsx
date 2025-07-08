@@ -23,6 +23,10 @@ export function InstructorSidebar() {
         }
     };
 
+    const handleLinkClick = () => {
+        if (isOpen) setIsOpen(false);
+    };
+
     return (
         <>
             <Button
@@ -39,7 +43,7 @@ export function InstructorSidebar() {
                 }`}
             >
                 <div className="flex h-full flex-col">
-                    <div className="mb-8 flex items-center justify-between">
+                    <div className="max-md:mt-10 mb-8 flex items-center justify-between">
                         <Link href="/" className="flex items-center space-x-2">
                             <span className="text-xl font-bold">AariyaIQ Instructor</span>
                         </Link>
@@ -50,6 +54,7 @@ export function InstructorSidebar() {
                             className={`flex items-center rounded-md px-3 py-2 text-sm font-medium ${
                                 pathname === "/instructor/dashboard" ? "bg-white/20 text-white" : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <Home className="mr-2 h-4 w-4" />
                             Dashboard
@@ -61,6 +66,7 @@ export function InstructorSidebar() {
                                     ? "bg-purple-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <BookOpen className="mr-2 h-4 w-4" />
                             Manage Courses
@@ -72,6 +78,7 @@ export function InstructorSidebar() {
                                     ? "bg-purple-600/50 text-white font-bold"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <Users className="mr-2 h-4 w-4" />
                             Manage Users
@@ -83,6 +90,7 @@ export function InstructorSidebar() {
                                     ? "bg-white/20 text-white"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <User className="mr-2 h-4 w-4" />
                             Profile
@@ -94,6 +102,7 @@ export function InstructorSidebar() {
                                     ? "bg-white/20 text-white"
                                     : "hover:bg-white/10"
                             }`}
+                            onClick={handleLinkClick}
                         >
                             <HelpCircle className="mr-2 h-4 w-4" />
                             Help
