@@ -1,10 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import logger from "@/utils/logger";
-import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { ArrowRight, Bot, Sparkles, X } from "lucide-react";
+import { ArrowRight, Sparkles, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -50,25 +49,12 @@ export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"], user }: Float
         <div className={`fixed bottom-6 right-6 z-50`}>
             {/* Floating Button */}
             <div className="relative">
-                {/* Animated rings */}
-                <div className="absolute inset-0 animate-ping">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 blur-sm"></div>
-                </div>
-                <div className="absolute inset-0 animate-pulse">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500/30 to-purple-500/30"></div>
-                </div>
-
                 {/* Main Button */}
                 <div
                     onClick={handleExpand}
-                    className="relative flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/25 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-cyan-500/40"
+                    className="relative flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl"
                 >
-                    <Bot className="w-9 h-9 text-white" />
-                </div>
-
-                {/* Notification Badge */}
-                <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center animate-pulse">
-                    <Sparkles className="w-3 h-3 text-white" />
+                    <Image src="/Aariyaiq Bot Logo.svg" alt="logo" width={70} height={70} />
                 </div>
             </div>
 
@@ -91,8 +77,8 @@ export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"], user }: Float
 
                         {/* Header */}
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-600 to-purple-600 flex items-center justify-center">
-                                <Bot className="w-6 h-6 text-white" />
+                            <div className="flex items-center justify-center">
+                                <Image src="/Aariyaiq Bot Logo.svg" alt="logo" width={70} height={70} />
                             </div>
                             <div>
                                 <h3 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
