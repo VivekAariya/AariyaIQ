@@ -13,11 +13,9 @@ import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { AlertCircle, CheckCircle, GraduationCap, Heart, Loader2, Percent, User } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
 export default function CheckoutFormClient({ courseData }: { courseData: any }) {
-    const router = useRouter();
     const { toast } = useToast();
 
     const [isPending, startTransition] = useTransition();
@@ -112,7 +110,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
         fetchUser();
     }, []);
 
-    if (isError || !user) {
+    if (isError) {
         logger.error("Error fetching user data:", isError);
 
         return (
@@ -299,7 +297,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                                 <h3 className="text-xl font-semibold text-white">Promo Code</h3>
                             </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row items-center gap-3">
+                        <div className="flex flex-row items-center gap-3">
                             <Input
                                 id="promo_code"
                                 name="promo_code"

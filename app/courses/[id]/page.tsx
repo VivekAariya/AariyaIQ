@@ -8,6 +8,7 @@ import { ArrowLeft, BookOpen, Calendar, CheckCircle, Clock, Download, Users } fr
 import Image from "next/image";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
+import { MainNav } from "@/components/main-nav";
 
 interface CourseDetailsPageProps {
     params: {
@@ -98,6 +99,8 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+            <MainNav />
+
             {/* Quantum Background Effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-500/20 to-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
@@ -203,28 +206,33 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
-                                    {course.course_contents.trim().split("\n\n").map((module: any, index: any) => {
-                                        const lines = module.split("\n");
-                                        const title = lines[0];
-                                        const items = lines.slice(1);
+                                    {course.course_contents
+                                        .trim()
+                                        .split("\n\n")
+                                        .map((module: any, index: any) => {
+                                            const lines = module.split("\n");
+                                            const title = lines[0];
+                                            const items = lines.slice(1);
 
-                                        return (
-                                            <div key={index} className="border border-slate-700/50 rounded-lg p-4">
-                                                <h4 className="font-semibold text-purple-400 mb-3">{title}</h4>
-                                                <ul className="space-y-2">
-                                                    {items.map((item: any, itemIndex: any) => (
-                                                        <li
-                                                            key={itemIndex}
-                                                            className="flex items-start gap-2 text-slate-300"
-                                                        >
-                                                            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                                                            <span className="text-sm">{item.replace("• ", "")}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        );
-                                    })}
+                                            return (
+                                                <div key={index} className="border border-slate-700/50 rounded-lg p-4">
+                                                    <h4 className="font-semibold text-purple-400 mb-3">{title}</h4>
+                                                    <ul className="space-y-2">
+                                                        {items.map((item: any, itemIndex: any) => (
+                                                            <li
+                                                                key={itemIndex}
+                                                                className="flex items-start gap-2 text-slate-300"
+                                                            >
+                                                                <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                                                                <span className="text-sm">
+                                                                    {item.replace("• ", "")}
+                                                                </span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            );
+                                        })}
                                 </div>
                             </CardContent>
                         </Card>

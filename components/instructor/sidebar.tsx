@@ -69,7 +69,7 @@ export function InstructorSidebar() {
                             onClick={handleLinkClick}
                         >
                             <BookOpen className="mr-2 h-4 w-4" />
-                            Manage Courses
+                            Courses
                         </Link>
                         <Link
                             href="/instructor/dashboard/learners"
@@ -81,7 +81,7 @@ export function InstructorSidebar() {
                             onClick={handleLinkClick}
                         >
                             <Users className="mr-2 h-4 w-4" />
-                            Manage Users
+                            Learners
                         </Link>
                         <Link
                             href="/instructor/dashboard/profile"
