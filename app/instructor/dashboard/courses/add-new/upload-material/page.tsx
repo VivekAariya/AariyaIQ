@@ -12,9 +12,9 @@ import { User } from "@supabase/supabase-js";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { Suspense, useEffect, useState, useTransition } from "react";
 
-export default function AddNewCoursePage() {
+function AddNew() {
     const searchParams = useSearchParams();
     const courseId = searchParams.get("courseId");
 
@@ -244,5 +244,13 @@ export default function AddNewCoursePage() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function AddNewCoursePage() {
+    return (
+        <Suspense>
+            <AddNew />
+        </Suspense>
     );
 }

@@ -12,9 +12,9 @@ import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-export default function HomeContent() {
+function HomeContentInner() {
     const searchParams = useSearchParams();
 
     const [supabase] = useState(() => createClient());
@@ -167,5 +167,13 @@ export default function HomeContent() {
 
             <FloatingAIBtn delay={1000} user={user} />
         </div>
+    );
+}
+
+export default function HomeContent() {
+    return (
+        <Suspense>
+            <HomeContentInner />
+        </Suspense>
     );
 }

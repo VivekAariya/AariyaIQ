@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";

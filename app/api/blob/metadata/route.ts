@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { head } from "@vercel/blob";
 import logger from "@/utils/logger";

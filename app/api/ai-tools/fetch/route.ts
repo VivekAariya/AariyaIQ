@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import logger from "@/utils/logger";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
 import { NextRequest, NextResponse } from "next/server";
