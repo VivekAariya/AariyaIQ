@@ -1,3 +1,4 @@
+import { FloatingAIBtn } from "@/components/floating-ai-btn";
 import { Sidebar } from "@/components/learner/sidebar";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/server";
@@ -22,6 +23,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex min-h-screen flex-col md:flex-row">
             <Sidebar />
             <main className="flex-1 p-6 md:p-8">{children}</main>
+
+            <FloatingAIBtn delay={1000} user={data?.user} />
         </div>
     );
 }

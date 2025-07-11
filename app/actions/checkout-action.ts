@@ -17,16 +17,20 @@ export async function submitApplication(formData: FormData) {
         const promo_code = formData.get("promo_code")?.toString().trim();
         const excited_topics = formData.get("excited_topics")?.toString().trim();
 
-        const { error } = await supabaseServiceRoleClient.from("learners_applications").insert({
-            learner_id,
-            course_id,
-            full_name,
-            email_address,
-            phone_number,
-            current_profession,
-            promo_code: promo_code ?? null,
-            excited_topics,
-        });
+        const { data, error } = await supabaseServiceRoleClient
+            .from("learners_applications")
+            .insert({
+                learner_id,
+                course_id,
+                full_name,
+                email_address,
+                phone_number,
+                current_profession,
+                promo_code: promo_code ?? null,
+                excited_topics,
+            })
+            .select()
+            .single();
 
         if (error) {
             logger.error("Error submitting learner application:", error);
@@ -46,7 +50,7 @@ export async function submitApplication(formData: FormData) {
             loginLink: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/learner/dashboard/learner-application`,
         });
 
-        return { success: true, message: "Application submitted successfully!" };
+        return { success: true, message: "Application submitted successfully!", data };
     } catch (error: any) {
         logger.error("Exception in submitApplication:", error);
         return { success: false, message: error.message || "An error occurred." };

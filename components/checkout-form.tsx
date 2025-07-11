@@ -26,6 +26,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
     const [isCodeApplied, setIsCodeApplied] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [promoCode, setPromoCode] = useState("");
+    const [applicationData, setApplicationData] = useState<any>(null);
 
     const handleSubmit = async (formData: FormData) => {
         startTransition(async () => {
@@ -46,6 +47,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                     description: result?.message || "Application submitted successfully!",
                 });
                 setIsSuccess(true);
+                setApplicationData(result?.data);
             }
         });
     };
@@ -174,7 +176,12 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                             Browse More Courses
                         </Button>
 
-                        <Button variant={"outline"} onClick={() => (window.location.href = "/approval-flows")}>
+                        <Button
+                            variant={"outline"}
+                            onClick={() =>
+                                (window.location.href = `/learner/dashboard/learner-application/${applicationData?.id}`)
+                            }
+                        >
                             Next Steps
                         </Button>
                     </div>

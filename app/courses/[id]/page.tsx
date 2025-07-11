@@ -1,3 +1,7 @@
+import { FloatingAIBtn } from "@/components/floating-ai-btn";
+import { Footer } from "@/components/footer";
+import { MainNav } from "@/components/main-nav";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,9 +10,7 @@ import { createClient } from "@/utils/supabase/server";
 import { supabaseServiceRoleClient } from "@/utils/supabase/service-client";
 import { ArrowLeft, BookOpen, Calendar, CheckCircle, Clock, Download, Users } from "lucide-react";
 import Image from "next/image";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
-import { MainNav } from "@/components/main-nav";
 
 interface CourseDetailsPageProps {
     params: {
@@ -353,6 +355,10 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
                     </div>
                 </div>
             </div>
+
+            <FloatingAIBtn delay={500} user={null} />
+
+            <Footer />
         </div>
     );
 }

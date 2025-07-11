@@ -29,6 +29,7 @@ import {
   PieChart,
   Smartphone,
 } from "lucide-react"
+import { FloatingAIBtn } from "@/components/floating-ai-btn"
 
 // AI domains data
 const aiDomains = [
@@ -909,6 +910,7 @@ function MouseInteractiveGame() {
 
 export default function AboutPage() {
   return (
+    <>
     <div className="flex min-h-screen flex-col">
       <MainNav />
       <main className="flex-1">
@@ -1103,7 +1105,13 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <div className="relative h-[300px] overflow-hidden rounded-xl">
-                  <Image src="/digital-collaboration-hub.png" alt="Learning Journey" fill className="object-cover" />
+                  <video
+                    src="/videos/City Sunrise and Collaboration_simple_compose_01jzszv30bfs8v60xe7kpt7ggy.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
@@ -1112,6 +1120,9 @@ export default function AboutPage() {
       </main>
       <Footer />
     </div>
+    
+    <FloatingAIBtn delay={500} user={null} />
+    </>
   )
 }
 ;<style jsx global>{`

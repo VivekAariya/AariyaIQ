@@ -9,11 +9,10 @@ import { useEffect, useState } from "react";
 
 interface FloatingAIAssistantProps {
     delay?: number;
-    showOnPages?: string[];
     user: User | null;
 }
 
-export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"], user }: FloatingAIAssistantProps) {
+export function FloatingAIBtn({ delay = 3000, user }: FloatingAIAssistantProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
@@ -28,14 +27,6 @@ export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"], user }: Float
     };
 
     useEffect(() => {
-        // Check if user has dismissed the assistant before
-        // const dismissed = localStorage.getItem("ai-assistant-dismissed");
-        // if (dismissed) {
-        //     setIsDismissed(true);
-        //     return;
-        // }
-
-        // Show the assistant after delay
         const timer = setTimeout(() => {
             setIsVisible(true);
         }, delay);
@@ -52,8 +43,10 @@ export function FloatingAIBtn({ delay = 3000, showOnPages = ["/"], user }: Float
                 {/* Main Button */}
                 <div
                     onClick={handleExpand}
-                    className="relative flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl"
+                    className="relative flex items-center justify-center transition-all hover:scale-110 hover:shadow-xl animate-float cursor-pointer"
                 >
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 rounded-full blur-sm opacity-10"></div>
+
                     <Image src="/Aariyaiq Bot Logo.svg" alt="logo" width={70} height={70} />
                 </div>
             </div>
