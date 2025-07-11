@@ -635,6 +635,120 @@ function ContactUsTemplate({
     );
 }
 
+function ThankYouTemplate({ firstName, lastName }: { firstName: string | null; lastName: string | null }) {
+    const name = firstName || lastName ? `${firstName || ""} ${lastName || ""}`.trim() : "there";
+
+    return (
+        <BaseTemplate title="Thank you for contacting us">
+            <h2 style={{ color: "#0ea5e9" }}>Thank You for Contacting Us!</h2>
+            <p>Hi {name},</p>
+            <p>
+                Thank you for reaching out to AariyaIQ. We've received your message and appreciate you taking the time
+                to contact us.
+            </p>
+            <p>
+                Our team will review your inquiry and get back to you shortly. We typically respond within 24-48 hours
+                during business days.
+            </p>
+            <p>If you have any urgent questions, please don't hesitate to reach out to us directly.</p>
+            <p>
+                Best regards,
+                <br />
+                The AariyaIQ Team
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function SupportThankYouTemplate({
+    name,
+    subject,
+    priority,
+}: {
+    name: string | null;
+    subject: string | null;
+    priority: string | null;
+}) {
+    const userName = name || "there";
+    const priorityText = priority ? ` (Priority: ${priority})` : "";
+
+    return (
+        <BaseTemplate title="Support Request Received">
+            <h2 style={{ color: "#0ea5e9" }}>Support Request Received</h2>
+            <p>Hi {userName},</p>
+            <p>
+                Thank you for contacting AariyaIQ Support. We've received your support request{priorityText} and our
+                team is already working on it.
+            </p>
+            <p>
+                <strong>Your request:</strong> {subject || "Support Request"}
+            </p>
+            <p>We'll get back to you as soon as possible. Response times vary based on priority level:</p>
+            <ul>
+                <li>
+                    <strong>High Priority:</strong> Within 2-4 hours
+                </li>
+                <li>
+                    <strong>Medium Priority:</strong> Within 24 hours
+                </li>
+                <li>
+                    <strong>Low Priority:</strong> Within 48 hours
+                </li>
+            </ul>
+            <p>If you need immediate assistance or have additional information to add, please reply to this email.</p>
+            <p>
+                Best regards,
+                <br />
+                The AariyaIQ Support Team
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function FeedbackThankYouTemplate({
+    name,
+    rating,
+    category,
+}: {
+    name: string | null;
+    rating: string | null;
+    category: string | null;
+}) {
+    const userName = name || "there";
+    const categoryText = category ? ` about ${category}` : "";
+
+    return (
+        <BaseTemplate title="Thank you for your feedback">
+            <h2 style={{ color: "#10b981" }}>Thank You for Your Feedback!</h2>
+            <p>Hi {userName},</p>
+            <p>
+                Thank you for taking the time to share your feedback{categoryText} with AariyaIQ. Your input is
+                invaluable in helping us improve our services.
+            </p>
+            {rating && (
+                <p>
+                    We appreciate your <strong>{rating}</strong> rating and will use your insights to enhance our
+                    platform.
+                </p>
+            )}
+            <p>Your feedback helps us:</p>
+            <ul>
+                <li>Understand what's working well</li>
+                <li>Identify areas for improvement</li>
+                <li>Build features that matter to you</li>
+                <li>Deliver a better user experience</li>
+            </ul>
+            <p>If you have any additional thoughts or suggestions, feel free to reach out to us anytime.</p>
+            <p>Thank you for being part of the AariyaIQ community!</p>
+            <p>
+                Best regards,
+                <br />
+                The AariyaIQ Team
+            </p>
+        </BaseTemplate>
+    );
+}
+
 /**
  * Send an email notification using React template
  * @param type Email template type
@@ -931,26 +1045,58 @@ export async function sendSupportEmail({
             html: emailHtml,
         };
 
-        const result = await resend.emails.send(emailData);
-        logger.log("[SUPPORT/FEEDBACK EMAIL] Email sent result:", result);
+        // Send admin notification email
+        const adminResult = await resend.emails.send(emailData);
+        logger.log("[SUPPORT/FEEDBACK EMAIL] Admin email sent result:", adminResult);
 
-        if (result.error) {
-            logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending email:", result.error);
-            throw new Error(result.error.message);
+        if (adminResult.error) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending admin email:", adminResult.error);
+            throw new Error(adminResult.error.message);
         }
 
-        const messageId = (result as any).id || (result as any).data?.id || null;
+        // Send thank you email to sender (only if email is provided)
+        let thankYouResult = null;
+        if (email) {
+            try {
+                const thankYouHtml = await render(
+                    <SupportThankYouTemplate name={name} subject={subject} priority={priority} />
+                );
 
-        logger.log(`[SUPPORT/FEEDBACK EMAIL] Email sent! Message ID: ${messageId}`);
+                const thankYouEmailData: CreateEmailOptions = {
+                    from: `AariyaIQ Support <${emailConfig.sender}>`,
+                    to: email,
+                    subject: "Your support request has been received",
+                    html: thankYouHtml,
+                };
+
+                thankYouResult = await resend.emails.send(thankYouEmailData);
+                logger.log("[SUPPORT/FEEDBACK EMAIL] Thank you email sent result:", thankYouResult);
+
+                if (thankYouResult.error) {
+                    logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending thank you email:", thankYouResult.error);
+                    // Don't throw here - admin email was successful
+                }
+            } catch (thankYouError) {
+                logger.error("[SUPPORT/FEEDBACK EMAIL] Failed to send thank you email:", thankYouError);
+                // Don't throw here - admin email was successful
+            }
+        }
+
+        const adminMessageId = (adminResult as any).id || (adminResult as any).data?.id || null;
+        const thankYouMessageId = thankYouResult
+            ? (thankYouResult as any).id || (thankYouResult as any).data?.id || null
+            : null;
 
         return {
             success: true,
-            messageId,
+            messageId: adminMessageId,
+            thankYouMessageId,
             debug: {
                 step: "send_success",
                 type: "support",
                 from: email,
                 subject,
+                thankYouSent: !!thankYouMessageId,
             },
         };
     } catch (error) {
@@ -1021,26 +1167,58 @@ export async function sendFeedbackEmail({
             html: emailHtml,
         };
 
-        const result = await resend.emails.send(emailData);
-        logger.log("[SUPPORT/FEEDBACK EMAIL] Email sent result:", result);
+        // Send admin notification email
+        const adminResult = await resend.emails.send(emailData);
+        logger.log("[SUPPORT/FEEDBACK EMAIL] Admin email sent result:", adminResult);
 
-        if (result.error) {
-            logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending email:", result.error);
-            throw new Error(result.error.message);
+        if (adminResult.error) {
+            logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending admin email:", adminResult.error);
+            throw new Error(adminResult.error.message);
         }
 
-        const messageId = (result as any).id || (result as any).data?.id || null;
+        // Send thank you email to sender (only if email is provided)
+        let thankYouResult = null;
+        if (email) {
+            try {
+                const thankYouHtml = await render(
+                    <FeedbackThankYouTemplate name={name} rating={rating} category={category} />
+                );
 
-        logger.log(`[SUPPORT/FEEDBACK EMAIL] Email sent! Message ID: ${messageId}`);
+                const thankYouEmailData: CreateEmailOptions = {
+                    from: `AariyaIQ <${emailConfig.sender}>`,
+                    to: email,
+                    subject: "Thank you for your feedback",
+                    html: thankYouHtml,
+                };
+
+                thankYouResult = await resend.emails.send(thankYouEmailData);
+                logger.log("[SUPPORT/FEEDBACK EMAIL] Thank you email sent result:", thankYouResult);
+
+                if (thankYouResult.error) {
+                    logger.error("[SUPPORT/FEEDBACK EMAIL] Error sending thank you email:", thankYouResult.error);
+                    // Don't throw here - admin email was successful
+                }
+            } catch (thankYouError) {
+                logger.error("[SUPPORT/FEEDBACK EMAIL] Failed to send thank you email:", thankYouError);
+                // Don't throw here - admin email was successful
+            }
+        }
+
+        const adminMessageId = (adminResult as any).id || (adminResult as any).data?.id || null;
+        const thankYouMessageId = thankYouResult
+            ? (thankYouResult as any).id || (thankYouResult as any).data?.id || null
+            : null;
 
         return {
             success: true,
-            messageId,
+            messageId: adminMessageId,
+            thankYouMessageId,
             debug: {
                 step: "send_success",
                 type: "feedback",
                 from: email,
                 subject: "FEEDBACK",
+                thankYouSent: !!thankYouMessageId,
             },
         };
     } catch (error) {
@@ -1115,26 +1293,56 @@ export async function sendContactUsEmail({
             html: emailHtml,
         };
 
-        const result = await resend.emails.send(emailData);
-        logger.log("[CONTACT US EMAIL] Email sent result:", result);
+        // Send admin notification email
+        const adminResult = await resend.emails.send(emailData);
+        logger.log("[CONTACT US EMAIL] Admin email sent result:", adminResult);
 
-        if (result.error) {
-            logger.error("[CONTACT US EMAIL] Error sending email:", result.error);
-            throw new Error(result.error.message);
+        if (adminResult.error) {
+            logger.error("[CONTACT US EMAIL] Error sending admin email:", adminResult.error);
+            throw new Error(adminResult.error.message);
         }
 
-        const messageId = (result as any).id || (result as any).data?.id || null;
+        // Send thank you email to sender (only if email is provided)
+        let thankYouResult = null;
+        if (email) {
+            try {
+                const thankYouHtml = await render(<ThankYouTemplate firstName={firstName} lastName={lastName} />);
 
-        logger.log(`[CONTACT US EMAIL] Email sent! Message ID: ${messageId}`);
+                const thankYouEmailData: CreateEmailOptions = {
+                    from: `AariyaIQ <${emailConfig.sender}>`,
+                    to: email,
+                    subject: "Thank you for contacting AariyaIQ",
+                    html: thankYouHtml,
+                };
+
+                thankYouResult = await resend.emails.send(thankYouEmailData);
+                logger.log("[CONTACT US EMAIL] Thank you email sent result:", thankYouResult);
+
+                if (thankYouResult.error) {
+                    logger.error("[CONTACT US EMAIL] Error sending thank you email:", thankYouResult.error);
+                    // Don't throw here - admin email was successful
+                }
+            } catch (thankYouError) {
+                logger.error("[CONTACT US EMAIL] Failed to send thank you email:", thankYouError);
+                // Don't throw here - admin email was successful
+            }
+        }
+
+        const adminMessageId = (adminResult as any).id || (adminResult as any).data?.id || null;
+        const thankYouMessageId = thankYouResult
+            ? (thankYouResult as any).id || (thankYouResult as any).data?.id || null
+            : null;
 
         return {
             success: true,
-            messageId,
+            messageId: adminMessageId,
+            thankYouMessageId,
             debug: {
                 step: "send_success",
                 type: "contact-us",
                 from: email,
                 subject,
+                thankYouSent: !!thankYouMessageId,
             },
         };
     } catch (error) {

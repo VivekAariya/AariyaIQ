@@ -47,7 +47,7 @@ export async function submitApplication(formData: FormData) {
             courseName: course_name,
             courseStartDate: start_date,
             applicationDate: new Date().toLocaleDateString(),
-            loginLink: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/learner/dashboard/learner-application`,
+            loginLink: `${process.env.NEXT_PUBLIC_APP_URL}/learner/dashboard/learner-application/${data?.id}`,
         });
 
         return { success: true, message: "Application submitted successfully!", data };

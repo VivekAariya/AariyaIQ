@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import logger from "@/utils/logger";
 import { Award, BookOpen, CalendarDays, Instagram, Linkedin, Mail, MapPin, Rocket, Twitter, Users } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 
 export function LaunchPage() {
@@ -335,27 +336,38 @@ export function LaunchPage() {
                                 <div className="text-center space-y-4">
                                     <p className="text-gray-300">Follow us for updates</p>
                                     <div className="flex justify-center gap-4">
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            className="border-white/30 hover:bg-white/20 text-white"
+                                        <Link href={"https://x.com/AariyaTech"} target="_blank">
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                className="border-white/30 hover:bg-white/20 text-white"
+                                            >
+                                                <Twitter className="w-4 h-4" />
+                                            </Button>
+                                        </Link>
+
+                                        <Link
+                                            href={"https://www.linkedin.com/showcase/aariyaiq/about/"}
+                                            target="_blank"
                                         >
-                                            <Twitter className="w-4 h-4" />
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            className="border-white/30 hover:bg-white/20 text-white"
-                                        >
-                                            <Linkedin className="w-4 h-4" />
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            className="border-white/30 hover:bg-white/20 text-white"
-                                        >
-                                            <Instagram className="w-4 h-4" />
-                                        </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                className="border-white/30 hover:bg-white/20 text-white"
+                                            >
+                                                <Linkedin className="w-4 h-4" />
+                                            </Button>
+                                        </Link>
+
+                                        <Link href={"https://www.instagram.com/aariyatechglobal/"} target="_blank">
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                className="border-white/30 hover:bg-white/20 text-white"
+                                            >
+                                                <Instagram className="w-4 h-4" />
+                                            </Button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
