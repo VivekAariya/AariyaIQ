@@ -1,4 +1,5 @@
 import CheckoutFormClient from "@/components/checkout-form";
+import { MainNav } from "@/components/main-nav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +35,7 @@ export default async function CheckoutPage({
         .from("learners_applications")
         .select("id, learner_id, course_id, application_status")
         .eq("learner_id", userData.user.id)
+        .eq("course_id", courseId)
         .maybeSingle();
 
     if (applicationsError) {
@@ -94,6 +96,8 @@ export default async function CheckoutPage({
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+            <MainNav />
+
             {/* Quantum Background Effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse"></div>

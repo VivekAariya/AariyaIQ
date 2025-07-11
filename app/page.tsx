@@ -14,48 +14,45 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
+// launch date (July 14, 2025)
+// const LAUNCH_DATE = new Date("2025-07-14T10:00:00Z");
+
 function HomeContentInner() {
     const searchParams = useSearchParams();
 
     const [supabase] = useState(() => createClient());
     const [showLaunchPage, setShowLaunchPage] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        try {
-            // Check for developer bypass
-            const devAccess = searchParams.get("dev");
-            const adminAccess = searchParams.get("admin");
-            const bypassKey = searchParams.get("bypass");
+        const LAUNCH_DATE = new Date("2025-07-14T10:00:00Z");
 
-            // Check if current date is before launch date (July 14, 2025)
-            const launchDate = new Date("2025-07-14T00:00:00Z");
-            const currentDate = new Date();
-            const isBeforeLaunch = currentDate < launchDate;
+        const devAccess = searchParams.get("dev") === "true";
+        const adminAccess = searchParams.get("admin") === "aariyatech2025";
+        const bypassKey = searchParams.get("bypass") === "launch_bypass_2025";
+        const localDev = typeof window !== "undefined" && localStorage.getItem("dev_mode") === "true";
+        const isDeveloper = devAccess || adminAccess || bypassKey || localDev;
 
-            // Developer bypass conditions
-            const isDeveloper =
-                devAccess === "true" ||
-                adminAccess === "aariyatech2025" ||
-                bypassKey === "launch_bypass_2025" ||
-                (typeof window !== "undefined" && localStorage.getItem("dev_mode") === "true");
+        let timer: ReturnType<typeof setInterval>;
 
-            // Show main site if after launch date OR if developer bypass is active
-            if (!isBeforeLaunch || isDeveloper) {
+        const checkIfLaunched = () => {
+            const now = new Date();
+            if (now >= LAUNCH_DATE || isDeveloper) {
                 setShowLaunchPage(false);
                 if (isDeveloper && typeof window !== "undefined") {
                     localStorage.setItem("dev_mode", "true");
                 }
-            }
 
+                clearInterval(timer);
+            }
             setIsLoading(false);
-        } catch (err) {
-            console.error("Error in useEffect:", err);
-            setError("Failed to initialize page");
-            setIsLoading(false);
-        }
+        };
+
+        checkIfLaunched();
+        timer = setInterval(checkIfLaunched, 1000);
+
+        return () => clearInterval(timer);
     }, [searchParams]);
 
     useEffect(() => {
@@ -79,21 +76,6 @@ function HomeContentInner() {
         fetchUser();
     }, []);
 
-    // Error state
-    if (error) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold text-white mb-4">Something went wrong</h1>
-                    <p className="text-gray-300 mb-4">{error}</p>
-                    <Button onClick={() => window.location.reload()} className="bg-cyan-500 hover:bg-cyan-600">
-                        Reload Page
-                    </Button>
-                </div>
-            </div>
-        );
-    }
-
     // Loading state
     if (isLoading) {
         return (
@@ -115,20 +97,23 @@ function HomeContentInner() {
     return (
         <div className="flex min-h-screen flex-col relative z-10 bg-gradient-to-br from-slate-950 to-slate-900">
             {/* Developer Mode Banner */}
-            <div className="bg-yellow-500 text-black text-center py-2 text-xs sm:text-sm font-medium px-2">
-                🔧 Developer Mode Active - Launch Page Bypassed
-                <button
-                    onClick={() => {
-                        if (typeof window !== "undefined") {
-                            localStorage.removeItem("dev_mode");
-                            window.location.href = "/";
-                        }
-                    }}
-                    className="ml-2 sm:ml-4 underline hover:no-underline"
-                >
-                    Exit Dev Mode
-                </button>
-            </div>
+
+            {typeof window !== "undefined" && localStorage.getItem("dev_mode") === "true" && (
+                <div className="bg-yellow-500 text-black text-center py-2 text-xs sm:text-sm font-medium px-2">
+                    🔧 Developer Mode Active - Launch Page Bypassed
+                    <button
+                        onClick={() => {
+                            if (typeof window !== "undefined") {
+                                localStorage.removeItem("dev_mode");
+                                window.location.href = "/";
+                            }
+                        }}
+                        className="ml-2 sm:ml-4 underline hover:no-underline"
+                    >
+                        Exit Dev Mode
+                    </button>
+                </div>
+            )}
 
             <MainNav />
 

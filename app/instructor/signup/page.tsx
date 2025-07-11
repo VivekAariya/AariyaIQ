@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -241,7 +242,15 @@ export default function InstructorRegistrationPage() {
                                                     htmlFor="terms"
                                                     className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                                 >
-                                                    I agree to the terms and conditions
+                                                    I agree to the{" "}
+                                                    <Link
+                                                        href="/terms"
+                                                        className="underline text-cyan-500 hover:text-cyan-600"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        terms and conditions
+                                                    </Link>
                                                 </Label>
                                             </div>
                                         </div>

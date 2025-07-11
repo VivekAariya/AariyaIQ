@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useState, useTransition, useEffect } from "react";
 import { contactUs } from "../actions/user-actions";
+import { FloatingAIBtn } from "@/components/floating-ai-btn";
 
 // Simple math CAPTCHA generator
 const generateMathCaptcha = () => {
@@ -671,6 +672,8 @@ export default function ContactPage() {
                     </div>
                 </div>
             </div>
+
+            <FloatingAIBtn delay={500} user={null} />
 
             <Footer />
         </div>

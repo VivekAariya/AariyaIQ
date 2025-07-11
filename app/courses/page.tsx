@@ -1,4 +1,5 @@
 import { CourseCard } from "@/components/course-card";
+import { FloatingAIBtn } from "@/components/floating-ai-btn";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import logger from "@/utils/logger";
@@ -51,9 +52,12 @@ export default async function LearningsPage() {
                                 <div className="neon-bottom absolute opacity-100"></div>
                                 <div className="neon-left absolute opacity-100"></div>
 
-                                <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tighter">AT Learnings</h1>
+                                <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tighter">
+                                    AT Learnings
+                                </h1>
                                 <p className="text-gray-200 text-base sm:text-lg md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed whitespace-normal">
-                                    Explore our comprehensive courses designed to enhance your skills and advance your career.
+                                    Explore our comprehensive courses designed to enhance your skills and advance your
+                                    career.
                                 </p>
                             </div>
                         </div>
@@ -67,6 +71,9 @@ export default async function LearningsPage() {
                     </div>
                 </section>
             </main>
+
+            <FloatingAIBtn delay={500} user={null} />
+
             <Footer />
         </div>
     );

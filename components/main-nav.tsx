@@ -197,13 +197,53 @@ export function MainNav() {
                     )}
                 </div>
 
-                <button
-                    className="block md:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                >
-                    {isMenuOpen ? <X size={28} className="text-white" /> : <Menu size={28} className="text-white" />}
-                </button>
+                <div className="flex items-center gap-4 md:hidden">
+                    {userData && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <div className="cursor-pointer flex items-center gap-2">
+                                    <Avatar>
+                                        <AvatarImage src={userData?.user_metadata?.profile_image} />
+                                        <AvatarFallback>
+                                            {userData.user_metadata?.first_name
+                                                ? userData.user_metadata.first_name.charAt(0).toUpperCase()
+                                                : userData.email?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem asChild>
+                                    <Link href={`/${userData?.user_metadata?.role || "learner"}/dashboard`}>
+                                        Dashboard
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                    onClick={async () => {
+                                        const supabase = createClient();
+                                        await supabase.auth.signOut();
+                                        window.location.reload();
+                                    }}
+                                >
+                                    Logout
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+
+                    <button
+                        className="block md:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                    >
+                        {isMenuOpen ? (
+                            <X size={28} className="text-white" />
+                        ) : (
+                            <Menu size={28} className="text-white" />
+                        )}
+                    </button>
+                </div>
             </div>
 
             {/* Mobile menu */}
@@ -245,42 +285,7 @@ export function MainNav() {
                         </Link>
 
                         <div className="mt-4">
-                            {userData ? (
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <div className="cursor-pointer flex items-center gap-2">
-                                            <Avatar>
-                                                <AvatarImage src={userData?.user_metadata?.profile_image} />
-                                                <AvatarFallback>
-                                                    {userData.user_metadata?.first_name
-                                                        ? userData.user_metadata.first_name.charAt(0).toUpperCase()
-                                                        : userData.email?.charAt(0).toUpperCase()}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <span className="text-gray-200 font-medium">
-                                                {userData.user_metadata?.first_name || userData.email}
-                                            </span>
-                                        </div>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem asChild>
-                                            <Link href={`/${userData?.user_metadata?.role || "learner"}/dashboard`}>
-                                                Dashboard
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                            onClick={async () => {
-                                                const supabase = createClient();
-                                                await supabase.auth.signOut();
-                                                window.location.reload();
-                                            }}
-                                        >
-                                            Logout
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            ) : (
+                            {!userData && (
                                 <div className="flex flex-col gap-2 pt-2">
                                     <Link href="/learner/login" onClick={() => setIsMenuOpen(false)}>
                                         <Button

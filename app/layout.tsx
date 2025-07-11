@@ -1,3 +1,4 @@
+import CookieConsent from "@/components/cookie-consent";
 import { Toaster as SonnerToast } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
@@ -24,11 +25,13 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={montserrat.variable}>
+        <html lang="en" className={`${montserrat.variable} cc--elegant-black`} >
             <body className="font-lastica relative bg-gradient-to-b from-slate-950 to-slate-900">
                 <Toaster />
                 <SonnerToast richColors closeButton />
                 {children}
+
+                <CookieConsent />
             </body>
         </html>
     );

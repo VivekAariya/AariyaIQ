@@ -1,3 +1,4 @@
+import { FloatingAIBtn } from "@/components/floating-ai-btn";
 import { InstructorSidebar } from "@/components/instructor/sidebar";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/server";
@@ -47,6 +48,8 @@ export default async function InstructorDashboardLayout({ children }: { children
                 </div>
                 <div className="relative z-10">{children}</div>
             </main>
+
+            <FloatingAIBtn delay={500} user={data?.user} />
         </div>
     );
 }

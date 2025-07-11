@@ -13,11 +13,9 @@ import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { AlertCircle, CheckCircle, GraduationCap, Heart, Loader2, Percent, User } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 
 export default function CheckoutFormClient({ courseData }: { courseData: any }) {
-    const router = useRouter();
     const { toast } = useToast();
 
     const [isPending, startTransition] = useTransition();
@@ -28,6 +26,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
     const [isCodeApplied, setIsCodeApplied] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [promoCode, setPromoCode] = useState("");
+    const [applicationData, setApplicationData] = useState<any>(null);
 
     const handleSubmit = async (formData: FormData) => {
         startTransition(async () => {
@@ -48,6 +47,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                     description: result?.message || "Application submitted successfully!",
                 });
                 setIsSuccess(true);
+                setApplicationData(result?.data);
             }
         });
     };
@@ -112,7 +112,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
         fetchUser();
     }, []);
 
-    if (isError || !user) {
+    if (isError) {
         logger.error("Error fetching user data:", isError);
 
         return (
@@ -176,7 +176,12 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                             Browse More Courses
                         </Button>
 
-                        <Button variant={"outline"} onClick={() => (window.location.href = "/approval-flows")}>
+                        <Button
+                            variant={"outline"}
+                            onClick={() =>
+                                (window.location.href = `/learner/dashboard/learner-application/${applicationData?.id}`)
+                            }
+                        >
                             Next Steps
                         </Button>
                     </div>
@@ -299,7 +304,7 @@ export default function CheckoutFormClient({ courseData }: { courseData: any }) 
                                 <h3 className="text-xl font-semibold text-white">Promo Code</h3>
                             </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row items-center gap-3">
+                        <div className="flex flex-row items-center gap-3">
                             <Input
                                 id="promo_code"
                                 name="promo_code"

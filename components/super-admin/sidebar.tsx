@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import logger from "@/utils/logger";
 import { createClient } from "@/utils/supabase/client";
-import { BookOpen, Home, LogOut, Menu, Settings, Shield, Users, X } from "lucide-react";
+import { BookOpen, Home, LogOut, Menu, Shield, Users, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -120,17 +120,16 @@ export function SuperAdminSidebar() {
                             <Shield className="mr-2 h-4 w-4" />
                             Promo Codes
                         </Link>
-                    </nav>
-                    <div className="pt-4">
+
                         <Button
                             variant="ghost"
-                            className="w-full justify-start text-white hover:bg-white/10"
+                            className="w-full justify-start items-center px-3 py-2 text-white hover:bg-white/10"
                             onClick={handleLogout}
                         >
                             <LogOut className="mr-2 h-4 w-4" />
                             Logout
                         </Button>
-                    </div>
+                    </nav>
                 </div>
             </div>
         </>

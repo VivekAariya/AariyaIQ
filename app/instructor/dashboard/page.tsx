@@ -80,8 +80,6 @@ export default async function InstructorDashboardPage() {
 
     return (
         <div className="space-y-8 px-2 sm:px-4 md:px-8">
-            <FloatingAIBtn delay={500} user={userData?.user} />
-        
             <div>
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Instructor Dashboard</h1>
                 <p className="text-muted-foreground">Manage your courses and learners</p>

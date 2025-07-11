@@ -55,16 +55,16 @@ export function ShareButton({ courseId, courseTitle }: ShareButtonProps) {
 
         switch (platform) {
             case "linkedin":
-                shareUrl = "/";
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
                 break;
             case "facebook":
-                shareUrl = "/";
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
                 break;
             case "x":
-                shareUrl = "/";
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
                 break;
             case "whatsapp":
-                shareUrl = "/";
+                shareUrl = `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`;
                 break;
             case "instagram":
                 // Instagram doesn't have a direct share URL, but we can copy the link
@@ -91,18 +91,11 @@ export function ShareButton({ courseId, courseTitle }: ShareButtonProps) {
                 variant="outline"
                 size="icon"
                 className={cn(
-                    "rounded-full w-9 h-9 absolute top-3 right-1 bg-black/80 backdrop-blur-sm border-white/20 z-10 transition-all duration-300 shadow-lg hover:bg-black/95",
-                    isAnimating && "animate-pulse",
-                    isOpen && "bg-white/20"
+                    "rounded-full w-9 h-9 absolute top-3 right-1 bg-black/80 backdrop-blur-sm border-white/20 z-10 transition-all duration-300 shadow-lg hover:bg-black/95"
                 )}
                 onClick={toggleMenu}
             >
-                <Share2
-                    className={cn(
-                        "h-4 w-4 text-white transition-transform duration-300 animate-bounce-subtle",
-                        isOpen && "rotate-45"
-                    )}
-                />
+                <Share2 className={cn("h-4 w-4 text-white")} />
             </Button>
 
             {isOpen && (
@@ -158,7 +151,7 @@ export function ShareButton({ courseId, courseTitle }: ShareButtonProps) {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-8 h-8 bg-[#000000]/20 hover:bg-[#000000]/30 border-[#000000]/50"
+                                className="w-8 h-8 bg-[#777]/20 hover:bg-[#ccc]/30 border-[#777]/50"
                                 onClick={() => handleShare("x")}
                                 title="Share on X"
                             >
