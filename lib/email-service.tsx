@@ -22,7 +22,9 @@ export type EmailType =
     | "learner-rejection"
     | "learner-final-approval"
     | "launch-page-notification"
-    | "admin-launch-notification";
+    | "admin-launch-notification"
+    | "course-final-approval"
+    | "course-rejection";
 
 export interface EmailData {
     recipientName: string;
@@ -68,6 +70,11 @@ export async function EmailTemplate({ type, data }: EmailTemplateProps) {
             return <LearnerRejectionTemplate data={data} />;
         case "learner-final-approval":
             return <LearnerFinalApprovalTemplate data={data} />;
+
+        case "course-final-approval":
+            return <CourseApprovalTemplate data={data} />;
+        case "course-rejection":
+            return <CourseRejectionTemplate data={data} />;
 
         case "launch-page-notification":
             return <LaunchPageNotificationTemplate data={data} />;
@@ -268,6 +275,39 @@ function LearnerFinalApprovalTemplate({ data }: { data: EmailData }) {
             <p>
                 You can now access your course materials and start learning. If you have any questions, please contact
                 our support team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function CourseApprovalTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Course Approved">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                Congratulations! Your course <strong>{data.courseName || "Untitled course"}</strong> has been approved.
+            </p>
+
+            <p>
+                You can now start enrolling learners for your course. If you have any questions, please contact our
+                support team at <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
+            </p>
+        </BaseTemplate>
+    );
+}
+
+function CourseRejectionTemplate({ data }: { data: EmailData }) {
+    return (
+        <BaseTemplate title="Course Rejected">
+            <h2>Hello {data.recipientName || "there"},</h2>
+            <p>
+                We regret to inform you that your course <strong>{data.courseName || "Untitled course"}</strong> has
+                been rejected.
+            </p>
+            <p>
+                We appreciate the effort you put into creating your course, and we're sorry that it didn't meet our
+                standards. If you have any questions, please contact our support team at{" "}
+                <a href="mailto:hello@aariyatech.co.uk">hello@aariyatech.co.uk</a>.
             </p>
         </BaseTemplate>
     );
@@ -886,6 +926,9 @@ function getEmailSubject(type: EmailType, data: EmailData): string {
         "learner-initial-approval": `Your AariyaIQ Registration: ${data.courseName || "Course"} - Initially Approved`,
         "learner-rejection": `Update on Your AariyaIQ Course Application`,
         "learner-final-approval": `Congratulations! Your AariyaIQ Course Application is Approved`,
+
+        "course-final-approval": `Congratulations! Your AariyaIQ Course Application is Approved`,
+        "course-rejection": `Update on Your AariyaIQ Course Application`,
 
         "launch-page-notification": "Thank you for your interest in AariyaIQ!",
         "admin-launch-notification": "Someone has shown interest - AariyaIQ",

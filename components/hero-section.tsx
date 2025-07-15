@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -57,14 +58,19 @@ export function HeroSection() {
     return (
         <section className="w-full py-8 sm:py-12 md:py-24 lg:py-32 bg-black/3 backdrop-blur-sm text-white">
             <div className="container px-2 sm:px-4 md:px-6">
-                <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px] gap-8">
-                    {/* Left: Main content */}
-                    <div className="flex flex-col justify-center p-4 sm:p-8 md:p-10 lg:p-12 rounded-xl bg-black/20 backdrop-blur-md border border-white/10 shadow-lg relative neon-container neon-always-on overflow-visible min-w-0">
-                        {/* Neon border elements */}
-                        <div className="neon-right absolute"></div>
-                        <div className="neon-bottom absolute"></div>
-                        <div className="neon-left absolute"></div>
+                <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px] gap-8 h-[600px] w-full items-center justify-center bg-[#060C1E] dark:bg-[#060C1E]">
+                    <div
+                        className={cn(
+                            "absolute inset-0",
+                            "[background-size:90px_90px]",
+                            "[background-image:linear-gradient(to_right,#161B47_1px,transparent_1px),linear-gradient(to_bottom,#161B47_1px,transparent_1px)]"
+                        )}
+                    />
+                    {/* Radial gradient for the container to give a faded look */}
+                    <div className="pointer-events-none absolute inset-0 flex items-center bg-inherit justify-center [mask-image:radial-gradient(ellipse_at_top,transparent_10%,black)]"></div>
 
+                    {/* Left: Main content */}
+                    <div className="flex flex-col justify-center p-4 sm:p-8 md:p-10 lg:p-12 rounded-xl relative neon-container overflow-visible min-w-0">
                         {/* Content with improved spacing */}
                         <div className="space-y-4 sm:space-y-6 md:space-y-8">
                             <div className="space-y-2 sm:space-y-3">
