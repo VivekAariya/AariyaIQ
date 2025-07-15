@@ -181,3 +181,31 @@ export async function sendAdminLaunchPageNotification(data: {
 
     return sendEmail("admin-launch-notification", emailData);
 }
+
+export async function sendCourseFinalApprovalEmail(data: {
+    courseTitle: string;
+    instructorName: string;
+    instructorEmail: string;
+}) {
+    const emailData: EmailData = {
+        recipientName: data.instructorName,
+        recipientEmail: data.instructorEmail,
+        courseName: data.courseTitle,
+    };
+
+    return sendEmail("course-final-approval", emailData);
+}
+
+export async function sendCourseRejectionEmail(data: {
+    courseTitle: string;
+    instructorName: string;
+    instructorEmail: string;
+}) {
+    const emailData: EmailData = {
+        recipientName: data.instructorName,
+        recipientEmail: data.instructorEmail,
+        courseName: data.courseTitle,
+    };
+
+    return sendEmail("course-rejection", emailData);
+}
